@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-stone-950">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid RAG | Pricing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Space Grotesk', 'sans-serif'] }, colors: { brand: '#f97316' } } } };
+
+    let billingMode = 'monthly';
+
+    function toggleBilling(mode) {
+      billingMode = mode;
+      document.querySelectorAll('[data-billing-toggle]').forEach(btn => {
+        btn.classList.toggle('bg-brand', btn.getAttribute('data-billing-toggle') === mode);
+        btn.classList.toggle('text-black', btn.getAttribute('data-billing-toggle') === mode);
+        btn.classList.toggle('bg-white/10', btn.getAttribute('data-billing-toggle') !== mode);
+        btn.classList.toggle('text-white/70', btn.getAttribute('data-billing-toggle') !== mode);
+      });
+
+      document.querySelectorAll('[data-price-monthly]').forEach(el => {
+        el.style.display = mode === 'monthly' ? 'inline' : 'none';
+      });
+      document.querySelectorAll('[data-price-annual]').forEach(el => {
+        el.style.display = mode === 'annual' ? 'inline' : 'none';
+      });
+    }
+
+    function toggleFAQ(el) {
+      const answer = el.querySelector('[data-faq-answer]');
+      const icon = el.querySelector('svg');
+      answer.classList.toggle('hidden');
+      icon.classList.toggle('rotate-180');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('[data-faq-item]').forEach(item => {
+        item.addEventListener('click', function() { toggleFAQ(this); });
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="site.css" />
+  <script src="site.js" defer></script>
+</head>
+<body class="app-shell min-h-screen font-sans text-stone-100 bg-[radial-gradient(circle_at_90%_10%,#2f2410,transparent_30%),#0c0c0c]">
+  <!-- Header Navigation -->
+  <header class="sticky top-0 z-50 border-b border-white/10 bg-[#0c0c0c]/80 backdrop-blur">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-brand to-orange-600 flex items-center justify-center font-bold text-black">HR</div>
+        <span class="font-bold text-lg">Hybrid RAG</span>
+      </div>
+      <div class="hidden md:flex gap-8 text-sm">
+        <a href="index.html" class="hover:text-brand transition">Home</a>
+        <a href="pricing.html" class="text-brand font-semibold">Pricing</a>
+        <a href="login.html" class="hover:text-brand transition">Login</a>
+        <a href="support.html" class="hover:text-brand transition">Support</a>
+      </div>
+      <div class="flex gap-3">
+        <a href="login.html" class="hidden sm:inline px-4 py-2 rounded-lg border border-white/20 text-sm hover:border-brand transition">Sign In</a>
+        <a href="signup.html" class="px-4 py-2 rounded-lg bg-gradient-to-r from-brand to-orange-500 text-black font-semibold text-sm hover:shadow-lg hover:shadow-brand/30 transition">Get Started</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-6 py-12">
+    <!-- Hero Section -->
+    <section class="mb-20 text-center">
+      <div class="inline-block mb-6 px-4 py-2 rounded-full border border-brand/30 bg-brand/10">
+        <span class="text-xs font-semibold text-brand uppercase tracking-widest">💰 Simple, Transparent Pricing</span>
+      </div>
+      <h1 class="mb-6 text-5xl sm:text-6xl font-black">
+        <span class="bg-gradient-to-r from-white via-orange-200 to-brand bg-clip-text text-transparent">Empower your knowledge</span>
+        <br/>
+        <span class="bg-gradient-to-r from-brand to-orange-500 bg-clip-text text-transparent">with Hybrid RAG</span>
+      </h1>
+      <p class="mx-auto max-w-2xl text-lg text-white/80 mb-8">Choose the plan that fits your workload. Always flexible, always transparent. No hidden fees, cancel anytime.</p>
+
+      <!-- Billing Toggle -->
+      <div class="flex items-center justify-center gap-4 mb-12">
+        <span class="text-sm font-medium text-white/70">Monthly</span>
+        <div class="inline-flex gap-1 p-1 rounded-lg bg-white/5 border border-white/10">
+          <button data-billing-toggle="monthly" onclick="toggleBilling('monthly')" class="px-4 py-2 rounded-md bg-brand text-black font-semibold text-sm transition">Monthly</button>
+          <button data-billing-toggle="annual" onclick="toggleBilling('annual')" class="px-4 py-2 rounded-md bg-white/10 text-white/70 font-semibold text-sm transition hover:bg-white/20">Annual</button>
+        </div>
+        <span class="text-sm font-medium text-emerald-400">Save 20% 💚</span>
+      </div>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section class="grid gap-6 mb-20 md:grid-cols-3">
+      <!-- Starter Plan -->
+      <div class="group rounded-2xl border border-white/10 bg-gradient-to-br from-stone-800/20 to-stone-900/40 p-8 transition duration-300 hover:border-white/20 hover:shadow-lg hover:shadow-stone-950/50">
+        <h2 class="text-2xl font-bold">Starter</h2>
+        <p class="mt-2 text-white/70 text-sm">Perfect for individuals exploring RAG.</p>
+        <div class="mt-6">
+          <div class="text-4xl font-black"><span data-price-monthly>$0</span><span data-price-annual style="display:none">$0</span></div>
+          <p class="text-sm text-white/70 mt-1">/month</p>
+          <p class="text-xs text-white/60 mt-2">💡 Always free, forever</p>
+        </div>
+        <a href="signup.html" class="mt-8 block w-full py-3 rounded-lg border border-white/20 font-semibold text-center transition hover:border-brand hover:bg-brand/5">Start Free</a>
+        <div class="mt-8 space-y-4">
+          <p class="text-xs uppercase tracking-widest text-white/70 font-semibold">What's included</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>500 queries/month</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>1 workspace</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Up to 5 documents</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Community support</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm text-white/60">
+              <span class="font-bold mt-0.5">✗</span>
+              <span>Team collaboration</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Pro Plan (Featured) -->
+      <div class="relative rounded-2xl border-2 border-brand/60 bg-gradient-to-br from-stone-800/40 to-stone-900/50 p-8 shadow-2xl shadow-brand/20 md:scale-105 z-10">
+        <div class="absolute -top-4 left-6 inline-block rounded-full bg-gradient-to-r from-brand to-white-500 px-4 py-1 text-xs font-white text-white">⭐ MOST POPULAR</div>
+        <h2 class="text-2xl font-bold text-brand">Pro</h2>
+        <p class="mt-2 text-white/70 text-sm">For power users and small teams.</p>
+        <div class="mt-6">
+          <div class="text-4xl font-black text-brand"><span data-price-monthly>$29</span><span data-price-annual style="display:none">$299</span></div>
+          <p class="text-sm text-white/70 mt-1">/month</p>
+          <p class="text-xs text-emerald-400 mt-2">✨ Most popular choice</p>
+        </div>
+        <a href="signup.html" class="mt-8 block w-full py-3 rounded-lg bg-gradient-to-r from-brand to-orange-500 font-semibold text-center text-white shadow-lg shadow-brand/30 transition hover:shadow-xl">Upgrade to Pro</a>
+        <div class="mt-8 space-y-4">
+          <p class="text-xs uppercase tracking-widest text-white/70 font-semibold">Everything in Starter, plus</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Unlimited queries</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Unlimited documents</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Up to 5 team members</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Advanced analytics</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Priority email support</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Enterprise Plan -->
+      <div class="group rounded-2xl border border-white/10 bg-gradient-to-br from-stone-800/20 to-stone-900/40 p-8 transition duration-300 hover:border-white/20 hover:shadow-lg hover:shadow-stone-950/50">
+        <h2 class="text-2xl font-bold">Enterprise</h2>
+        <p class="mt-2 text-white/70 text-sm">For mission-critical deployments.</p>
+        <div class="mt-6">
+          <div class="text-4xl font-black">Custom</div>
+          <p class="text-sm text-white/70 mt-1">Let's talk</p>
+          <p class="text-xs text-white/60 mt-2">🚀 Built for scale</p>
+        </div>
+        <a href="support.html" class="mt-8 block w-full py-3 rounded-lg border border-white/20 font-semibold text-center transition hover:border-brand hover:bg-brand/5">Contact Sales</a>
+        <div class="mt-8 space-y-4">
+          <p class="text-xs uppercase tracking-widest text-white/70 font-semibold">Organization-wide features</p>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Everything in Pro</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Unlimited team members</span>
+            </li>
+            
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>24/7 dedicated support</span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="text-brand font-bold mt-0.5">✓</span>
+              <span>Custom deployment</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="mb-20 max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+      <div class="space-y-3">
+        <div data-faq-item class="cursor-pointer rounded-xl border border-white/10 bg-white/5 p-6 transition hover:bg-white/10 hover:border-white/20">
+          <div class="flex items-center justify-between">
+            <h4 class="font-semibold">What exactly is Hybrid RAG?</h4>
+            <svg class="w-5 h-5 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+          <p data-faq-answer class="hidden mt-4 text-sm text-white/70 leading-relaxed">Hybrid RAG combines Retrieval-Augmented Generation with private document indexing. Your data stays secure, AI stays smart, and you get grounded answers with source evidence—all in one workspace.</p>
+        </div>
+
+        <div data-faq-item class="cursor-pointer rounded-xl border border-white/10 bg-white/5 p-6 transition hover:bg-white/10 hover:border-white/20">
+          <div class="flex items-center justify-between">
+            <h4 class="font-semibold">Can I switch plans anytime?</h4>
+            <svg class="w-5 h-5 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+          <p data-faq-answer class="hidden mt-4 text-sm text-white/70 leading-relaxed">Yes! Upgrade or downgrade anytime. Changes take effect on your next billing cycle. For annual plans, you'll receive a prorated credit if you downgrade.</p>
+        </div>
+
+        <div data-faq-item class="cursor-pointer rounded-xl border border-white/10 bg-white/5 p-6 transition hover:bg-white/10 hover:border-white/20">
+          <div class="flex items-center justify-between">
+            <h4 class="font-semibold">Is my data secure and private?</h4>
+            <svg class="w-5 h-5 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+          <p data-faq-answer class="hidden mt-4 text-sm text-white/70 leading-relaxed">Absolutely. All your documents are encrypted end-to-end. We never train on your data, and Enterprise customers can deploy on-premises for complete control.</p>
+        </div>
+
+        <div data-faq-item class="cursor-pointer rounded-xl border border-white/10 bg-white/5 p-6 transition hover:bg-white/10 hover:border-white/20">
+          <div class="flex items-center justify-between">
+            <h4 class="font-semibold">Do you offer educational discounts?</h4>
+            <svg class="w-5 h-5 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+          <p data-faq-answer class="hidden mt-4 text-sm text-white/70 leading-relaxed">Yes! Students, educators, and academic institutions receive special pricing. Contact us to learn more about our academic program.</p>
+        </div>
+
+        <div data-faq-item class="cursor-pointer rounded-xl border border-white/10 bg-white/5 p-6 transition hover:bg-white/10 hover:border-white/20">
+          <div class="flex items-center justify-between">
+            <h4 class="font-semibold">What payment methods do you accept?</h4>
+            <svg class="w-5 h-5 transition duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+          <p data-faq-answer class="hidden mt-4 text-sm text-white/70 leading-relaxed">We accept all major credit cards, PayPal, and bank transfers for Enterprise plans. Your billing information is secured with Stripe.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feature Comparison Table -->
+    <section class="mb-20">
+      <h2 class="text-3xl font-bold text-center mb-4">Deep Dive: All Features</h2>
+      <p class="text-center text-white/70 mb-12">Compare detailed capabilities across every plan.</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-white/10">
+              <th class="pb-4 pr-6 font-semibold uppercase text-xs tracking-widest text-white/70">Feature</th>
+              <th class="pb-4 px-4 font-semibold uppercase text-xs tracking-widest text-white/70">Starter</th>
+              <th class="pb-4 px-4 font-semibold uppercase text-xs tracking-widest text-white/70">Pro</th>
+              <th class="pb-4 px-4 font-semibold uppercase text-xs tracking-widest text-white/70">Enterprise</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5">
+            <!-- Core Features -->
+            <tr class="bg-white/[0.02]">
+              <td class="py-4 pr-6 font-semibold uppercase text-xs tracking-widest text-brand">Core Features</td>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-6">Document Upload</td>
+              <td class="px-4">✓ (5 docs)</td>
+              <td class="px-4">✓ Unlimited</td>
+              <td class="px-4">✓ Unlimited</td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-6">Query Limit</td>
+              <td class="px-4">500/mo</td>
+              <td class="px-4">Unlimited</td>
+              <td class="px-4">Unlimited</td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-6">Workspaces</td>
+              <td class="px-4">1</td>
+              <td class="px-4">Unlimited</td>
+              <td class="px-4">Unlimited</td>
+            </tr>
+            <!-- Collaboration -->
+            <tr class="bg-white/[0.02]">
+              <td class="py-4 pr-6 font-semibold uppercase text-xs tracking-widest text-brand">Collaboration</td>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-6">Team Members</td>
+              <td class="px-4 text-white/60">—</td>
+              <td class="px-4">Up to 5</td>
+              <td class="px-4">Unlimited</td>
+            </tr>
+            
+            <!-- Support -->
+            <tr class="bg-white/[0.02]">
+              <td class="py-4 pr-6 font-semibold uppercase text-xs tracking-widest text-brand">Support</td>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-6">Support Channel</td>
+              <td class="px-4">Community</td>
+              <td class="px-4">Email</td>
+              <td class="px-4">24/7 Slack</td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-6">Response Time</td>
+              <td class="px-4">Best effort</td>
+              <td class="px-4">24 hours</td>
+              <td class="px-4">1 hour</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="mb-20 rounded-2xl border border-brand/40 bg-gradient-to-br from-stone-900/50 to-black/50 p-12 md:p-16 text-center">
+      <h2 class="text-4xl md:text-5xl font-black mb-4">
+        <span class="bg-gradient-to-r from-white to-brand bg-clip-text text-transparent">Ready to unify your knowledge?</span>
+      </h2>
+      <p class="text-lg text-white/80 mb-8 max-w-xl mx-auto">Join thousands of teams using Hybrid RAG to find answers faster, more securely, and with total confidence.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="signup.html" class="px-8 py-4 rounded-lg bg-gradient-to-r from-brand to-orange-500 font-bold text-black hover:shadow-lg hover:shadow-brand/30 transition">Get Started Free</a>
+        <a href="support.html" class="px-8 py-4 rounded-lg border border-white/20 font-bold hover:border-brand hover:bg-brand/5 transition">Talk to Sales</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-12 px-6">
+    <div class="mx-auto max-w-7xl grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+      <div class="col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-brand to-orange-600 flex items-center justify-center font-bold text-black">◆</div>
+          <span class="font-bold">Hybrid RAG</span>
+        </div>
+        <p class="text-sm text-stone-400">The future of private, grounded AI.</p>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Product</h4>
+        <ul class="space-y-2 text-sm text-white/70">
+          <li><a href="pricing.html" class="hover:text-brand transition">Pricing</a></li>
+          <li><a href="index.html" class="hover:text-brand transition">Features</a></li>
+          <li><a href="support.html" class="hover:text-brand transition">Support</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Company</h4>
+        <ul class="space-y-2 text-sm text-white/70">
+          <li><a href="index.html" class="hover:text-brand transition">About</a></li>
+          <li><a href="index.html" class="hover:text-brand transition">Contact</a></li>
+          <li><a href="support.html" class="hover:text-brand transition">Careers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold mb-4">Legal</h4>
+        <ul class="space-y-2 text-sm text-white/70">
+          <li><a href="index.html" class="hover:text-brand transition">Privacy</a></li>
+          <li><a href="index.html" class="hover:text-brand transition">Terms</a></li>
+          <li><a href="index.html" class="hover:text-brand transition">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between">
+      <p class="text-sm text-white/60">© 2026 Hybrid RAG. All rights reserved.</p>
+      <div class="flex gap-4 text-white/70 mt-4 md:mt-0">
+        <a href="#" class="hover:text-brand transition">Twitter</a>
+        <a href="#" class="hover:text-brand transition">GitHub</a>
+        <a href="#" class="hover:text-brand transition">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+

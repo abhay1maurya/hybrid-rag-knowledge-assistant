@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Hybrid RAG Knowledge Assistant</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-primary/20 px-6 md:px-20 py-4 sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-50">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">Hybrid RAG</h2>
+</div>
+<div class="flex flex-1 justify-end gap-4 md:gap-8 items-center">
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Pricing</a>
+<a class="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary transition-colors" href="#">Security</a>
+</nav>
+<div class="flex gap-3">
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold transition-transform hover:scale-105">
+                            Get Started
+                        </button>
+<button class="hidden sm:flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 border border-slate-300 dark:border-primary/30 text-slate-900 dark:text-white text-sm font-bold hover:bg-slate-100 dark:hover:bg-primary/10">
+                            Login
+                        </button>
+</div>
+</div>
+</header>
+<main class="flex flex-col items-center">
+<!-- Hero Section -->
+<div class="max-w-[1200px] w-full px-6 md:px-10">
+<div class="flex flex-col gap-10 py-12 md:py-24 lg:flex-row items-center">
+<div class="flex flex-col gap-8 lg:w-1/2">
+<div class="flex flex-col gap-4">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 w-fit">
+<span class="text-primary text-xs font-bold uppercase tracking-wider">New: Offline Mode Available</span>
+</div>
+<h1 class="text-slate-900 dark:text-white text-5xl md:text-6xl font-black leading-tight tracking-tight">
+                                    Ask Questions From Your <span class="text-primary">Documents</span> with AI
+                                </h1>
+<p class="text-slate-600 dark:text-slate-400 text-lg md:text-xl font-normal leading-relaxed max-w-[540px]">
+                                    Upload PDF, DOCX, or TXT and get instant answers powered by online and offline AI models. Your knowledge, amplified.
+                                </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="flex h-14 px-8 items-center justify-center rounded-xl bg-primary text-white text-lg font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all">
+                                    Start Using Now
+                                </button>
+<button class="flex h-14 px-8 items-center justify-center rounded-xl border-2 border-slate-200 dark:border-primary/20 text-slate-900 dark:text-white text-lg font-bold hover:bg-slate-50 dark:hover:bg-primary/5 transition-colors">
+                                    View Demo
+                                </button>
+</div>
+</div>
+<div class="lg:w-1/2 w-full">
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary to-orange-400 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+<div class="relative bg-white dark:bg-background-dark border border-slate-200 dark:border-primary/20 rounded-2xl overflow-hidden aspect-video shadow-2xl">
+<div class="w-full h-full bg-gradient-to-br from-primary/10 to-orange-500/10 flex items-center justify-center" data-alt="Premium AI dashboard interface visualization">
+<span class="material-symbols-outlined text-primary text-8xl opacity-50">analytics</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Stats/Social Proof -->
+<div class="max-w-[1200px] w-full px-6 md:px-10 mb-20">
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+<div class="flex flex-col gap-2 rounded-2xl p-8 border border-slate-200 dark:border-primary/20 bg-white/50 dark:bg-primary/5 backdrop-blur-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-widest">Formats</p>
+<p class="text-slate-900 dark:text-white text-4xl font-black">10+</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm italic">PDF, Word, TXT &amp; More</p>
+</div>
+<div class="flex flex-col gap-2 rounded-2xl p-8 border border-slate-200 dark:border-primary/20 bg-white/50 dark:bg-primary/5 backdrop-blur-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-widest">AI Models</p>
+<p class="text-slate-900 dark:text-white text-4xl font-black">5+</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm italic">Online &amp; Local Processing</p>
+</div>
+<div class="flex flex-col gap-2 rounded-2xl p-8 border border-slate-200 dark:border-primary/20 bg-white/50 dark:bg-primary/5 backdrop-blur-sm">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium uppercase tracking-widest">Privacy</p>
+<p class="text-slate-900 dark:text-white text-4xl font-black">AES-256</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm italic">Enterprise Grade Security</p>
+</div>
+</div>
+</div>
+<!-- Features Section -->
+<div class="max-w-[1200px] w-full px-6 md:px-10 py-20 bg-slate-100 dark:bg-primary/5 rounded-[2rem] mb-20" id="features">
+<div class="flex flex-col gap-12">
+<div class="flex flex-col gap-4 text-center items-center">
+<h2 class="text-slate-900 dark:text-white text-4xl md:text-5xl font-black leading-tight max-w-[800px]">
+                                Powerful Features for Intelligent Retrieval
+                            </h2>
+<p class="text-slate-600 dark:text-slate-400 text-lg max-w-[640px]">
+                                Our Hybrid RAG system combines the massive knowledge of cloud LLMs with the absolute privacy of local models.
+                            </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="group flex flex-col gap-6 rounded-2xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-background-dark p-8 hover:border-primary transition-all shadow-sm">
+<div class="size-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">database</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold">Advanced RAG</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                        Sophisticated retrieval augmented generation ensures your AI assistant has perfect context for every query.
+                                    </p>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="group flex flex-col gap-6 rounded-2xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-background-dark p-8 hover:border-primary transition-all shadow-sm">
+<div class="size-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">wifi_off</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold">Offline AI</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                        Run state-of-the-art models locally. Perfect for sensitive documents and zero-latency performance without internet.
+                                    </p>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="group flex flex-col gap-6 rounded-2xl border border-slate-200 dark:border-primary/10 bg-white dark:bg-background-dark p-8 hover:border-primary transition-all shadow-sm">
+<div class="size-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">verified_user</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold">Enterprise Security</h3>
+<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                        Bank-grade encryption and isolated data containers keep your proprietary information confidential.
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- CTA Section -->
+<div class="max-w-[1200px] w-full px-6 md:px-10 pb-24">
+<div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 to-background-dark dark:from-primary/20 dark:to-background-dark p-12 md:p-20 text-center border border-primary/20">
+<div class="absolute top-0 right-0 -mr-20 -mt-20 size-64 bg-primary/20 blur-3xl rounded-full"></div>
+<div class="absolute bottom-0 left-0 -ml-20 -mb-20 size-64 bg-primary/10 blur-3xl rounded-full"></div>
+<div class="relative z-10 flex flex-col items-center gap-8">
+<h2 class="text-white text-4xl md:text-5xl font-black leading-tight max-w-[720px]">
+                                Ready to unlock your knowledge?
+                            </h2>
+<p class="text-slate-300 text-lg md:text-xl max-w-[600px]">
+                                Join thousands of researchers, lawyers, and students using Hybrid RAG to find answers in seconds.
+                            </p>
+<div class="flex flex-col sm:flex-row gap-4 w-full justify-center">
+<button class="flex h-14 px-10 items-center justify-center rounded-xl bg-primary text-white text-lg font-bold hover:scale-105 transition-transform shadow-xl shadow-primary/20">
+                                    Start Your Free Trial
+                                </button>
+<button class="flex h-14 px-10 items-center justify-center rounded-xl bg-white/10 text-white text-lg font-bold hover:bg-white/20 backdrop-blur-sm transition-colors">
+                                    Talk to Sales
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="border-t border-slate-200 dark:border-primary/10 py-12 px-6 md:px-20">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3">
+<div class="size-6 bg-primary rounded flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-sm">hub</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold">Hybrid RAG</h2>
+</div>
+<p class="text-slate-500 text-sm">© 2024 Hybrid RAG Knowledge Assistant. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="text-slate-500 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-slate-500 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a>
+<a class="text-slate-500 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">share</span></a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,368 @@
+:root {
+  --brand: #f97316;
+  --surface: #101010;
+  --panel: #181818;
+  --text: #f5f5f4;
+  --muted: #a8a29e;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+body.app-shell {
+  position: relative;
+  color: var(--text);
+  background: radial-gradient(circle at 10% -10%, rgba(249, 115, 22, 0.15), transparent 35%),
+              radial-gradient(circle at 90% 10%, rgba(251, 191, 36, 0.1), transparent 28%),
+              radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.08), transparent 40%),
+              #0b0b0b;
+}
+
+body.app-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+  z-index: 0;
+}
+
+main,
+header,
+section,
+aside,
+nav,
+article,
+form {
+  position: relative;
+  z-index: 1;
+}
+
+.rounded-xl.border,
+.rounded-2xl.border,
+section.rounded-xl,
+article.rounded-xl,
+form.rounded-xl {
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px rgba(0, 0, 0, 0.35);
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+.rounded-xl.border:hover,
+.rounded-2xl.border:hover,
+article.rounded-xl:hover,
+form.rounded-xl:hover {
+  border-color: rgba(249, 115, 22, 0.4) !important;
+  transform: translateY(-1px);
+}
+
+a,
+button {
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 150ms ease;
+}
+
+button:active,
+a:active {
+  transform: translateY(1px);
+}
+
+input,
+textarea,
+select {
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(249, 115, 22, 0.45);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 350ms ease, transform 350ms ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.kbd-hint::after {
+  content: "Press Ctrl/Cmd+K";
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+/* Enhanced button and link transitions */
+button {
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  pointer-events: none;
+}
+
+button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Enhanced form inputs with focus glow */
+input:focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16), inset 0 0 0 1px rgba(249, 115, 22, 0.08);
+}
+
+/* Improved article card hover effects */
+article {
+  transition: all 300ms ease;
+}
+
+article:hover {
+  border-color: rgba(249, 115, 22, 0.5);
+}
+
+/* Better link underline animations */
+a {
+  position: relative;
+}
+
+a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--brand);
+  transition: width 200ms ease;
+  opacity: 0;
+}
+
+a:hover::after {
+  width: 100%;
+  opacity: 1;
+}
+
+/* Scrollbar enhancement */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(249, 115, 22, 0.65);
+}
+
+/* Selection highlight */
+::selection {
+  background-color: rgba(249, 115, 22, 0.3);
+  color: var(--text);
+}
+
+/* Table row hover effects */
+tbody tr {
+  transition: background-color 150ms ease;
+}
+
+tbody tr:hover {
+  background-color: rgba(249, 115, 22, 0.05);
+}
+
+/* Status badge animations */
+.rounded-full {
+  transition: all 200ms ease;
+}
+
+/* Gradient text support */
+@supports (-webkit-background-clip: text) {
+  .bg-gradient-to-r {
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}
+
+/* Improved focus visible for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Button group spacing */
+.flex.gap-2 button,
+.flex.gap-2 a {
+  transition: all 150ms ease;
+}
+
+/* Loading state animation */
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-pulse {
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth page transitions */
+main {
+  animation: fadeIn 400ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.chat-title {
+  background: linear-gradient(95deg, #fb923c, #fdba74 38%, #fde68a 70%, #ffffff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.chat-panel {
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px rgba(0, 0, 0, 0.38);
+}
+
+.chat-log {
+  background-image: radial-gradient(circle at 12% 0%, rgba(249, 115, 22, 0.09), transparent 36%),
+                    radial-gradient(circle at 88% 100%, rgba(56, 189, 248, 0.08), transparent 34%);
+}
+
+.message-row {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-end;
+}
+
+.message-user {
+  justify-content: flex-end;
+}
+
+.message-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.icon-user {
+  background: linear-gradient(140deg, #fb923c, #f97316);
+  color: #111827;
+}
+
+.icon-bot {
+  background: linear-gradient(140deg, rgba(251, 191, 36, 0.3), rgba(56, 189, 248, 0.28));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #f8fafc;
+}
+
+.message-bubble {
+  max-width: min(76ch, 88%);
+  border-radius: 1rem;
+  padding: 0.72rem 0.92rem;
+}
+
+.bubble-user {
+  background: linear-gradient(130deg, #fb923c, #f97316);
+  color: #111827;
+  border-top-right-radius: 0.35rem;
+}
+
+.bubble-bot {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(17, 24, 39, 0.52);
+  border-top-left-radius: 0.35rem;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 0.28rem;
+  padding: 0.25rem 0;
+}
+
+.typing-dots span {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  animation: dotPulse 1s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.14s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.28s;
+}
+
+@keyframes dotPulse {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  40% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1024px) {
+  .message-bubble {
+    max-width: 100%;
+  }
+}

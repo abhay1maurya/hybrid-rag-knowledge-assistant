@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-stone-950">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid RAG | Chat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Space Grotesk', 'sans-serif'] },
+          colors: { brand: '#f97316' }
+        }
+      }
+    };
+
+    let chatTurn = 0;
+
+    function scrollLogToBottom() {
+      const log = document.getElementById('log');
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function appendBubble(role, text, meta) {
+      const log = document.getElementById('log');
+      const wrap = document.createElement('article');
+      const isUser = role === 'user';
+
+      wrap.className = isUser
+        ? 'message-row message-user'
+        : 'message-row message-bot';
+
+      const icon = document.createElement('div');
+      icon.className = isUser ? 'message-icon icon-user' : 'message-icon icon-bot';
+      icon.textContent = isUser ? 'U' : 'AI';
+
+      const bubble = document.createElement('div');
+      bubble.className = isUser
+        ? 'message-bubble bubble-user'
+        : 'message-bubble bubble-bot';
+
+      const content = document.createElement('p');
+      content.className = 'leading-relaxed';
+      content.textContent = text;
+      bubble.appendChild(content);
+
+      if (meta && !isUser) {
+        const metaLine = document.createElement('div');
+        metaLine.className = 'mt-3 flex flex-wrap items-center gap-2 text-xs text-white/70';
+
+        meta.sources.forEach(function (source) {
+          const pill = document.createElement('span');
+          pill.className = 'rounded-full border border-white/15 bg-white/5 px-2 py-1';
+          pill.textContent = source;
+          metaLine.appendChild(pill);
+        });
+
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'ml-auto rounded-md border border-white/15 px-2 py-1 text-white/80 hover:border-brand hover:text-white';
+        copyBtn.textContent = 'Copy';
+        copyBtn.addEventListener('click', function () {
+          navigator.clipboard.writeText(text).then(function () {
+            if (window.appToast) window.appToast('Response copied');
+          });
+        });
+        metaLine.appendChild(copyBtn);
+
+        bubble.appendChild(metaLine);
+      }
+
+      if (isUser) {
+        wrap.appendChild(bubble);
+        wrap.appendChild(icon);
+      } else {
+        wrap.appendChild(icon);
+        wrap.appendChild(bubble);
+      }
+
+      log.appendChild(wrap);
+      scrollLogToBottom();
+    }
+
+    function renderTyping() {
+      const log = document.getElementById('log');
+      const typing = document.createElement('div');
+      typing.id = 'typing-row';
+      typing.className = 'message-row message-bot';
+      typing.innerHTML = '<div class="message-icon icon-bot">AI</div><div class="message-bubble bubble-bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+      log.appendChild(typing);
+      scrollLogToBottom();
+    }
+
+    function removeTyping() {
+      const typing = document.getElementById('typing-row');
+      if (typing) typing.remove();
+    }
+
+    function nextDemoResponse(prompt) {
+      const drafts = [
+        {
+          text: 'Based on your indexed material, the strongest answer is to combine retrieval grounding with lightweight re-ranking to keep factual consistency high.',
+          sources: ['Architecture Notes', 'RAG Evaluation Matrix']
+        },
+        {
+          text: 'I found aligned context in your corpus. The best next step is to add query rewriting before retrieval so ambiguous user intents map to better chunks.',
+          sources: ['Pipeline Design', 'Chunking Guidelines']
+        },
+        {
+          text: 'The evidence points to hybrid search as the most robust choice here: semantic retrieval for intent plus lexical matching for exact entity recall.',
+          sources: ['Hybrid Search Study', 'Index Tuning Notes']
+        }
+      ];
+
+      const item = drafts[chatTurn % drafts.length];
+      chatTurn += 1;
+
+      if (/latency|slow|speed/i.test(prompt)) {
+        return {
+          text: 'To reduce latency, prioritize top-k trimming after vector retrieval and cache embeddings for repeated prompts. This usually lowers median response time significantly.',
+          sources: ['Performance Checklist', 'Serving Guide']
+        };
+      }
+
+      return item;
+    }
+
+    function updatePromptMeta() {
+      const box = document.getElementById('prompt');
+      const counter = document.getElementById('prompt-count');
+      const max = 800;
+      if (box.value.length > max) {
+        box.value = box.value.slice(0, max);
+      }
+      counter.textContent = box.value.length + '/' + max;
+      box.style.height = 'auto';
+      box.style.height = Math.min(box.scrollHeight, 168) + 'px';
+    }
+
+    function sendMessage(event) {
+      event.preventDefault();
+      const box = document.getElementById('prompt');
+      const text = box.value.trim();
+      if (!text) return;
+
+      appendBubble('user', text);
+      box.value = '';
+      updatePromptMeta();
+
+      renderTyping();
+      const reply = nextDemoResponse(text);
+
+      setTimeout(function () {
+        removeTyping();
+        appendBubble('bot', reply.text, { sources: reply.sources });
+      }, 420);
+    }
+
+    function applyQuickPrompt(text) {
+      const box = document.getElementById('prompt');
+      box.value = text;
+      updatePromptMeta();
+      box.focus();
+    }
+
+    function clearConversation() {
+      const log = document.getElementById('log');
+      log.innerHTML = '';
+      appendBubble('bot', 'New session started. Ask me anything about your documents and I will ground each response in available sources.', {
+        sources: ['System Prompt']
+      });
+      if (window.appToast) window.appToast('Conversation cleared');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const box = document.getElementById('prompt');
+      updatePromptMeta();
+
+      box.addEventListener('input', updatePromptMeta);
+      box.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          document.getElementById('chat-form').requestSubmit();
+        }
+      });
+
+      document.querySelectorAll('[data-quick-prompt]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          applyQuickPrompt(btn.getAttribute('data-quick-prompt') || '');
+        });
+      });
+
+      document.getElementById('clear-chat').addEventListener('click', clearConversation);
+      appendBubble('bot', 'Hello. I can answer from your indexed knowledge base and show which sources informed the response.', {
+        sources: ['Getting Started Guide']
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="site.css" />
+  <script src="site.js" defer></script>
+</head>
+<body class="app-shell h-full font-sans text-stone-100 bg-[#0c0c0c]">
+  <main class="mx-auto flex h-full w-full max-w-7xl flex-col px-4 py-5 sm:px-6">
+    <header class="mb-4 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <a href="dashboard.html" class="text-sm text-white/70 hover:text-brand">Back to Dashboard</a>
+        <h1 class="chat-title mt-1 text-3xl font-bold sm:text-4xl">Hybrid RAG Assistant</h1>
+        <p class="mt-1 text-sm text-white/70">Grounded answers, source evidence, and fast iteration in one workspace.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 text-sm">
+        <span class="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-emerald-200">Index Online</span>
+        <span class="rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-orange-200">Hybrid Mode</span>
+        <a href="doclib.html" class="rounded-lg border border-white/20 px-3 py-2 hover:border-brand">Documents</a>
+        <a href="history.html" class="rounded-lg border border-white/20 px-3 py-2 hover:border-brand">History</a>
+      </div>
+    </header>
+
+    <div class="grid min-h-0 flex-1 gap-4 lg:grid-cols-[280px_1fr]">
+      <aside class="chat-panel rounded-2xl border border-white/10 bg-stone-900/50 p-4">
+        <p class="text-xs uppercase tracking-[0.14em] text-stone-400">Quick Actions</p>
+        <div class="mt-3 grid gap-2">
+          <button type="button" data-quick-prompt="Summarize the key findings from my uploaded documents." class="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-left text-sm hover:border-brand">Summarize findings</button>
+          <button type="button" data-quick-prompt="What are the highest-risk assumptions in this architecture?" class="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-left text-sm hover:border-brand">Find risk assumptions</button>
+          <button type="button" data-quick-prompt="Suggest optimizations for lower latency in this RAG workflow." class="rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-left text-sm hover:border-brand">Optimize latency</button>
+        </div>
+
+        <div class="mt-5 rounded-xl border border-white/10 bg-black/30 p-3">
+          <p class="text-xs uppercase tracking-[0.14em] text-stone-400">Context</p>
+          <div class="mt-2 space-y-2 text-sm">
+            <div class="flex items-center justify-between"><span class="text-white/70">Indexed files</span><strong>124</strong></div>
+            <div class="flex items-center justify-between"><span class="text-white/70">Avg recall</span><strong>92.4%</strong></div>
+            <div class="flex items-center justify-between"><span class="text-white/70">Last refresh</span><strong>2m ago</strong></div>
+          </div>
+        </div>
+
+        <button id="clear-chat" type="button" class="mt-5 w-full rounded-xl border border-red-300/25 bg-red-500/10 px-3 py-2 text-sm text-red-200 hover:border-red-300/40">Clear Conversation</button>
+      </aside>
+
+      <section class="chat-panel flex min-h-0 flex-col rounded-2xl border border-white/10 bg-stone-900/50 p-3 sm:p-4">
+        <div id="log" class="chat-log flex-1 space-y-3 overflow-auto rounded-xl border border-white/10 bg-stone-900/60 p-3 sm:p-4"></div>
+
+        <form id="chat-form" onsubmit="sendMessage(event)" class="mt-3 rounded-xl border border-white/10 bg-black/40 p-2 sm:p-3" data-no-auto-feedback="true">
+          <label for="prompt" class="mb-2 block text-xs uppercase tracking-[0.14em] text-stone-400">Ask a question</label>
+          <textarea id="prompt" rows="2" class="max-h-44 min-h-[52px] w-full resize-none rounded-xl border border-white/15 bg-black/50 px-3 py-3 outline-none focus:border-brand" placeholder="Ask about architecture, risks, performance, or evidence..."></textarea>
+          <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-stone-400">
+            <span>Enter to send, Shift+Enter for newline</span>
+            <span id="prompt-count">0/800</span>
+          </div>
+          <div class="mt-3 flex items-center justify-between gap-2">
+            <div class="text-xs text-stone-400">Model: grounded-chat-v2</div>
+            <button type="submit" class="rounded-xl bg-brand px-4 py-2 font-semibold text-black hover:bg-orange-400">Send</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
+
