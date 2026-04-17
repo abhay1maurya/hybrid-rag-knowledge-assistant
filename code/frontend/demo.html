@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-stone-950">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid RAG | Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Space Grotesk', 'sans-serif'] },
+          colors: {
+            brand: '#f97316',
+            surface: '#111111',
+            panel: '#1a1a1a'
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="site.css" />
+  <script src="site.js" defer></script>
+</head>
+<body class="app-shell h-full font-sans text-stone-100 bg-[radial-gradient(circle_at_15%_20%,#3f1d0f,transparent_35%),radial-gradient(circle_at_85%_0%,#2f2410,transparent_30%),#0c0c0c]">
+  <header class="sticky top-0 z-20 border-b border-white/10 bg-black/40 backdrop-blur">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <a href="index.html" class="flex items-center gap-2 text-lg font-bold"><span class="rounded bg-brand px-2 py-1 text-black">HR</span>Hybrid RAG</a>
+      <div class="hidden gap-6 text-sm md:flex">
+        <a href="index.html" class="hover:text-brand">Home</a>
+        <a href="pricinglagacy.html" class="hover:text-brand">Pricing</a>
+        <a href="loginpage.html" class="hover:text-brand">Login</a>
+        <a href="signup.html" class="hover:text-brand">Sign Up</a>
+        <a href="dashboard.html" class="hover:text-brand">Dashboard</a>
+      </div>
+      <a href="signup.html" class="rounded-lg bg-gradient-to-r from-brand to-orange-500 px-4 py-2 text-sm font-semibold text-black shadow-lg shadow-brand/20 transition hover:shadow-xl">Get Started</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-6 py-16">
+    <section class="grid gap-10 lg:grid-cols-2 lg:items-center">
+      <div>
+        <p class="mb-4 inline-flex rounded-full border border-brand/30 bg-brand/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-brand">✨ Production-ready knowledge assistant</p>
+        <h1 class="bg-gradient-to-r from-white via-orange-200 to-amber-300 bg-clip-text text-4xl font-bold leading-tight text-transparent md:text-6xl">Search your documents with speed, trust, and context.</h1>
+        <p class="mt-6 max-w-xl leading-relaxed text-white/80">Hybrid RAG combines semantic retrieval, source grounding, and clean chat workflows so teams can ask better questions and get verifiable answers fast.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="signup.html" class="group rounded-lg bg-gradient-to-r from-brand to-orange-500 px-5 py-3 font-semibold text-white shadow-lg shadow-brand/30 transition hover:shadow-xl hover:shadow-brand/40">Get Started Free</a>
+          <a href="doclib.html" class="rounded-lg border border-white/20 px-5 py-3 font-semibold transition hover:border-brand hover:bg-brand/5 hover:text-brand">Browse Documents</a>
+        </div>
+      </div>
+      <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-stone-900/60 to-stone-950 p-6 shadow-2xl shadow-black/50 backdrop-blur">
+        <h2 class="mb-4 text-lg font-semibold">Platform snapshot</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <a href="chat.html" class="group rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/40 to-stone-900/60 p-4 transition hover:border-brand/60 hover:from-stone-700/50 hover:to-stone-800/70">
+            <p class="text-sm text-white/70 group-hover:text-white">💬 Assistant</p><p class="mt-2 text-2xl font-bold">Chat</p>
+          </a>
+          <a href="history.html" class="group rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/40 to-stone-900/60 p-4 transition hover:border-brand/60 hover:from-stone-700/50 hover:to-stone-800/70">
+            <p class="text-sm text-white/70 group-hover:text-white">📜 Audit Trail</p><p class="mt-2 text-2xl font-bold">History</p>
+          </a>
+          <a href="settinglagacy.html" class="group rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/40 to-stone-900/60 p-4 transition hover:border-brand/60 hover:from-stone-700/50 hover:to-stone-800/70">
+            <p class="text-sm text-white/70 group-hover:text-white">⚙️ Workspace</p><p class="mt-2 text-2xl font-bold">Settings</p>
+          </a>
+          <a href="support.html" class="group rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/40 to-stone-900/60 p-4 transition hover:border-brand/60 hover:from-stone-700/50 hover:to-stone-800/70">
+            <p class="text-sm text-white/70 group-hover:text-white">❓ Need help?</p><p class="mt-2 text-2xl font-bold">Support</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

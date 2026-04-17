@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#0B0B0B",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <title>Hybrid RAG - Settings</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <header class="flex items-center justify-between border-b border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark px-6 py-4 lg:px-10 transition-colors duration-300">
+                <div class="flex items-center gap-4">
+                    <a href="landingpage.html">
+                    <div class="flex items-center justify-center size-10 rounded-lg bg-primary text-white">
+                        <span class="text-black font-black text-sm tracking-tighter">HR</span>
+                    </div></a>
+                    <div>
+                        <h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight">Hybrid RAG</h2>
+                    </div>
+                </div>
+                  <nav class="hidden md:flex flex-1 justify-center items-center gap-10">
+                <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="landingpage.html">Home</a>
+                 <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="features.html">Features</a>
+                <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="pricinglagacy.html">Pricing</a>
+                <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="dashboard.html">Dashboard</a>
+                 <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="settinglagacy.html">Settings</a>
+            </nav>
+                <div class="flex gap-3">
+                    <button id="btn-notifications" class="flex items-center justify-center rounded-lg size-10 bg-slate-100 dark:bg-primary/10 text-slate-700 dark:text-primary transition-colors hover:bg-primary/20">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <div class="flex items-center gap-3 pl-2 border-l border-slate-200 dark:border-primary/20">
+                        <div class="size-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center overflow-hidden">
+                            <a href="profile.html">
+
+                            <img class="object-cover size-full "   data-alt="User profile avatar professionally dressed " src="https://lh3.googleusercontent.com/aida-public/AB6AXuCijkC_etm0XaFsPrNQVdGg9UZYX17BVryDWsPfeZVxxIhkMOFK2EQU6_BSVTkl8Yu1OCCwsKTorwp423msmrHRrZkiTBg61mPYql8RBlZLni2MI8qmiAiyer9Kg7a7b-V-53iFpWNNRn10R_71od_IrPRftRHUy2noGb_-Cca6TGc7nWcb9CzG0_FqDYPWx-duuvCWZaV7XryJSqXXIEMuvNMBNPNHKgqQH4HZd7ioOgHxceluqGw3nRa-hg4yjaVGvqPC6LPsAdU" /> </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full">
+                <aside class="w-full lg:w-64 p-6 border-r border-slate-200 dark:border-primary/10">
+                    <nav class="flex flex-col gap-2">
+                        <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 transition-all" href="landingpage.html">
+                            <span class="material-symbols-outlined">home </span>
+                            <span class="text-sm font-medium">Home</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 transition-all" href="doclib.html">
+                            <span class="material-symbols-outlined">database</span>
+                            <span class="text-sm font-medium">Knowledge Base</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-primary/5 transition-all" href="analytics.html">
+                            <span class="material-symbols-outlined">monitoring</span>
+                            <span class="text-sm font-medium">Analytics</span>
+                        </a>
+                        <a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary text-white shadow-lg shadow-primary/20 transition-all" href="settinglagacy.html">
+                            <span class="material-symbols-outlined">settings</span>
+                            <span class="text-sm font-medium">Settings</span>
+                        </a>
+                    </nav>
+                    <div class="mt-8 pt-8 border-t border-slate-200 dark:border-primary/10">
+                        <div class="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                            <p class="text-xs font-bold text-primary uppercase tracking-wider mb-1">Current Plan</p>
+                            <p class="text-sm font-bold text-slate-900 dark:text-slate-100">Pro Enterprise</p>
+                            <button id="btn-upgrade" class="mt-3 w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold rounded transition-colors uppercase tracking-wide">Upgrade</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <section class="flex-1 p-6 lg:p-10 space-y-10">
+                    <div>
+                        <h1 class="text-3xl font-bold text-slate-900 dark:text-slate-100">Settings</h1>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1">Configure your AI assistant preferences and account details.</p>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined">psychology</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">AI Preferences</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="col-span-1 md:col-span-2 rounded-xl border border-slate-200 dark:border-primary/20 p-4 space-y-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-300">Runtime Mode</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">Select mode, verify availability, then choose compatible models.</p>
+                                    </div>
+                                    <select id="runtime-mode" class="rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 py-2 px-3 focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                        <option value="hybrid">Hybrid</option>
+                                        <option value="online">Online only</option>
+                                        <option value="offline">Offline only</option>
+                                    </select>
+                                </div>
+
+                                <div class="flex flex-wrap gap-3">
+                                    <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                                        <input id="online-available" type="checkbox" class="rounded border-slate-300 text-primary focus:ring-primary" checked/>
+                                        Online available
+                                    </label>
+                                    <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+                                        <input id="offline-available" type="checkbox" class="rounded border-slate-300 text-primary focus:ring-primary" checked/>
+                                        Offline available
+                                    </label>
+                                </div>
+
+                                <div id="runtime-status" class="rounded-lg border border-emerald-300/40 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-700 dark:text-emerald-300">Hybrid mode is available.</div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <div id="online-model-wrap" class="space-y-2">
+                                        <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Online Model</label>
+                                        <select id="online-model" class="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 py-2.5 px-4 focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                            <option value="gpt-4.1-online">GPT-4.1 Online</option>
+                                            <option value="gpt-4o-online">GPT-4o Online</option>
+                                            <option value="gpt-4.1-mini-online">GPT-4.1 Mini Online</option>
+                                        </select>
+                                    </div>
+                                    <div id="offline-model-wrap" class="space-y-2">
+                                        <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Offline Model</label>
+                                        <select id="offline-model" class="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 py-2.5 px-4 focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                            <option value="llama-3.1-8b-local">Llama 3.1 8B Local</option>
+                                            <option value="mistral-7b-local">Mistral 7B Local</option>
+                                            <option value="phi-3.5-local">Phi 3.5 Local</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-span-1 md:col-span-2 space-y-3">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Search Strategy</label>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <label id="strategy-hybrid" class="relative flex cursor-pointer items-start gap-4 rounded-xl border-2 border-primary bg-primary/5 p-4 transition-all">
+                                        <input checked class="mt-1 h-4 w-4 border-slate-300 text-primary focus:ring-primary" name="search-mode" type="radio" value="hybrid"/>
+                                        <div class="flex flex-col">
+                                            <span class="text-slate-900 dark:text-slate-100 text-sm font-bold leading-none mb-1">Hybrid Search</span>
+                                            <span class="text-slate-500 dark:text-slate-400 text-xs">Keyword + Semantic optimization for best accuracy.</span>
+                                        </div>
+                                    </label>
+                                    <label id="strategy-vector" class="relative flex cursor-pointer items-start gap-4 rounded-xl border border-slate-200 dark:border-primary/20 bg-transparent p-4 transition-all hover:bg-slate-50 dark:hover:bg-primary/5">
+                                        <input class="mt-1 h-4 w-4 border-slate-300 text-primary focus:ring-primary" name="search-mode" type="radio" value="vector"/>
+                                        <div class="flex flex-col">
+                                            <span class="text-slate-900 dark:text-slate-100 text-sm font-bold leading-none mb-1">Vector Only</span>
+                                            <span class="text-slate-500 dark:text-slate-400 text-xs">Fastest retrieval using embedding similarity.</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Primary Model</label>
+                                <select id="model-select" class="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 py-2.5 px-4 focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                    <option value="gpt-4o">GPT-4o (Default)</option>
+                                    <option value="claude-3.5">Claude 3.5 Sonnet</option>
+                                    <option value="mistral-large">Mistral Large 2</option>
+                                    <option value="llama-3.1">Llama 3.1 70B</option>
+                                </select>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Creativity (Temperature)</label>
+                                <div class="flex items-center gap-4 py-2.5">
+                                    <input id="temp-slider" class="w-full h-2 bg-slate-200 dark:bg-primary/20 rounded-lg appearance-none cursor-pointer accent-primary" max="100" min="0" type="range" value="70"/>
+                                    <span id="temp-display" class="text-sm font-bold text-primary w-8">0.7</span>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Max Sources per Answer</label>
+                                <select id="max-sources" class="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 py-2.5 px-4 focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+                                    <option value="3">3 sources</option>
+                                    <option value="5" selected>5 sources</option>
+                                    <option value="8">8 sources</option>
+                                    <option value="10">10 sources</option>
+                                </select>
+                            </div>
+                            <div class="space-y-3">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">History & Privacy</label>
+                                <label class="inline-flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 py-2">
+                                    <input id="save-history" type="checkbox" class="rounded border-slate-300 text-primary focus:ring-primary" checked/>
+                                    Save chat history locally
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-10 border-t border-slate-200 dark:border-primary/10 space-y-6">
+                        <div class="flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined">person</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Profile Settings</h3>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-8 items-start">
+                            <div class="flex flex-col items-center gap-4">
+    <label for="profile-upload" class="relative size-24 rounded-full bg-primary/20 border-2 border-primary/40 flex items-center justify-center overflow-hidden group cursor-pointer">
+        
+        <img class="object-cover size-full group-hover:opacity-75 transition-opacity" data-alt="Profile photo of user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5m6ALT9jnqWjsXJAqSuDxmz8avLHHEs-9spjVRkBNWUhGN4T7C8o-YBau4zvamN3XeYqOxZ-79MLtTrNDFX6VR2YQX18LBHXQzQCOKmLC-YdU0j1C6Hq2lfxzhPjzrJnsLLWFJUrJeNXz5eBkqD4rWlGn2OyLBqlO0MY5iPRZg2SlVKXN0odjnJSiB2bljRsTqfiENap7cU0E7fH-xuwLze0RkHgIvC1m7bKVCzdo8-LY1a7ZFTW1aUQGWmXEr7RlofcSbqunYWM"/>
+        
+        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+            <span class="material-symbols-outlined text-white">photo_camera</span>
+        </div>
+    </label>
+
+    <input type="file" id="profile-upload" class="hidden" accept="image/*" />
+
+    <button id="btn-change-photo" class="text-xs font-bold text-primary hover:underline">Change Photo</button>
+</div>
+                            <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium text-slate-600 dark:text-slate-400">Full Name</label>
+                                    <input id="input-name" class="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark py-2 px-4 focus:ring-1 focus:ring-primary outline-none" type="text" value="Alexander Wright"/>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium text-slate-600 dark:text-slate-400">Email Address</label>
+                                    <input id="input-email" class="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark py-2 px-4 focus:ring-1 focus:ring-primary outline-none" type="email" value="alexander.w@enterprise.ai"/>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium text-slate-600 dark:text-slate-400">Job Title</label>
+                                    <input id="input-title" class="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark py-2 px-4 focus:ring-1 focus:ring-primary outline-none" type="text" value="Knowledge Manager"/>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-medium text-slate-600 dark:text-slate-400">Department</label>
+                                    <input id="input-dept" class="w-full rounded-lg border border-slate-200 dark:border-primary/20 bg-background-light dark:bg-background-dark py-2 px-4 focus:ring-1 focus:ring-primary outline-none" type="text" value="Information Systems"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-10 border-t border-slate-200 dark:border-primary/10 space-y-6">
+                        <div class="flex items-center gap-2 text-primary">
+                            <span class="material-symbols-outlined">palette</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">Interface Appearance</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-4" id="theme-buttons">
+                            <button data-theme="light" class="theme-btn flex-1 min-w-[160px] flex flex-col gap-3 p-4 rounded-xl border border-slate-200 dark:border-primary/20 hover:border-primary transition-all bg-white text-left group">
+                                <div class="w-full h-20 rounded-lg bg-slate-100 overflow-hidden flex flex-col gap-1 p-2">
+                                    <div class="h-2 w-1/2 bg-slate-300 rounded"></div>
+                                    <div class="h-2 w-full bg-slate-200 rounded"></div>
+                                    <div class="h-2 w-3/4 bg-slate-200 rounded"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-bold text-slate-900 dark:text-slate-900">Light Mode</span>
+                                    <div class="indicator size-4 rounded-full border border-slate-300 flex items-center justify-center"></div>
+                                </div>
+                            </button>
+
+                            <button data-theme="dark" class="theme-btn flex-1 min-w-[160px] flex flex-col gap-3 p-4 rounded-xl border-2 border-primary bg-primary/5 text-left group">
+                                <div class="w-full h-20 rounded-lg bg-background-dark overflow-hidden flex flex-col gap-1 p-2">
+                                    <div class="h-2 w-1/2 bg-primary/40 rounded"></div>
+                                    <div class="h-2 w-full bg-primary/20 rounded"></div>
+                                    <div class="h-2 w-3/4 bg-primary/20 rounded"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-bold text-slate-900 dark:text-slate-100">Dark Mode</span>
+                                    <div class="indicator size-4 rounded-full bg-primary flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[10px] text-white font-bold">check</span>
+                                    </div>
+                                </div>
+                            </button>
+
+                            <button data-theme="system" class="theme-btn flex-1 min-w-[160px] flex flex-col gap-3 p-4 rounded-xl border border-slate-200 dark:border-primary/20 hover:border-primary transition-all bg-background-light dark:bg-background-dark text-left group">
+                                <div class="w-full h-20 rounded-lg bg-gradient-to-br from-slate-100 to-slate-900 overflow-hidden flex flex-col gap-1 p-2">
+                                    <div class="h-2 w-1/2 bg-white/20 rounded"></div>
+                                    <div class="h-2 w-full bg-white/10 rounded"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-bold text-slate-900 dark:text-slate-100">System Sync</span>
+                                    <div class="indicator size-4 rounded-full border border-slate-300 dark:border-primary/40 flex items-center justify-center"></div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="pt-10 flex items-center justify-end gap-4">
+                        <button id="btn-discard" class="px-6 py-2.5 rounded-lg border border-slate-200 dark:border-primary/30 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-primary/10 transition-colors">Discard Changes</button>
+                        <button id="btn-save" class="px-8 py-2.5 rounded-lg bg-primary text-white font-bold shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all active:scale-[0.98]">Save Settings</button>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed right-4 top-4 z-50 hidden rounded-lg border border-primary/30 bg-black/80 px-3 py-2 text-xs text-white shadow-lg shadow-black/30"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const SETTINGS_KEY = 'hybrid-rag-settings-v1';
+
+            const tempSlider = document.getElementById('temp-slider');
+            const tempDisplay = document.getElementById('temp-display');
+            const radioInputs = document.querySelectorAll('input[name="search-mode"]');
+            const hybridLabel = document.getElementById('strategy-hybrid');
+            const vectorLabel = document.getElementById('strategy-vector');
+            const themeBtns = document.querySelectorAll('.theme-btn');
+            const htmlTag = document.documentElement;
+            const btnSave = document.getElementById('btn-save');
+            const btnDiscard = document.getElementById('btn-discard');
+            const btnNotifications = document.getElementById('btn-notifications');
+            const btnUpgrade = document.getElementById('btn-upgrade');
+            const btnChangePhoto = document.getElementById('btn-change-photo');
+            const profileUpload = document.getElementById('profile-upload');
+
+            const runtimeMode = document.getElementById('runtime-mode');
+            const onlineAvailable = document.getElementById('online-available');
+            const offlineAvailable = document.getElementById('offline-available');
+            const runtimeStatus = document.getElementById('runtime-status');
+            const onlineModel = document.getElementById('online-model');
+            const offlineModel = document.getElementById('offline-model');
+            const onlineModelWrap = document.getElementById('online-model-wrap');
+            const offlineModelWrap = document.getElementById('offline-model-wrap');
+            const maxSources = document.getElementById('max-sources');
+            const saveHistory = document.getElementById('save-history');
+
+            function showToast(message) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 1800);
+            }
+
+            function setStrategySelection(value) {
+                const activeClass = 'relative flex cursor-pointer items-start gap-4 rounded-xl border-2 border-primary bg-primary/5 p-4 transition-all';
+                const inactiveClass = 'relative flex cursor-pointer items-start gap-4 rounded-xl border border-slate-200 dark:border-primary/20 bg-transparent p-4 transition-all hover:bg-slate-50 dark:hover:bg-primary/5';
+                hybridLabel.className = value === 'hybrid' ? activeClass : inactiveClass;
+                vectorLabel.className = value === 'vector' ? activeClass : inactiveClass;
+            }
+
+            function setActiveThemeBtn(selectedTheme) {
+                themeBtns.forEach(btn => {
+                    const indicator = btn.querySelector('.indicator');
+                    const isSelected = btn.getAttribute('data-theme') === selectedTheme;
+
+                    if (isSelected) {
+                        btn.classList.add('border-2', 'border-primary', 'bg-primary/5');
+                        btn.classList.remove('border');
+                        indicator.className = 'indicator size-4 rounded-full bg-primary flex items-center justify-center';
+                        indicator.innerHTML = '<span class="material-symbols-outlined text-[10px] text-white font-bold">check</span>';
+                    } else {
+                        btn.classList.remove('border-2', 'border-primary', 'bg-primary/5');
+                        btn.classList.add('border');
+                        indicator.className = 'indicator size-4 rounded-full border border-slate-300 dark:border-primary/40 flex items-center justify-center';
+                        indicator.innerHTML = '';
+                    }
+                });
+            }
+
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    htmlTag.classList.remove('dark');
+                } else if (theme === 'dark') {
+                    htmlTag.classList.add('dark');
+                } else {
+                    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                        htmlTag.classList.add('dark');
+                    } else {
+                        htmlTag.classList.remove('dark');
+                    }
+                }
+                setActiveThemeBtn(theme);
+            }
+
+            function updateRuntimeStatus() {
+                const mode = runtimeMode.value;
+                const online = onlineAvailable.checked;
+                const offline = offlineAvailable.checked;
+                const available = mode === 'hybrid' ? (online || offline) : (mode === 'online' ? online : offline);
+
+                if (available) {
+                    runtimeStatus.className = 'rounded-lg border border-emerald-300/40 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-700 dark:text-emerald-300';
+                    runtimeStatus.textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + ' mode is available.';
+                } else {
+                    runtimeStatus.className = 'rounded-lg border border-red-300/40 bg-red-500/10 px-3 py-2 text-xs text-red-700 dark:text-red-300';
+                    runtimeStatus.textContent = mode.charAt(0).toUpperCase() + mode.slice(1) + ' mode is unavailable. Enable a compatible runtime.';
+                }
+
+                const showOnline = mode === 'online' || mode === 'hybrid';
+                const showOffline = mode === 'offline' || mode === 'hybrid';
+                onlineModelWrap.classList.toggle('hidden', !showOnline);
+                offlineModelWrap.classList.toggle('hidden', !showOffline);
+                onlineModel.disabled = !online;
+                offlineModel.disabled = !offline;
+            }
+
+            function collectSettings() {
+                return {
+                    runtimeMode: runtimeMode.value,
+                    onlineAvailable: onlineAvailable.checked,
+                    offlineAvailable: offlineAvailable.checked,
+                    onlineModel: onlineModel.value,
+                    offlineModel: offlineModel.value,
+                    searchMode: document.querySelector('input[name="search-mode"]:checked').value,
+                    primaryModel: document.getElementById('model-select').value,
+                    temperature: document.getElementById('temp-slider').value,
+                    maxSources: maxSources.value,
+                    saveHistory: saveHistory.checked,
+                    name: document.getElementById('input-name').value,
+                    email: document.getElementById('input-email').value,
+                    title: document.getElementById('input-title').value,
+                    department: document.getElementById('input-dept').value,
+                    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+                };
+            }
+
+            function applySettings(settings) {
+                runtimeMode.value = settings.runtimeMode || 'hybrid';
+                onlineAvailable.checked = settings.onlineAvailable !== false;
+                offlineAvailable.checked = settings.offlineAvailable !== false;
+                onlineModel.value = settings.onlineModel || 'gpt-4.1-online';
+                offlineModel.value = settings.offlineModel || 'llama-3.1-8b-local';
+
+                const searchMode = settings.searchMode || 'hybrid';
+                const modeRadio = document.querySelector('input[name="search-mode"][value="' + searchMode + '"]');
+                if (modeRadio) {
+                    modeRadio.checked = true;
+                    setStrategySelection(searchMode);
+                }
+
+                document.getElementById('model-select').value = settings.primaryModel || 'gpt-4o';
+                document.getElementById('temp-slider').value = settings.temperature || 70;
+                tempDisplay.textContent = ((document.getElementById('temp-slider').value / 100).toFixed(1));
+                maxSources.value = settings.maxSources || '5';
+                saveHistory.checked = settings.saveHistory !== false;
+                document.getElementById('input-name').value = settings.name || 'Alexander Wright';
+                document.getElementById('input-email').value = settings.email || 'alexander.w@enterprise.ai';
+                document.getElementById('input-title').value = settings.title || 'Knowledge Manager';
+                document.getElementById('input-dept').value = settings.department || 'Information Systems';
+                applyTheme(settings.theme || 'dark');
+                updateRuntimeStatus();
+            }
+
+            function loadSavedSettings() {
+                try {
+                    const raw = localStorage.getItem(SETTINGS_KEY);
+                    if (raw) {
+                        applySettings(JSON.parse(raw));
+                    } else {
+                        setStrategySelection('hybrid');
+                        applyTheme('dark');
+                        updateRuntimeStatus();
+                    }
+                } catch (err) {
+                    console.error('Failed to load settings', err);
+                    setStrategySelection('hybrid');
+                    applyTheme('dark');
+                    updateRuntimeStatus();
+                }
+            }
+
+            tempSlider.addEventListener('input', (event) => {
+                tempDisplay.textContent = (event.target.value / 100).toFixed(1);
+            });
+
+            radioInputs.forEach(input => {
+                input.addEventListener('change', (e) => setStrategySelection(e.target.value));
+            });
+
+            themeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    applyTheme(btn.getAttribute('data-theme'));
+                });
+            });
+
+            runtimeMode.addEventListener('change', updateRuntimeStatus);
+            onlineAvailable.addEventListener('change', updateRuntimeStatus);
+            offlineAvailable.addEventListener('change', updateRuntimeStatus);
+
+            btnNotifications.addEventListener('click', () => showToast('No new notifications.'));
+            btnUpgrade.addEventListener('click', () => {
+                window.location.href = 'pricinglagacy.html';
+            });
+            btnChangePhoto.addEventListener('click', () => profileUpload.click());
+            profileUpload.addEventListener('change', () => {
+                if (profileUpload.files && profileUpload.files.length) {
+                    showToast('Profile photo selected: ' + profileUpload.files[0].name);
+                }
+            });
+
+            btnSave.addEventListener('click', () => {
+                const settings = collectSettings();
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+
+                const originalText = btnSave.innerText;
+                btnSave.innerText = 'Saved!';
+                btnSave.classList.add('bg-green-600');
+
+                setTimeout(() => {
+                    btnSave.innerText = originalText;
+                    btnSave.classList.remove('bg-green-600');
+                }, 1600);
+
+                showToast('Settings saved successfully.');
+            });
+
+            btnDiscard.addEventListener('click', () => {
+                if (confirm('Are you sure you want to discard your unsaved changes?')) {
+                    loadSavedSettings();
+                    showToast('Unsaved changes discarded.');
+                }
+            });
+
+            loadSavedSettings();
+        });
+    </script>
+</body>
+</html>

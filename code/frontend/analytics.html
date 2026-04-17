@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-stone-950">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Hybrid RAG | Analytics</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+	<script>
+		tailwind.config = {
+			theme: {
+				extend: {
+					fontFamily: {
+						sans: ["Space Grotesk", "sans-serif"]
+					},
+					colors: {
+						brand: "#f97316"
+					}
+				}
+			}
+		};
+	</script>
+	<style>
+		body {
+			background:
+				radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.15), transparent 34%),
+				radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.12), transparent 30%),
+				#0c0c0c;
+		}
+
+		.glass {
+			background: linear-gradient(145deg, rgba(41, 37, 36, 0.6), rgba(17, 24, 39, 0.5));
+			backdrop-filter: blur(6px);
+		}
+	</style>
+</head>
+<body class="h-full font-sans text-stone-100">
+	<div class="min-h-full">
+		<header class="border-b border-white/10 bg-stone-950/70 backdrop-blur">
+			<div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8 md:flex-row md:items-center md:justify-between">
+				<div>
+					<a href="landingpage.html" class="text-xs font-semibold uppercase tracking-wide text-orange-300 transition hover:text-orange-200">Back to Home</a>
+					<h1 class="bg-gradient-to-r from-white to-orange-200 bg-clip-text text-3xl font-bold text-transparent">Analytics Center</h1>
+					<p class="mt-1 text-sm text-stone-400">Understand user behavior, performance, and engagement in one view.</p>
+				</div>
+				<div class="flex w-full gap-2 md:w-auto">
+					<select id="rangeSelect" class="w-full rounded-lg border border-white/20 bg-stone-900/70 px-3 py-2 text-sm text-stone-200 outline-none ring-brand/30 transition focus:ring md:w-40">
+						<option value="7">Last 7 days</option>
+						<option value="14">Last 14 days</option>
+						<option value="30" selected>Last 30 days</option>
+					</select>
+					<button id="exportBtn" class="rounded-lg bg-gradient-to-r from-brand to-orange-500 px-4 py-2 text-sm font-semibold text-black transition hover:opacity-90">Export</button>
+				</div>
+			</div>
+		</header>
+
+		<main class="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+			<section id="kpiGrid" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"></section>
+
+			<section class="grid gap-6 xl:grid-cols-3">
+				<article class="glass rounded-xl border border-white/10 p-5 shadow-lg shadow-black/20 xl:col-span-2">
+					<div class="mb-4 flex items-center justify-between">
+						<h2 class="text-lg font-semibold">Usage Trend</h2>
+						<span id="trendLabel" class="rounded-md border border-brand/30 bg-brand/10 px-2 py-1 text-xs text-brand"></span>
+					</div>
+					<div class="h-64 rounded-lg border border-white/10 bg-black/20 p-3">
+						<canvas id="trendChart" class="h-full w-full"></canvas>
+					</div>
+				</article>
+
+				<article class="glass rounded-xl border border-white/10 p-5 shadow-lg shadow-black/20">
+					<h2 class="text-lg font-semibold">Channel Breakdown</h2>
+					<ul id="channelList" class="mt-4 space-y-3"></ul>
+				</article>
+			</section>
+
+			<section class="grid gap-6 xl:grid-cols-5">
+				<article class="glass rounded-xl border border-white/10 p-5 shadow-lg shadow-black/20 xl:col-span-3">
+					<div class="mb-4 flex items-center justify-between">
+						<h2 class="text-lg font-semibold">Top User Sessions</h2>
+						<p class="text-xs text-stone-400">Select a row for full details</p>
+					</div>
+					<div class="overflow-x-auto rounded-lg border border-white/10">
+						<table class="min-w-full text-sm">
+							<thead class="bg-white/5 text-left text-stone-300">
+								<tr>
+									<th class="px-4 py-3 font-medium">User</th>
+									<th class="px-4 py-3 font-medium">Sessions</th>
+									<th class="px-4 py-3 font-medium">Avg Latency</th>
+									<th class="px-4 py-3 font-medium">Satisfaction</th>
+									<th class="px-4 py-3 font-medium">Last Active</th>
+								</tr>
+							</thead>
+							<tbody id="userTableBody"></tbody>
+						</table>
+					</div>
+				</article>
+
+				<article class="glass rounded-xl border border-white/10 p-5 shadow-lg shadow-black/20 xl:col-span-2">
+					<h2 class="text-lg font-semibold">User Details</h2>
+					<div id="userDetails" class="mt-4 text-sm text-stone-300"></div>
+				</article>
+			</section>
+
+			<section class="glass rounded-xl border border-white/10 p-5 shadow-lg shadow-black/20">
+				<h2 class="text-lg font-semibold">Intent Distribution</h2>
+				<div id="intentBars" class="mt-4 space-y-3"></div>
+			</section>
+		</main>
+	</div>
+
+	<script>
+		const analyticsData = {
+			kpis: [
+				{ label: "Active Users", value: 4286, delta: "+8.4%" },
+				{ label: "Total Questions", value: 39122, delta: "+14.2%" },
+				{ label: "Avg Response Time", value: "1.18s", delta: "-9.1%" },
+				{ label: "Positive Feedback", value: "92.6%", delta: "+2.3%" }
+			],
+			dailyUsage: [
+				710, 690, 740, 760, 810, 835, 790, 820, 870, 920,
+				905, 930, 940, 890, 910, 960, 980, 1020, 1060, 1040,
+				1090, 1140, 1120, 1165, 1190, 1240, 1210, 1280, 1320, 1360
+			],
+			channels: [
+				{ name: "Web App", share: 56 },
+				{ name: "Microsoft Teams", share: 22 },
+				{ name: "Mobile", share: 14 },
+				{ name: "API", share: 8 }
+			],
+			intents: [
+				{ name: "Product Docs", count: 12730 },
+				{ name: "Troubleshooting", count: 10220 },
+				{ name: "Policy Search", count: 7210 },
+				{ name: "Feature Requests", count: 5230 },
+				{ name: "Onboarding", count: 3732 }
+			],
+			users: [
+				{ id: "U-104", name: "Aarav Shah", sessions: 81, latency: "0.92s", satisfaction: "96%", lastActive: "2m ago", topIntent: "Troubleshooting", docsViewed: 38, avgTokens: 970, escalations: 1 },
+				{ id: "U-221", name: "Nina Patel", sessions: 69, latency: "1.05s", satisfaction: "94%", lastActive: "8m ago", topIntent: "Product Docs", docsViewed: 41, avgTokens: 1150, escalations: 0 },
+				{ id: "U-317", name: "Leo Kim", sessions: 63, latency: "1.24s", satisfaction: "89%", lastActive: "16m ago", topIntent: "Policy Search", docsViewed: 27, avgTokens: 1022, escalations: 2 },
+				{ id: "U-502", name: "Maya Chen", sessions: 55, latency: "1.13s", satisfaction: "91%", lastActive: "20m ago", topIntent: "Feature Requests", docsViewed: 21, avgTokens: 866, escalations: 1 },
+				{ id: "U-590", name: "Omar Reyes", sessions: 49, latency: "1.30s", satisfaction: "87%", lastActive: "33m ago", topIntent: "Onboarding", docsViewed: 19, avgTokens: 799, escalations: 3 }
+			]
+		};
+
+		const kpiGrid = document.getElementById("kpiGrid");
+		const channelList = document.getElementById("channelList");
+		const userTableBody = document.getElementById("userTableBody");
+		const userDetails = document.getElementById("userDetails");
+		const intentBars = document.getElementById("intentBars");
+		const trendLabel = document.getElementById("trendLabel");
+		const rangeSelect = document.getElementById("rangeSelect");
+
+		function formatNumber(value) {
+			if (typeof value === "number") {
+				return value.toLocaleString();
+			}
+			return value;
+		}
+
+		function renderKpis() {
+			kpiGrid.innerHTML = analyticsData.kpis
+				.map((kpi) => `
+					<article class="glass rounded-xl border border-white/10 p-5 shadow-lg shadow-black/20 transition hover:border-brand/40 hover:shadow-brand/10">
+						<p class="text-sm text-stone-400">${kpi.label}</p>
+						<p class="mt-2 text-3xl font-bold">${formatNumber(kpi.value)}</p>
+						<p class="mt-1 text-xs text-brand">${kpi.delta}</p>
+					</article>
+				`)
+				.join("");
+		}
+
+		function renderChannels() {
+			channelList.innerHTML = analyticsData.channels
+				.map((channel) => `
+					<li>
+						<div class="mb-1 flex items-center justify-between text-sm">
+							<span>${channel.name}</span>
+							<span class="text-stone-400">${channel.share}%</span>
+						</div>
+						<div class="h-2 rounded-full bg-stone-700/60">
+							<div class="h-2 rounded-full bg-gradient-to-r from-brand to-orange-300" style="width: ${channel.share}%"></div>
+						</div>
+					</li>
+				`)
+				.join("");
+		}
+
+		function renderUsers() {
+			userTableBody.innerHTML = analyticsData.users
+				.map(
+					(user, index) => `
+					<tr data-index="${index}" class="cursor-pointer border-t border-white/10 transition hover:bg-brand/10">
+						<td class="px-4 py-3 font-medium">${user.name}</td>
+						<td class="px-4 py-3">${user.sessions}</td>
+						<td class="px-4 py-3">${user.latency}</td>
+						<td class="px-4 py-3">${user.satisfaction}</td>
+						<td class="px-4 py-3 text-stone-400">${user.lastActive}</td>
+					</tr>
+				`
+				)
+				.join("");
+
+			userTableBody.querySelectorAll("tr").forEach((row) => {
+				row.addEventListener("click", () => {
+					const selectedIndex = Number(row.dataset.index);
+					renderUserDetails(analyticsData.users[selectedIndex]);
+					userTableBody.querySelectorAll("tr").forEach((r) => r.classList.remove("bg-brand/20"));
+					row.classList.add("bg-brand/20");
+				});
+			});
+		}
+
+		function renderUserDetails(user) {
+			userDetails.innerHTML = `
+				<div class="space-y-3">
+					<div class="rounded-lg border border-white/10 bg-white/5 p-3">
+						<p class="text-xs uppercase text-stone-400">User ID</p>
+						<p class="text-base font-semibold text-white">${user.id}</p>
+					</div>
+					<div class="grid grid-cols-2 gap-2">
+						<div class="rounded-lg border border-white/10 bg-white/5 p-3">
+							<p class="text-xs text-stone-400">Top Intent</p>
+							<p class="mt-1 font-semibold">${user.topIntent}</p>
+						</div>
+						<div class="rounded-lg border border-white/10 bg-white/5 p-3">
+							<p class="text-xs text-stone-400">Docs Viewed</p>
+							<p class="mt-1 font-semibold">${user.docsViewed}</p>
+						</div>
+						<div class="rounded-lg border border-white/10 bg-white/5 p-3">
+							<p class="text-xs text-stone-400">Avg Tokens</p>
+							<p class="mt-1 font-semibold">${user.avgTokens}</p>
+						</div>
+						<div class="rounded-lg border border-white/10 bg-white/5 p-3">
+							<p class="text-xs text-stone-400">Escalations</p>
+							<p class="mt-1 font-semibold">${user.escalations}</p>
+						</div>
+					</div>
+					<p class="rounded-lg border border-brand/30 bg-brand/10 px-3 py-2 text-xs text-brand">
+						Satisfaction score: ${user.satisfaction} | Last active: ${user.lastActive}
+					</p>
+				</div>
+			`;
+		}
+
+		function renderIntents() {
+			const max = Math.max(...analyticsData.intents.map((item) => item.count));
+			intentBars.innerHTML = analyticsData.intents
+				.map((intent) => {
+					const width = Math.round((intent.count / max) * 100);
+					return `
+						<div>
+							<div class="mb-1 flex items-center justify-between text-sm">
+								<span>${intent.name}</span>
+								<span class="text-stone-400">${intent.count.toLocaleString()}</span>
+							</div>
+							<div class="h-2.5 rounded-full bg-stone-700/60">
+								<div class="h-2.5 rounded-full bg-gradient-to-r from-orange-300 to-brand" style="width: ${width}%"></div>
+							</div>
+						</div>
+					`;
+				})
+				.join("");
+		}
+
+		function drawTrendChart(days) {
+			const canvas = document.getElementById("trendChart");
+			const ctx = canvas.getContext("2d");
+			const dpr = window.devicePixelRatio || 1;
+			const rect = canvas.getBoundingClientRect();
+			const data = analyticsData.dailyUsage.slice(-days);
+
+			canvas.width = Math.floor(rect.width * dpr);
+			canvas.height = Math.floor(rect.height * dpr);
+			ctx.scale(dpr, dpr);
+
+			ctx.clearRect(0, 0, rect.width, rect.height);
+
+			const maxY = Math.max(...data) + 60;
+			const minY = Math.min(...data) - 60;
+			const chartW = rect.width - 32;
+			const chartH = rect.height - 28;
+			const offsetX = 16;
+			const offsetY = 12;
+
+			ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+			ctx.lineWidth = 1;
+			for (let i = 0; i <= 4; i += 1) {
+				const y = offsetY + (chartH / 4) * i;
+				ctx.beginPath();
+				ctx.moveTo(offsetX, y);
+				ctx.lineTo(offsetX + chartW, y);
+				ctx.stroke();
+			}
+
+			ctx.beginPath();
+			data.forEach((value, index) => {
+				const x = offsetX + (chartW / (data.length - 1)) * index;
+				const y = offsetY + ((maxY - value) / (maxY - minY)) * chartH;
+				if (index === 0) {
+					ctx.moveTo(x, y);
+				} else {
+					ctx.lineTo(x, y);
+				}
+			});
+
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = "#f97316";
+			ctx.stroke();
+
+			const last = data[data.length - 1];
+			const prev = data[data.length - 2] || data[data.length - 1];
+			const diff = (((last - prev) / prev) * 100).toFixed(1);
+			const trendPrefix = Number(diff) >= 0 ? "+" : "";
+			trendLabel.textContent = `${trendPrefix}${diff}% vs previous day`;
+		}
+
+		function initAnalytics() {
+			renderKpis();
+			renderChannels();
+			renderUsers();
+			renderUserDetails(analyticsData.users[0]);
+			const firstRow = userTableBody.querySelector("tr");
+			if (firstRow) {
+				firstRow.classList.add("bg-brand/20");
+			}
+			renderIntents();
+			drawTrendChart(Number(rangeSelect.value));
+		}
+
+		rangeSelect.addEventListener("change", () => {
+			drawTrendChart(Number(rangeSelect.value));
+		});
+
+		document.getElementById("exportBtn").addEventListener("click", () => {
+			const payload = {
+				generatedAt: new Date().toISOString(),
+				rangeDays: Number(rangeSelect.value),
+				analyticsData
+			};
+			const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+			const url = URL.createObjectURL(blob);
+			const link = document.createElement("a");
+			link.href = url;
+			link.download = "analytics-export.json";
+			link.click();
+			URL.revokeObjectURL(url);
+		});
+
+		window.addEventListener("resize", () => drawTrendChart(Number(rangeSelect.value)));
+
+		initAnalytics();
+	</script>
+</body>
+</html>

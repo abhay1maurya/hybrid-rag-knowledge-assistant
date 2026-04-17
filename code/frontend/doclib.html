@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-stone-950">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid RAG | Documents</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Space Grotesk', 'sans-serif'] }, colors: { brand: '#f97316' } } } };
+    function toast(msg){const n=document.getElementById('note');n.textContent=msg;n.classList.remove('hidden');setTimeout(()=>n.classList.add('hidden'),1800);}
+  </script>
+  <link rel="stylesheet" href="site.css" />
+  <script src="site.js" defer></script>
+</head>
+<body class="app-shell h-full font-sans text-stone-100 bg-[#0c0c0c]">
+  <main class="mx-auto max-w-7xl px-6 py-8">
+    <div class="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+      <div>
+        <a href="landingpage.html" class="text-sm text-stone-300 hover:text-brand">Back to Home</a>
+        <h1 class="mt-2 bg-gradient-to-r from-white to-orange-200 bg-clip-text text-3xl font-bold text-transparent">Document Library</h1>
+        <p class="mt-1 text-sm text-stone-400">Upload, manage, and index your documents</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="toast('Upload dialog opened (demo).')" class="rounded-lg bg-gradient-to-r from-brand to-orange-500 px-4 py-2 text-sm font-semibold text-black shadow-lg shadow-brand/20 transition hover:shadow-xl">트 Upload Document</button>
+        <a href="chat.html" class="rounded-lg border border-white/20 px-4 py-2 text-sm font-medium transition hover:border-brand hover:bg-brand/5">Ask Assistant</a>
+      </div>
+    </div>
+
+    <div class="rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/30 to-stone-900/50 shadow-lg shadow-stone-950/30">
+      <div class="border-b border-white/10 p-4">
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <input type="search" placeholder="Search documents by name, type, or status..." class="flex-1 rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none transition focus:border-brand focus:shadow-lg focus:shadow-brand/10" />
+          <button onclick="toast('Filter applied.')" class="rounded-lg border border-white/20 bg-stone-800/30 px-3 py-2 text-sm font-medium transition hover:border-brand hover:bg-brand/5">🔍 Filter</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="border-b border-white/10 bg-stone-800/20">
+            <tr>
+              <th class="px-4 py-3 font-semibold text-white/80">Name</th>
+              <th class="px-4 py-3 font-semibold text-white/80">Type</th>
+              <th class="px-4 py-3 font-semibold text-white/80">Status</th>
+              <th class="px-4 py-3 font-semibold text-white/80">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/10">
+            <tr class="transition hover:bg-stone-800/20">
+              <td class="px-4 py-3 font-medium">Q3_Financial_Report.pdf</td>
+              <td class="px-4 py-3 text-stone-400">PDF</td>
+              <td class="px-4 py-3"><span class="rounded-full bg-emerald-500/20 px-2 py-1 text-xs font-medium text-emerald-300">✔ Indexed</span></td>
+              <td class="px-4 py-3 space-x-2">
+                <button onclick="toast('Preview opened.')" class="text-brand transition hover:text-orange-400">View</button>
+                <button onclick="toast('Reprocess started.')" class="text-brand transition hover:text-orange-400">Reprocess</button>
+                <button onclick="toast('Document removed.')" class="text-red-400 transition hover:text-red-300">Delete</button>
+              </td>
+            </tr>
+            <tr class="transition hover:bg-stone-800/20">
+              <td class="px-4 py-3 font-medium">Architecture_Guide.docx</td>
+              <td class="px-4 py-3 text-stone-400">DOCX</td>
+              <td class="px-4 py-3"><span class="rounded-full bg-amber-500/20 px-2 py-1 text-xs font-medium text-amber-300">⚣ Processing</span></td>
+              <td class="px-4 py-3 space-x-2">
+                <button onclick="toast('Preview opened.')" class="text-brand transition hover:text-orange-400">View</button>
+                <button onclick="toast('Reprocess started.')" class="text-brand transition hover:text-orange-400">Reprocess</button>
+                <button onclick="toast('Document removed.')" class="text-red-400 transition hover:text-red-300">Delete</button>
+              </td>
+            </tr>
+            <tr class="transition hover:bg-stone-800/20">
+              <td class="px-4 py-3 font-medium">Security_Policies.txt</td>
+              <td class="px-4 py-3 text-stone-400">TXT</td>
+              <td class="px-4 py-3"><span class="rounded-full bg-emerald-500/20 px-2 py-1 text-xs font-medium text-emerald-300">✔ Indexed</span></td>
+              <td class="px-4 py-3 space-x-2">
+                <button onclick="toast('Preview opened.')" class="text-brand transition hover:text-orange-400">View</button>
+                <button onclick="toast('Reprocess started.')" class="text-brand transition hover:text-orange-400">Reprocess</button>
+                <button onclick="toast('Document removed.')" class="text-red-400 transition hover:text-red-300">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p id="note" class="mt-4 hidden rounded-lg border border-brand/40 bg-brand/10 px-3 py-2 text-sm text-brand"></p>
+  </main>
+</body>
+</html>
