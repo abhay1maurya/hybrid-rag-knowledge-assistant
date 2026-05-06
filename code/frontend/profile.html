@@ -1,214 +1,152 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-stone-950">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hybrid RAG | Profile</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script>
-    tailwind.config = { 
-      theme: { 
-        extend: { 
-          fontFamily: { sans: ['Space Grotesk', 'sans-serif'] }, 
-          colors: { brand: '#f97316' } 
-        } 
-      } 
-    };
-
-    // Form Save Logic
-    function saveProfile(e) {
-      e.preventDefault();
-      const btn = e.target.querySelector('button[type="submit"]');
-      const n = document.getElementById('saved');
-      
-      const originalText = btn.innerText;
-      btn.innerText = "Saving...";
-      btn.disabled = true;
-
-      setTimeout(() => {
-        n.classList.remove('hidden');
-        btn.innerText = originalText;
-        btn.disabled = false;
-        setTimeout(() => n.classList.add('hidden'), 2500);
-      }, 800);
-    }
-
-    // Interactive Button Logic
-    document.addEventListener('DOMContentLoaded', () => {
-      // Security Buttons
-      document.getElementById('btn-password').onclick = () => {
-        const pass = prompt("Enter current password to verify:");
-        if (pass) alert("A password reset link has been sent to alexander@hybridrag.ai");
-      };
-
-      document.getElementById('btn-2fa').onclick = () => {
-        alert("Two-Factor Authentication is currently managed via your Authenticator App.");
-      };
-
-      document.getElementById('btn-sessions').onclick = () => {
-        alert("Current Sessions:\n• Chrome on macOS (This device)\n• Mobile App (iOS) - Last active 2h ago");
-      };
-
-      // Danger Zone Buttons
-      document.getElementById('btn-download').onclick = () => {
-        if(confirm("Generate a portable ZIP of all your workspace data? This may take a few minutes.")) {
-          alert("Request received. We'll email you when the export is ready.");
-        }
-      };
-
-      document.getElementById('btn-delete').onclick = () => {
-        const confirmDelete = confirm("WARNING: This will permanently delete your account and all indexed documents.");
-        if (confirmDelete) {
-          const verify = prompt("Type 'CONFIRM' to delete your account:");
-          if (verify === 'CONFIRM') {
-            alert("Account deleted. Redirecting...");
-            window.location.href = 'index.html';
-          }
-        }
-      };
-    });
-  </script>
-  <style>
-    /* Custom Scrollbar for dark theme */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #0c0c0c; }
-    ::-webkit-scrollbar-thumb { background: #292524; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #f97316; }
-  </style>
+  <link rel="stylesheet" href="profile.css" />
+  <script src="profile.js" defer></script>
 </head>
-<body class="app-shell h-full font-sans text-stone-100 bg-[#0c0c0c]">
-  <main class="mx-auto max-w-5xl px-6 py-8">
-    <div class="mb-8">
-      <a href="landingpage.html" class="text-sm text-stone-400 transition hover:text-brand">← Back to Home</a>
-      <h1 class="mt-2 bg-gradient-to-r from-white to-orange-200 bg-clip-text text-3xl font-bold text-transparent">My Profile</h1>
-      <p class="mt-1 text-sm text-stone-400">Manage your account information and preferences</p>
+<body>
+  <main class="main-container">
+    <div class="header-section">
+      <a href="landingpage.html" class="back-link">← Back to Home</a>
+      <h1 class="page-title">My Profile</h1>
+      <p class="page-subtitle">Manage your account information and preferences</p>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-3">
-      <div class="rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/30 to-stone-900/50 p-6 h-fit">
+    <div class="grid-layout">
+      <!-- Profile Summary Card -->
+      <div class="card profile-card">
         <div class="text-center">
-          <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-brand/40 to-orange-600/40 text-2xl font-bold">AW</div>
-          <h2 class="text-lg font-semibold">Alexander Wright</h2>
-          <p class="mt-1 text-sm text-white/70">Pro Plan • Active</p>
-          <div class="mt-4 flex flex-col gap-2">
-            <span class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-300">✓ Email Verified</span>
-            <span class="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-medium text-blue-300">🔒 2FA Enabled</span>
+          <div class="avatar" id="profile-avatar" style="cursor: pointer;">AW</div>
+          <input type="file" id="avatar-upload" accept="image/*" style="display: none;" />
+          <h2 class="card-title">Alexander Wright</h2>
+          <p class="profile-status">Pro Plan • Active</p>
+          <div class="badges-container">
+            <span class="badge badge-success">✓ Email Verified</span>
+            <span class="badge badge-info">🔒 2FA Enabled</span>
           </div>
         </div>
-        <div class="mt-6 border-t border-white/10 pt-6">
-          <p class="mb-3 text-xs font-medium uppercase tracking-wider text-stone-400">Member Since</p>
-          <p class="text-sm font-semibold">January 15, 2024</p>
-          <p class="mt-4 text-xs font-medium uppercase tracking-wider text-stone-400">Last Active</p>
-          <p class="text-sm font-semibold">Today at 2:45 PM</p>
+        <div class="divider-top mt-6 pt-6">
+          <p class="meta-label">Member Since</p>
+          <p class="meta-value mb-4">January 15, 2024</p>
+          <p class="meta-label mt-4">Last Active</p>
+          <p class="meta-value">Today at 2:45 PM</p>
         </div>
       </div>
 
-      <div class="lg:col-span-2 space-y-6">
-        <form onsubmit="saveProfile(event)" class="space-y-6 rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/30 to-stone-900/50 p-6">
-          <fieldset class="grid gap-4 sm:grid-cols-2">
-            <legend class="col-span-full mb-2 text-lg font-semibold">Personal Information</legend>
-            <label class="text-sm font-medium">
+      <!-- Main Content Area -->
+      <div class="main-content">
+        <!-- Personal Info Form -->
+        <form onsubmit="saveProfile(event)" class="card form-card">
+          <fieldset class="form-grid">
+            <legend class="fieldset-legend">Personal Information</legend>
+            <label class="form-label">
               First name
-              <input required class="mt-2 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none transition focus:border-brand focus:shadow-lg focus:shadow-brand/10" value="Alexander" />
+              <input required class="form-input" value="Alexander" />
             </label>
-            <label class="text-sm font-medium">
+            <label class="form-label">
               Last name
-              <input required class="mt-2 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none transition focus:border-brand focus:shadow-lg focus:shadow-brand/10" value="Wright" />
+              <input required class="form-input" value="Wright" />
             </label>
-            <label class="col-span-full text-sm font-medium">
+            <label class="form-label full-width">
               Email address
-              <input type="email" required class="mt-2 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none transition focus:border-brand focus:shadow-lg focus:shadow-brand/10" value="alexander@hybridrag.ai" />
+              <input type="email" required class="form-input" value="alexander@hybridrag.ai" />
             </label>
-            <label class="col-span-full text-sm font-medium">
+            <label class="form-label full-width">
               Phone number
-              <input type="tel" class="mt-2 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none transition focus:border-brand focus:shadow-lg focus:shadow-brand/10" placeholder="+1 (555) 123-4567" />
+              <input type="tel" class="form-input" placeholder="+1 (555) 123-4567" />
             </label>
           </fieldset>
 
-          <fieldset class="border-t border-white/10 pt-6">
-            <legend class="mb-3 text-lg font-semibold">Company Information</legend>
-            <div class="grid gap-4 sm:grid-cols-2">
-              <label class="text-sm font-medium">
+          <fieldset class="divider-top pt-6 mt-6">
+            <legend class="fieldset-legend mb-3">Company Information</legend>
+            <div class="form-grid">
+              <label class="form-label">
                 Company name
-                <input class="mt-2 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none transition focus:border-brand focus:shadow-lg focus:shadow-brand/10" value="DocuMind AI" />
+                <input class="form-input" value="DocuMind AI" />
               </label>
-              <label class="text-sm font-medium">
+              <label class="form-label">
                 Job title
-                <input class="mt-2 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none transition focus:border-brand focus:shadow-lg focus:shadow-brand/10" value="Founder & CEO" />
+                <input class="form-input" value="Founder & CEO" />
               </label>
             </div>
           </fieldset>
 
-          <div class="flex flex-wrap items-center gap-3 border-t border-white/10 pt-6">
-            <button type="submit" class="rounded-lg bg-gradient-to-r from-brand to-orange-500 px-4 py-2 font-semibold text-black shadow-lg shadow-brand/20 transition hover:shadow-xl active:scale-95">Save Changes</button>
-            <a href="dashboard.html" class="rounded-lg border border-white/20 px-4 py-2 font-medium transition hover:border-brand hover:bg-brand/5">Cancel</a>
-            <p id="saved" class="hidden text-sm font-medium text-emerald-400">✓ Profile updated successfully.</p>
+          <div class="form-actions divider-top pt-6 mt-6">
+            <button type="submit" class="btn-primary">Save Changes</button>
+            <a href="dashboard.html" class="btn-secondary">Cancel</a>
+            <p id="saved" class="success-message hidden">✓ Profile updated successfully.</p>
           </div>
         </form>
 
-        <div class="rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/30 to-stone-900/50 p-6">
-          <h3 class="text-lg font-semibold">Security & Privacy</h3>
-          <div class="mt-4 space-y-3">
-            <div class="flex items-center justify-between rounded-lg bg-stone-800/30 p-3">
+        <!-- Security & Privacy -->
+        <div class="card">
+          <h3 class="card-title">Security & Privacy</h3>
+          <div class="list-container mt-4">
+            <div class="list-item">
               <div>
-                <p class="font-medium">Change password</p>
-                <p class="text-xs text-white/70">Last changed 3 months ago</p>
+                <p class="item-title">Change password</p>
+                <p class="item-desc">Last changed 3 months ago</p>
               </div>
-              <button id="btn-password" type="button" class="rounded-lg border border-white/20 px-3 py-1 text-sm font-medium transition hover:border-brand hover:bg-brand/5 active:scale-95">Update</button>
+              <button id="btn-password" type="button" class="btn-outline">Update</button>
             </div>
-            <div class="flex items-center justify-between rounded-lg bg-stone-800/30 p-3">
+            <div class="list-item">
               <div>
-                <p class="font-medium">Two-factor authentication</p>
-                <p class="text-xs text-emerald-300">✓ Enabled</p>
+                <p class="item-title">Two-factor authentication</p>
+                <p class="item-desc text-success">✓ Enabled</p>
               </div>
-              <button id="btn-2fa" type="button" class="rounded-lg border border-white/20 px-3 py-1 text-sm font-medium transition hover:border-brand hover:bg-brand/5 active:scale-95">Manage</button>
+              <button id="btn-2fa" type="button" class="btn-outline">Manage</button>
             </div>
-            <div class="flex items-center justify-between rounded-lg bg-stone-800/30 p-3">
+            <div class="list-item">
               <div>
-                <p class="font-medium">Active sessions</p>
-                <p class="text-xs text-white/70">1 session active</p>
+                <p class="item-title">Active sessions</p>
+                <p class="item-desc">1 session active</p>
               </div>
-              <button id="btn-sessions" type="button" class="rounded-lg border border-white/20 px-3 py-1 text-sm font-medium transition hover:border-brand hover:bg-brand/5 active:scale-95">View All</button>
+              <button id="btn-sessions" type="button" class="btn-outline">View All</button>
             </div>
           </div>
         </div>
 
-        <div class="rounded-xl border border-white/10 bg-gradient-to-br from-stone-800/30 to-stone-900/50 p-6">
-          <h3 class="text-lg font-semibold">Notification Preferences</h3>
-          <div class="mt-4 space-y-3">
-            <label class="flex cursor-pointer items-center gap-3 rounded-lg p-3 hover:bg-stone-800/30 transition">
-              <input type="checkbox" checked class="accent-brand rounded border-white/15 h-4 w-4" />
+        <!-- Notification Preferences -->
+        <div class="card">
+          <h3 class="card-title">Notification Preferences</h3>
+          <div class="list-container mt-4">
+            <label class="checkbox-row">
+              <input type="checkbox" checked class="checkbox-input" />
               <div>
-                <p class="font-medium">Email notifications</p>
-                <p class="text-xs text-white/70">Receive updates about your workspace</p>
+                <p class="item-title">Email notifications</p>
+                <p class="item-desc">Receive updates about your workspace</p>
               </div>
             </label>
-            <label class="flex cursor-pointer items-center gap-3 rounded-lg p-3 hover:bg-stone-800/30 transition">
-              <input type="checkbox" checked class="accent-brand rounded border-white/15 h-4 w-4" />
+            <label class="checkbox-row">
+              <input type="checkbox" checked class="checkbox-input" />
               <div>
-                <p class="font-medium">Weekly reports</p>
-                <p class="text-xs text-white/70">Summary of queries and indexed documents</p>
+                <p class="item-title">Weekly reports</p>
+                <p class="item-desc">Summary of queries and indexed documents</p>
               </div>
             </label>
-            <label class="flex cursor-pointer items-center gap-3 rounded-lg p-3 hover:bg-stone-800/30 transition">
-              <input type="checkbox" class="accent-brand rounded border-white/15 h-4 w-4" />
+            <label class="checkbox-row">
+              <input type="checkbox" class="checkbox-input" />
               <div>
-                <p class="font-medium">Product updates</p>
-                <p class="text-xs text-white/70">New features and improvements</p>
+                <p class="item-title">Product updates</p>
+                <p class="item-desc">New features and improvements</p>
               </div>
             </label>
           </div>
         </div>
 
-        <div class="rounded-xl border border-red-500/30 bg-red-500/10 p-6">
-          <h3 class="text-lg font-semibold text-red-300">Danger Zone</h3>
-          <p class="mt-2 text-sm text-white/70">Irreversible actions that will permanently affect your account</p>
-          <div class="mt-4 space-y-2">
-            <button id="btn-download" type="button" class="w-full rounded-lg border border-red-500/40 px-4 py-2 font-medium text-red-300 transition hover:bg-red-500/20 active:scale-[0.99]">Download my data</button>
-            <button id="btn-delete" type="button" class="w-full rounded-lg border border-red-500/40 px-4 py-2 font-medium text-red-300 transition hover:bg-red-500/20 active:scale-[0.99]">Delete account</button>
+        <!-- Danger Zone -->
+        <div class="card danger-card">
+          <h3 class="danger-title">Danger Zone</h3>
+          <p class="danger-desc">Irreversible actions that will permanently affect your account</p>
+          <div class="danger-actions">
+            <button id="btn-download" type="button" class="btn-danger">Download my data</button>
+            <button id="btn-delete" type="button" class="btn-danger">Delete account</button>
           </div>
         </div>
       </div>

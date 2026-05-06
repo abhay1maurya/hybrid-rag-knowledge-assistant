@@ -5,6 +5,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_community.llms import Ollama
 from langchain_classic.chains import RetrievalQA
+from langchain_ollama import OllamaLLM
 
 # from langchain_text_splitters import NLTKTextSplitter
 # import nltk
@@ -86,7 +87,7 @@ def ask_question(query: str, user_id: str):
     retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
     # 3. Initialize Local LLM (Ollama)
-    llm = Ollama(model="mistral")
+    llm = OllamaLLM(model="mistral")
 
     # 4. Create RAG Chain
     qa_chain = RetrievalQA.from_chain_type(

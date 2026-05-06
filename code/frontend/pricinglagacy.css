@@ -1,0 +1,815 @@
+/* =========================================
+   1. CSS Variables & Theming
+   ========================================= */
+:root {
+    /* Brand Colors */
+    --primary: #ec5b13;
+    --primary-hover: #d14a0b;
+    --primary-light: rgba(236, 91, 19, 0.1);
+    --primary-border: rgba(236, 91, 19, 0.2);
+    --primary-shadow: rgba(236, 91, 19, 0.1);
+
+    /* Light Theme Defaults */
+    --bg-main: #f8f6f6;
+    --bg-nav: #0B0B0B;
+    --bg-card: rgba(255, 255, 255, 0.5);
+    --bg-card-solid: #ffffff;
+    --bg-cta: #0f172a;
+    
+    --text-main: #0f172a; /* slate-900 */
+    --text-muted: #64748b; /* slate-500 */
+    --text-light: #94a3b8; /* slate-400 */
+    --text-disabled: #cbd5e1; /* slate-300 */
+    --text-inverse: #f8fafc;
+    
+    --border-main: #e2e8f0; /* slate-200 */
+    --border-divider: #f1f5f9; /* slate-100 */
+    
+    --toggle-bg: #e2e8f0; /* slate-200 */
+    --font-display: 'Inter', sans-serif;
+}
+
+/* Dark Mode Overrides (Triggered by class="dark" on <html>) */
+.dark {
+    --bg-main: #0B0B0B;
+    --bg-card: rgba(15, 23, 42, 0.5); /* slate-900/50 */
+    --bg-card-solid: #0f172a; /* slate-900 */
+    
+    --text-main: #f1f5f9; /* slate-100 */
+    --text-muted: #94a3b8; /* slate-400 */
+    --text-disabled: #334155; /* slate-700 */
+    
+    --border-main: #1e293b; /* slate-800 */
+    --border-divider: rgba(30, 41, 59, 0.5); /* slate-800/50 */
+    
+    --toggle-bg: #1e293b; /* slate-800 */
+}
+
+/* =========================================
+   2. Resets & Base Styles
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-display);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+}
+
+.theme-transition {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+}
+
+ul {
+    list-style: none;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+
+.container {
+    width: 100%;
+    max-width: 1280px; /* max-w-7xl roughly */
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Utility Classes */
+.text-primary { color: var(--primary); }
+.text-muted { color: var(--text-muted); }
+.text-disabled { color: var(--text-disabled); }
+.font-bold { font-weight: 700; }
+.italic { font-style: italic; }
+.hidden { display: none !important; }
+
+/* Custom Background Mesh */
+.bg-mesh {
+    background-image: radial-gradient(at 0% 0%, rgba(236, 91, 19, 0.15) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(236, 91, 19, 0.1) 0px, transparent 50%);
+}
+
+/* =========================================
+   3. Header / Navigation
+   ========================================= */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+    background-color: var(--bg-nav);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-container {
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.logo-box {
+    width: 2.25rem;
+    height: 2.25rem;
+    background-color: var(--primary);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-box span {
+    color: #000;
+    font-weight: 900;
+    font-size: 0.875rem;
+    letter-spacing: -0.05em;
+}
+
+.brand h2 {
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+.nav-links {
+    display: none;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.nav-links a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+.btn {
+    padding: 0.5rem 1.25rem; /* px-5 py-2 */
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.btn-outline {
+    border: 1px solid rgba(236, 91, 19, 0.4);
+    color: var(--primary);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-light);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: #000;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+/* =========================================
+   4. Pricing Header Section
+   ========================================= */
+.pricing-header {
+    padding-top: 5rem;
+    padding-bottom: 3rem;
+    text-align: center;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background-color: var(--primary-light);
+    border: 1px solid var(--primary-border);
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+}
+
+.badge span.material-symbols-outlined {
+    font-size: 0.875rem;
+}
+
+.page-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, var(--primary), #fb923c);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.page-subtitle {
+    max-width: 42rem;
+    margin: 0 auto 2.5rem auto;
+    color: var(--text-muted);
+    font-size: 1.125rem;
+}
+
+/* Pricing Toggle */
+.billing-toggle-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 4rem;
+}
+
+.period-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.period-label.active {
+    color: var(--text-main);
+}
+
+.discount-badge {
+    font-size: 0.625rem;
+    padding: 0 0.5rem;
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-radius: 9999px;
+    font-weight: 700;
+}
+
+.toggle-track {
+    height: 2rem;
+    width: 3.5rem;
+    background-color: var(--toggle-bg);
+    border-radius: 9999px;
+    padding: 0.25rem;
+    cursor: pointer;
+    border: 1px solid var(--border-main);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.toggle-circle {
+    height: 1.5rem;
+    width: 1.5rem;
+    background-color: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.toggle-circle.toggled {
+    transform: translateX(1.5rem);
+}
+
+/* =========================================
+   5. Pricing Cards Section
+   ========================================= */
+.pricing-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-bottom: 6rem;
+}
+
+.pricing-card {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-main);
+    backdrop-filter: blur(4px);
+    transition: border-color 0.3s, transform 0.3s;
+}
+
+.pricing-card:hover {
+    border-color: rgba(236, 91, 19, 0.3);
+}
+
+.card-pro {
+    background-color: var(--bg-card-solid);
+    border: 2px solid var(--primary);
+    box-shadow: 0 25px 50px -12px var(--primary-shadow);
+    position: relative;
+    z-index: 10;
+}
+
+.popular-badge {
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--primary);
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.375rem 1rem;
+    border-radius: 9999px;
+}
+
+.card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.card-header p {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+.price-box {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    margin-bottom: 2rem;
+}
+
+.price {
+    font-size: 2.25rem;
+    font-weight: 900;
+}
+
+.transition-price {
+    transition: all 0.3s;
+}
+
+.period {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Card Buttons */
+.btn-card-outline, .btn-card-primary, .btn-card-dark {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    margin-bottom: 2rem;
+}
+
+.btn-card-outline {
+    border: 2px solid var(--primary-border);
+    color: var(--primary);
+}
+.btn-card-outline:hover {
+    border-color: var(--primary);
+}
+
+.btn-card-primary {
+    background-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 10px 15px -3px rgba(236, 91, 19, 0.3);
+}
+.btn-card-primary:hover {
+    background-color: rgba(236, 91, 19, 0.9);
+}
+
+.btn-card-dark {
+    border: 2px solid var(--border-main);
+    color: var(--text-main);
+}
+
+.dark .btn-card-dark {
+    border-color: var(--border-main);
+}
+
+/* Feature Lists inside cards */
+.features-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-light);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+}
+
+.features-list ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.features-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.features-list li.font-semibold {
+    font-weight: 600;
+}
+
+.features-list li.disabled {
+    color: var(--text-muted);
+}
+.features-list li.disabled span:last-child {
+    text-decoration: line-through;
+}
+
+.icon-check {
+    color: var(--primary);
+    font-size: 1.125rem;
+}
+
+/* =========================================
+   6. FAQ Section
+   ========================================= */
+.faq-section {
+    max-width: 56rem; /* max-w-4xl */
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+.faq-section h2 {
+    font-size: 1.875rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.faq-card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-main);
+}
+
+.faq-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.faq-toggle h4 {
+    font-weight: 700;
+}
+
+.faq-icon {
+    transition: transform 0.3s;
+}
+.faq-icon.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.faq-content {
+    margin-top: 1rem;
+    color: var(--text-muted);
+    line-height: 1.625;
+    transition: all 0.3s;
+}
+
+/* =========================================
+   7. Compare Features Table
+   ========================================= */
+.compare-section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    border-top: 1px solid var(--border-main);
+}
+
+.compare-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.compare-header h2 {
+    font-size: 1.875rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+}
+
+.compare-header p {
+    color: var(--text-muted);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.compare-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.compare-table th {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid var(--border-main);
+}
+
+.compare-table th:first-child {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+    width: 25%;
+}
+
+.compare-table th:not(:first-child) {
+    font-size: 1.25rem;
+    font-weight: 700;
+    width: 25%;
+}
+
+.compare-table tbody tr {
+    border-bottom: 1px solid var(--border-divider);
+}
+
+.compare-table td {
+    padding: 1.25rem 1rem;
+}
+
+.table-section-header {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+.dark .table-section-header {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.table-section-header td {
+    padding: 1rem;
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--primary);
+}
+
+.feature-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.feature-value {
+    font-size: 0.875rem;
+}
+
+/* =========================================
+   8. CTA Section
+   ========================================= */
+.cta-section {
+    margin-bottom: 6rem;
+}
+
+.cta-box {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    background-color: var(--bg-cta);
+    color: #fff;
+    padding: 3rem;
+    text-align: center;
+}
+
+.cta-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0.2;
+    background: radial-gradient(circle at center, var(--primary), transparent, transparent);
+}
+
+.cta-content {
+    position: relative;
+    z-index: 10;
+}
+
+.cta-content h2 {
+    font-size: 1.875rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+}
+
+.cta-content p {
+    color: #cbd5e1;
+    font-size: 1.125rem;
+    margin-bottom: 2.5rem;
+    max-width: 36rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn-cta-primary, .btn-cta-secondary {
+    width: 100%;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.btn-cta-primary {
+    background-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 20px 25px -5px rgba(236, 91, 19, 0.2);
+}
+.btn-cta-primary:hover {
+    transform: scale(1.05);
+}
+
+.btn-cta-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+.btn-cta-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================
+   9. Footer
+   ========================================= */
+.site-footer {
+    border-top: 1px solid var(--border-main);
+    padding: 5rem 1.5rem;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: span 2 / span 2;
+    gap: 3rem;
+}
+
+.footer-brand-col .brand h2 {
+    color: var(--text-main);
+}
+
+.footer-brand-col p {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    line-height: 1.625;
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-links a {
+    color: var(--text-light);
+}
+.social-links a:hover {
+    color: var(--primary);
+}
+
+.footer-links h5 {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.footer-links ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.footer-links a {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+.footer-bottom {
+    margin-top: 5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.legal-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.legal-links a:hover {
+    color: var(--primary);
+}
+
+
+/* =========================================
+   10. Media Queries (Responsiveness)
+   ========================================= */
+@media (min-width: 768px) {
+    .nav-links {
+        display: flex;
+    }
+    
+    .page-title {
+        font-size: 3.75rem;
+    }
+    
+    .pricing-cards {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .card-pro {
+        transform: scale(1.05);
+    }
+    
+    .compare-header h2 {
+        font-size: 2.25rem;
+    }
+    
+    .cta-box {
+        padding: 5rem;
+    }
+    .cta-content h2 {
+        font-size: 3rem;
+    }
+    .cta-buttons {
+        flex-direction: row;
+    }
+    .btn-cta-primary, .btn-cta-secondary {
+        width: auto;
+    }
+    
+    .footer-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .footer-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
