@@ -10,7 +10,7 @@
     <script src="landingpage.js" defer></script>
     <title>Hybrid RAG Knowledge Assistant</title>
 </head>
-<body class="app-body">
+<body class="app-body bg-mesh">
     <div class="app-wrapper">
         <div class="layout-container">
             
@@ -62,12 +62,27 @@
                         <div class="hero-visual">
     <div class="visual-wrapper">
         <div class="visual-glow"></div>
-        <div class="visual-card">
-            <div class="visual-card-inner">
-                <!-- Only the URL stays here -->
-                <img src="image.jpeg.7Y6" 
-                     alt="AI Dashboard Visualization" 
-                     class="hero-dashboard-img">
+        <div class="chat-mockup-card">
+            <div class="chat-header">
+                <div class="brand-icon small">
+                    <span>HR</span>
+                </div>
+                <div class="chat-header-text">
+                    <h3>Hybrid RAG Assistant</h3>
+                    <p>Online & Ready</p>
+                </div>
+            </div>
+            
+            <div class="chat-window" id="chat-window">
+                <div class="message ai-message">
+                    <div class="avatar"><span class="material-symbols-outlined">smart_toy</span></div>
+                    <div class="bubble">Hello! I've analyzed your document. What would you like to know?</div>
+                </div>
+            </div>
+
+            <div class="chat-actions">
+                <button class="demo-prompt-btn" onclick="triggerDemoChat('What is the methodology?')">Ask about methodology</button>
+                <button class="demo-prompt-btn" onclick="triggerDemoChat('What are the key findings?')">Ask about findings</button>
             </div>
         </div>
     </div>
@@ -155,10 +170,57 @@
                         </div>
                     </div>
                 </section>
+                <section class="container faq-section" id="faq">
+    <div class="features-header">
+        <h2 class="features-title">Frequently Asked Questions</h2>
+       
+    </div>
+    
+    <div class="faq-container">
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>What makes "Hybrid" RAG different?</span>
+                <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+                <p>Unlike standard RAG, our system allows you to toggle between cloud-based LLMs for deep reasoning and local, offline models for maximum privacy and zero-latency retrieval.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>Is my data used to train the AI models?</span>
+                <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+                <p>No. We prioritize enterprise-grade security. If you use the Offline AI mode, your documents never leave your local environment. In online mode, we utilize isolated containers that do not contribute to model training.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>Which file formats are supported?</span>
+                <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+                <p>Currently, we support PDF, DOCX, TXT, and Markdown files. We are actively working on adding support for spreadsheets and slide decks.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                <span>Do I need a high-end GPU for Offline Mode?</span>
+                <span class="material-symbols-outlined">expand_more</span>
+            </button>
+            <div class="faq-answer">
+                <p>Our assistant is optimized for performance. While a dedicated GPU helps, it can run efficiently on modern CPUs thanks to quantized model inference.</p>
+            </div>
+        </div>
+    </div>
+</section>
             </main>
 
-            <!-- Footer -->
-            <footer class="site-footer">
+         <footer class="site-footer">
                 <div class="footer-grid">
                     <div class="footer-brand">
                         <div class="footer-logo">
@@ -168,6 +230,13 @@
                             <h2>Hybrid RAG</h2>
                         </div>
                         <p class="footer-desc">The future of private knowledge management.</p>
+                        
+                        <form class="footer-subscribe" id="newsletter-form">
+                            <input type="email" placeholder="Stay updated..." required>
+                            <button type="submit" class="btn-primary">Subscribe</button>
+                        </form>
+                        <p class="subscribe-msg" id="subscribe-msg">Thanks for subscribing! We'll be in touch.</p>
+
                         <div class="social-links">
                             <a href="#" data-alert="Going to Social Link..."><span class="material-symbols-outlined">public</span></a>
                             <a href="#" data-alert="Going to Social Link..."><span class="material-symbols-outlined">share</span></a>
@@ -177,37 +246,42 @@
                     <div class="footer-column">
                         <h5>Product</h5>
                         <ul>
-                            <li><a href="features.html" >Features</a></li>
-                            <li><a href="pricing.html" >Pricing</a></li>
-                            <li><a href="security.html" >Security</a></li>
-                            <li><a href="chat.html" >Chat</a></li>
+                            <li><a href="features.html">Features</a></li>
+                            <li><a href="pricing.html">Pricing</a></li>
+                            <li><a href="security.html">Security</a></li>
+                            <li><a href="chat.html">Chat</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
                         <h5>Company</h5>
                         <ul>
                             <li><a href="landingpage.html">About</a></li>
-                            <li><a href="support.html" >Careers</a></li>
+                            <li><a href="support.html">Careers</a></li>
                             <li><a href="support.html">Contact</a></li>
-                            <li><a href="landingpage.html" >Blog</a></li>
+                            <li><a href="landingpage.html">Blog</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
                         <h5>Support</h5>
                         <ul>
-                            <li><a href="doclib.html" >Documentation</a></li>
-                            <li><a href="support.html" >Help Center</a></li>
-                            <li><a href="dashboard.html" >API Status</a></li>
+                            <li><a href="doclib.html">Documentation</a></li>
+                            <li><a href="support.html">Help Center</a></li>
+                            <li><a href="dashboard.html">API Status</a></li>
                             <li><a href="#" data-alert="Loading Integrations...">Integrations</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="footer-bottom">
                     <p>© 2024 Hybrid RAG Knowledge Assistant. All rights reserved.</p>
-                    <div class="legal-links">
-                        <a href="#" data-alert="Loading Privacy Policy...">Privacy Policy</a>
-                        <a href="#" data-alert="Loading Terms of Service...">Terms of Service</a>
-                        <a href="#" data-alert="Loading Cookie Policy...">Cookie Policy</a>
+                    <div class="footer-bottom-actions">
+                        <div class="legal-links">
+                            <a href="#" data-alert="Loading Privacy Policy...">Privacy Policy</a>
+                            <a href="#" data-alert="Loading Terms of Service...">Terms of Service</a>
+                            <a href="#" data-alert="Loading Cookie Policy...">Cookie Policy</a>
+                        </div>
+                        <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+                            <span class="material-symbols-outlined">arrow_upward</span>
+                        </button>
                     </div>
                 </div>
             </footer>
