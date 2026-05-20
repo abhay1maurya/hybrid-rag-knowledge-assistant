@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+pip-wheel-metadata/
+
+# Virtual Environment
+venv/
+env/
+aivenv/
+.venv/
+ENV/
+
+# FastAPI / Uvicorn
+*.log
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# HuggingFace model cache
+model_cache/
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+
+# FAISS Vector Store
+vector_store/
+
+# Uploaded files
+uploads/
+*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
