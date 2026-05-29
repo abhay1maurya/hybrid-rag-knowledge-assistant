@@ -1,29 +1,32 @@
 from langchain_huggingface import HuggingFaceEmbeddings
-from config import EMBEDDING_MODEL, DEVICE
+from model_registry import EMBEDDING_MODELS
 import os
 
-# ✅ Module-level cache — loaded once, reused for all requests
-_embeddings_instance = None
+# Cache: { model_key: embedding_instance }
+_embeddings_cache: dict = {}
 
-def get_embeddings() -> HuggingFaceEmbeddings:
-    """Returns cached embedding model — loads only once on first call."""
-    global _embeddings_instance
+def get_embeddings(model_key: str = "bge-large") -> HuggingFaceEmbeddings:
+    """
+    Returns cached embedding model for the given model key.
+    Loads only once per model — subsequent calls return cached instance.
+    """
+    if model_key in _embeddings_cache:
+        return _embeddings_cache[model_key]
 
-    if _embeddings_instance is None:
-        print(f"Loading embedding model '{EMBEDDING_MODEL}'... (only happens once)")
+    if model_key not in EMBEDDING_MODELS:
+        print(f"Unknown embedding model '{model_key}', falling back to bge-large.")
+        model_key = "bge-large"
 
-        # ✅ Suppress the unauthenticated warning by setting HF_TOKEN env var
-        # Get free token from https://huggingface.co/settings/tokens
-        hf_token = os.getenv("HF_TOKEN", None)
-        if hf_token:
-            os.environ["HUGGINGFACE_TOKEN"] = hf_token
+    model_info = EMBEDDING_MODELS[model_key]
+    print(f"[Embeddings] Loading '{model_key}' ({model_info['model_name']})... (first time only)")
 
-        _embeddings_instance = HuggingFaceEmbeddings(
-            model_name=EMBEDDING_MODEL,
-            model_kwargs={"device": DEVICE},
-            encode_kwargs={"normalize_embeddings": True},
-            cache_folder="./model_cache"  # ✅ cache model files locally
-        )
-        print("Embedding model loaded and cached.")
+    instance = HuggingFaceEmbeddings(
+        model_name=model_info["model_name"],
+        model_kwargs={"device": "cpu"},
+        encode_kwargs={"normalize_embeddings": model_info["normalize"]},
+        cache_folder="./model_cache"
+    )
 
-    return _embeddings_instance
+    _embeddings_cache[model_key] = instance
+    print(f"[Embeddings] '{model_key}' loaded and cached.")
+    return instance

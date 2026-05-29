@@ -1,21 +1,20 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from config_router import router as config_router
 import shutil
+from llm_manager import clear_llm_cache, get_current_provider_info
 import os
-
-# ✅ Updated imports from modular rag_pipeline
 from rag_pipeline import ingest_document, ask_question, reset_user_session
 
-app = FastAPI(title="DocuMind AI Service", version="2.0")
+app = FastAPI(title="DocuMind AI Service", version="3.0")
 
-# Allow CORS for local testing
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    CORSMiddleware, allow_origins=["*"],
+    allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
 )
+
+# ✅ Mount config router — adds all /config/* endpoints
+app.include_router(config_router)
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -73,26 +72,76 @@ async def ask(
     query: str = Form(...),
     user_id: str = Form(...)
 ):
-    """
-    Ask a question against the user's uploaded documents.
-    """
-    try:
-        # ✅ ask_question now returns a dict with status, answer, sources
-        result = ask_question(query, user_id)
+    result = ask_question(query, user_id)
 
-        if result["status"] == "error":
-            raise HTTPException(status_code=500, detail=result["answer"])
-
+    # ✅ Guardrail blocked — return 200 with explanation, not 500
+    if result["status"] == "blocked":
         return {
-            "status": "success",
+            "status": "blocked",
+            "reason": result.get("reason"),
             "answer": result["answer"],
-            "sources": result.get("sources", [])  # ✅ returns page citations
+            "sources": []
         }
 
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    if result["status"] == "error":
+        raise HTTPException(status_code=500, detail=result["answer"])
+
+    return {
+        "status": "success",
+        "answer": result["answer"],
+        "sources": result.get("sources", []),
+        "original_query": result.get("original_query", query),
+        "processed_query": result.get("processed_query", query)
+    }
+
+
+
+@app.get("/provider")
+def get_provider():
+    """Returns the currently active LLM provider."""
+    return get_current_provider_info()
+
+
+@app.post("/provider/switch")
+async def switch_provider(
+    provider: str = Form(...),         # "offline" | "online"
+    online_provider: str = Form(None)  # "groq" | "openai" | "anthropic"
+):
+    """
+    Switches LLM provider at runtime without restarting the server.
+    """
+    valid_providers = ["offline", "online"]
+    valid_online    = ["groq", "openai", "anthropic"]
+
+    if provider not in valid_providers:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid provider. Choose from: {valid_providers}"
+        )
+    if provider == "online" and online_provider not in valid_online:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid online provider. Choose from: {valid_online}"
+        )
+
+    # ✅ Update environment variables at runtime
+    os.environ["LLM_PROVIDER"]    = provider
+    os.environ["ONLINE_PROVIDER"] = online_provider or "groq"
+
+    # ✅ Reload config values
+    import config
+    config.LLM_PROVIDER    = provider
+    config.ONLINE_PROVIDER = online_provider or "groq"
+
+    # ✅ Clear cache so next request uses new provider
+    clear_llm_cache()
+
+    return {
+        "status": "success",
+        "message": f"Switched to {provider} ({online_provider or 'ollama'})",
+        "provider": provider,
+        "online_provider": online_provider
+    }
 
 
 @app.post("/reset")
@@ -112,18 +161,16 @@ async def reset_session(
 
 @app.get("/health")
 def health_check():
-    """
-    Detailed health check — verifies Ollama is reachable.
-    """
     from ollama_manager import is_ollama_running, is_model_available
-    from config import OLLAMA_MODEL
+    from config import OLLAMA_MODEL, LLM_PROVIDER
 
-    ollama_running = is_ollama_running()
-    model_ready = is_model_available(OLLAMA_MODEL) if ollama_running else False
+    provider_info = get_current_provider_info()
+    ollama_ok     = is_ollama_running() if LLM_PROVIDER == "offline" else None
+    model_ok      = is_model_available(OLLAMA_MODEL) if ollama_ok else None
 
     return {
-        "status": "ok" if ollama_running and model_ready else "degraded",
-        "ollama_running": ollama_running,
-        "model_available": model_ready,
-        "model": OLLAMA_MODEL
+        "status": "ok",
+        "active_provider": provider_info,
+        "ollama_running": ollama_ok,
+        "ollama_model_ready": model_ok,
     }
