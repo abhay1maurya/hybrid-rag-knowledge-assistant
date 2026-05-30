@@ -1,15 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="dark" lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta http-equiv="refresh" content="0; url=setting.html"/>
-    <title>Hybrid RAG - Settings</title>
-    <script>
-        window.location.replace('setting.html');
-    </script>
+    <title>DocuMindAI - Pipeline Config</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="settinglagacy.css">
+    <script src="settinglagacy.js" defer></script>
 </head>
-<body>
-    <p>Redirecting to <a href="setting.html">setting.html</a>...</p>
+<body class="theme-transition">
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="brand-logo" onclick="window.location.href='landingpage.html'" style="cursor: pointer;">
+                <img src="logo.png" alt="DocuMindAI logo" class="brand-inline-logo" />
+                <h2 class="brand-text">DocuMindAI</h2>
+            </div>
+
+            <nav class="desktop-nav">
+                <a href="landingpage.html">Home</a>
+                <a href="features.html">Features</a>
+                <a href="faq.html">FAQ</a>
+                <a href="pricinglagacy.html">Pricing</a>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="about.html">About</a>
+                <a href="settinglagacy.html" class="active">Settings</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="btn-outline-white" onclick="window.location.href='loginpage.html'">Logout</button>
+                <button class="btn-primary" onclick="window.location.href='dashboard.html'">Dashboard</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-layout">
+        <section class="controls-pane">
+            
+            <div class="settings-group">
+                <div class="group-header">
+                    <span class="material-symbols-outlined">layers</span>
+                    <h3>Vector & Chunking Architecture</h3>
+                </div>
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label>Embedding Model</label>
+                        <select id="embed-model" class="form-select"></select>
+                        <div class="meta-tag-grid" id="embed-meta">
+                            <div class="meta-tag">Dim: <span id="meta-dim">-</span></div>
+                            <div class="meta-tag">VRAM: <span id="meta-size">-</span></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Split Strategy</label>
+                        <select id="chunk-strategy" class="form-select">
+                            <option value="recursive">Recursive Character</option>
+                            <option value="semantic">Semantic Boundary</option>
+                            <option value="fixed">Fixed Window</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="chunk-params-container" class="dynamic-subform mt-2"></div>
+            </div>
+
+            <div class="settings-group mt-3">
+                <div class="group-header">
+                    <span class="material-symbols-outlined">psychology</span>
+                    <h3>Inference Router</h3>
+                </div>
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label>Provider Tier</label>
+                        <select id="llm-provider" class="form-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Language Model</label>
+                        <select id="llm-model" class="form-select"></select>
+                    </div>
+                </div>
+                <div id="key-container" class="form-group hidden mt-2">
+                    <label>Provider API Key</label>
+                    <input id="api-key" type="password" class="form-input" placeholder="sk-...">
+                </div>
+            </div>
+
+            <div class="settings-group mt-3">
+                <div class="group-header">
+                    <span class="material-symbols-outlined">tune</span>
+                    <h3>Retrieval Weights</h3>
+                </div>
+                <div class="grid-2-col">
+                    <div class="form-group flex-row">
+                        <label>Multi-Query Expansion</label>
+                        <label class="toggle-switch">
+                            <input id="use-multi-query" type="checkbox">
+                            <span class="slider-round"></span>
+                        </label>
+                    </div>
+                    <div class="form-group flex-row">
+                        <label>Cross-Encoder Rerank</label>
+                        <label class="toggle-switch">
+                            <input id="use-reranker" type="checkbox">
+                            <span class="slider-round"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="slider-matrix mt-2">
+                    <div class="form-group">
+                        <div class="slider-header">
+                            <label>Candidates (k)</label>
+                            <span id="k-val" class="numerical-display"></span>
+                        </div>
+                        <input id="k-candidates" type="range" class="range-slider">
+                    </div>
+                    <div class="form-group">
+                        <div class="slider-header">
+                            <label>Final Context (Top N)</label>
+                            <span id="top-n-val" class="numerical-display"></span>
+                        </div>
+                        <input id="top-n-rerank" type="range" class="range-slider">
+                    </div>
+                    <div class="form-group">
+                        <div class="slider-header">
+                            <label>BM25 Mix Ratio</label>
+                            <span id="bm25-val" class="numerical-display"></span>
+                        </div>
+                        <input id="bm25-weight" type="range" step="0.05" class="range-slider">
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <aside class="preview-pane">
+            <div class="preview-header">
+                <h3>Live Configuration Payload</h3>
+                <button id="btn-copy" class="icon-btn" title="Copy JSON"><span class="material-symbols-outlined">content_copy</span></button>
+            </div>
+            <div class="code-container">
+                <pre><code id="json-preview">{}</code></pre>
+            </div>
+            <div class="form-actions">
+                <button id="btn-reset-defaults" class="btn-secondary w-full">Restore Defaults</button>
+                <button id="btn-save-config" class="btn-primary w-full">Deploy Configuration</button>
+            </div>
+        </aside>
+    </main>
+    <div id="toast" class="toast hidden"></div>
 </body>
 </html>

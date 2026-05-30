@@ -18,7 +18,22 @@
     --feature-bg: #ffffff;
     --section-bg: #f1f5f9;
 }
+.brand-logo { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; flex-shrink: 0; }
+.brand-icon {
+    width: 2.5rem; height: 2.50rem;
+    background-color: var(--primary);
+    border-radius: 0.5rem;
+    display: flex; align-items: center; justify-content: center;
+}
+.brand-icon span { color: #000; font-weight: 900; font-size: 0.875rem; letter-spacing: -0.05em; }
+.brand-icon.small { width: 2rem; height: 2rem; }
+.brand-text { color: #ffffff; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.025em; }
 
+/* Inline brand logo next to text */
+.brand-inline-logo { width: 48px; height: auto; margin-right: 0.5rem; display: block; }
+@media (max-width: 480px) {
+    .brand-inline-logo { width: 36px; margin-right: 0.4rem; }
+}
 /* Dark Theme Variables */
 .dark {
     --bg-main: #0B0B0B;
@@ -118,6 +133,12 @@ button a { text-decoration: none; color: inherit; }
 .brand-icon span { color: #000; font-weight: 900; font-size: 0.875rem; letter-spacing: -0.05em; }
 .brand-icon.small { width: 2rem; height: 2rem; }
 .brand-text { color: #ffffff; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.025em; }
+
+/* Inline brand logo used across pages */
+.brand-inline-logo { width: 48px; height: auto; margin-right: 0.5rem; display: block; }
+@media (max-width: 480px) {
+    .brand-inline-logo { width: 36px; margin-right: 0.4rem; }
+}
 
 .desktop-nav { display: none; flex: 1; justify-content: center; align-items: center; gap: 2.5rem; }
 @media (min-width: 768px) { .desktop-nav { display: flex; } }

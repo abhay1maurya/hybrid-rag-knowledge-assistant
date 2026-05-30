@@ -17,7 +17,22 @@
   padding: 0;
   box-sizing: border-box;
 }
+.brand-logo { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; flex-shrink: 0; }
+.brand-icon {
+    width: 2.5rem; height: 2.50rem;
+    background-color: var(--primary);
+    border-radius: 0.5rem;
+    display: flex; align-items: center; justify-content: center;
+}
+.brand-icon span { color: #000; font-weight: 900; font-size: 0.875rem; letter-spacing: -0.05em; }
+.brand-icon.small { width: 2rem; height: 2rem; }
+.brand-text { color: #ffffff; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.025em; }
 
+/* Inline brand logo next to text */
+.brand-inline-logo { width: 48px; height: auto; margin-right: 0.5rem; display: block; }
+@media (max-width: 480px) {
+    .brand-inline-logo { width: 36px; margin-right: 0.4rem; }
+}
 body {
   font-family: var(--font-sans);
   color: var(--text-main);
