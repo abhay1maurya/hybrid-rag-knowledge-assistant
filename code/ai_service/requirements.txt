@@ -18,3 +18,4 @@ pydantic
 requests
 openai
 anthropic
+sse-starlette

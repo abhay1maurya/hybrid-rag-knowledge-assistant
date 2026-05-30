@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             labelYearly.classList.add('active');
             
             // Switch Text
-            pricePro.innerText = '₹14,390'; // ₹29 * 12 * 0.8 (20% off) -> Used your existing numbers
+            pricePro.innerText = '₹14,390'; 
             periodPro.innerText = '/year';
             periodStarter.innerText = '/year';
         } else {

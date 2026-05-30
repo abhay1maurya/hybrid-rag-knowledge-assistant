@@ -36,6 +36,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Newsletter form submission interaction
+    const newsletterForm = document.getElementById('newsletter-form');
+    const subscribeMsg = document.getElementById('subscribe-msg');
+    
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Prevent page reload
+            newsletterForm.style.display = 'none'; // Hide form
+            subscribeMsg.style.display = 'block'; // Show success message
+        });
+    }
+
+    // Back to Top functionality
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 });
 
 function triggerDemoChat(userText) {
@@ -71,25 +94,3 @@ function triggerDemoChat(userText) {
         buttons.forEach(btn => btn.disabled = false);
     }, 1200);
 }
-// Newsletter form submission interaction
-    const newsletterForm = document.getElementById('newsletter-form');
-    const subscribeMsg = document.getElementById('subscribe-msg');
-    
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Prevent page reload
-            newsletterForm.style.display = 'none'; // Hide form
-            subscribeMsg.style.display = 'block'; // Show success message
-        });
-    }
-
-    // Back to Top functionality
-    const backToTopBtn = document.getElementById('back-to-top');
-    if (backToTopBtn) {
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-    }

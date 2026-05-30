@@ -19,7 +19,10 @@
         <p class="page-subtitle">Upload, manage, and index your documents</p>
       </div>
       <div class="header-actions">
-        <button onclick="toast('Upload dialog opened (demo).')" class="btn-primary">트 Upload Document</button>
+        <input type="file" id="document-upload" class="hidden" accept=".pdf,.docx,.txt" multiple />
+        
+        <button id="upload-btn" class="btn-primary">트 Upload Document</button>
+       
         <a href="chat.html" class="btn-outline">Ask Assistant</a>
       </div>
     </div>

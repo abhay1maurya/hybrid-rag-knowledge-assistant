@@ -2,14 +2,14 @@
    1. Global Variables & Setup
    ========================================= */
 :root {
-  --brand: #f97316; /* Tailwind orange-500 */
+  --brand: #f97316; 
   --brand-light: rgba(249, 115, 22, 0.1);
   --brand-border: rgba(249, 115, 22, 0.3);
-  --text-main: #f5f5f4; /* stone-100 */
+  --text-main: #f5f5f4; 
   --text-subtle: rgba(255, 255, 255, 0.6);
   --border-color: rgba(255, 255, 255, 0.1);
   --bg-dark: #0c0c0c;
-  --font-sans: 'Space Grotesk', sans-serif;
+  --font-sans: 'Inter', sans-serif; 
 }
 
 * {
@@ -22,7 +22,6 @@ body {
   font-family: var(--font-sans);
   color: var(--text-main);
   background-color: var(--bg-dark);
-  /* Complex radial background recreated exactly */
   background-image: 
     radial-gradient(circle at 15% 20%, #3f1d0f, transparent 35%),
     radial-gradient(circle at 90% 12%, #292010, transparent 38%),
@@ -63,65 +62,133 @@ a {
    3. Layout Containers
    ========================================= */
 .main-container {
-  max-width: 80rem; /* max-w-7xl */
+  max-width: 80rem; 
   margin: 0 auto;
-  padding: 3.5rem 1.5rem; /* py-14 px-6 */
+  padding: 3.5rem 1.5rem; 
 }
 @media (min-width: 768px) {
   .main-container { padding-top: 4rem; padding-bottom: 4rem; }
 }
 
 /* =========================================
-   4. Header & Navigation
+   4. Header & Navigation (Full-Width Flexbox)
    ========================================= */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
   background-color: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(12px);
-}
-
-.nav-container {
-  max-width: 80rem;
-  margin: 0 auto;
+  /* Full screen width expansion */
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.5rem; 
+}
+@media (min-width: 1024px) {
+  .site-header { padding: 1rem 2.5rem; }
 }
 
-.brand-logo {
+.header-brand {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+}
+
+.logo-box {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--brand);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-box span {
+  color: #000;
+  font-weight: 900;
+  font-size: 0.875rem;
+  letter-spacing: -0.05em;
+}
+
+.header-brand h2 {
   font-size: 1.125rem;
   font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-main);
 }
 
-.logo-badge {
-  border-radius: 0.25rem;
-  background-color: var(--brand);
-  padding: 0.25rem 0.5rem;
-  color: #000;
-}
-
-.nav-links {
+.header-nav {
   display: none;
-  gap: 1.5rem;
-  font-size: 0.875rem;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
 }
-@media (min-width: 768px) {
-  .nav-links { display: flex; }
-}
-.nav-links a:hover { color: var(--brand); }
-.nav-links a.active { color: var(--brand); }
+@media (min-width: 768px) { .header-nav { display: flex; } }
 
-.nav-actions {
+.header-nav a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #ffffff;
+  transition: color 0.2s;
+}
+.header-nav a:hover, .header-nav a.active {
+  color: var(--brand);
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.8rem;
+}
+.header-actions .btn-primary {
+  color: #ffffff;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--brand-light);
+  color: var(--brand);
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+.btn-icon:hover {
+  background-color: var(--brand-border);
+}
+
+.profile-section {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--border-color);
+}
+
+.profile-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--brand-light);
+  border: 1px solid var(--brand-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* =========================================
@@ -129,10 +196,12 @@ a {
    ========================================= */
 .btn {
   display: inline-flex;
-  border-radius: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
   font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
+  font-weight: 800;
+  padding: 0.5rem 1.5rem;
   transition: all 0.2s ease;
   cursor: pointer;
 }
@@ -150,6 +219,15 @@ a {
   background-color: var(--brand-light);
 }
 
+.btn-outline-white {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+.btn-outline-white:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .btn-primary {
   background-image: linear-gradient(to right, var(--brand), #f97316);
   color: #000;
@@ -160,11 +238,11 @@ a {
 
 .btn-white {
   background-color: #fff;
-  color: #1c1917; /* stone-900 */
+  color: #1c1917; 
   margin-top: 1.5rem;
 }
 .btn-white:hover {
-  background-color: #ffedd5; /* orange-100 */
+  background-color: #ffedd5; 
 }
 
 .shadow-glow {
@@ -279,7 +357,7 @@ a {
 
 .hero-description {
   margin-top: 1.5rem;
-  max-width: 36rem; /* max-w-xl */
+  max-width: 36rem; 
   line-height: 1.625;
   color: rgba(255, 255, 255, 0.8);
 }
@@ -405,7 +483,7 @@ a {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #fed7aa; /* orange-200 */
+  color: #fed7aa; 
 }
 
 .aside-description {

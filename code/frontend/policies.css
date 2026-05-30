@@ -1,0 +1,115 @@
+/* =========================================
+   Minimized Policies Page Styles (policies.css)
+   ========================================= */
+   
+.policy-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* Reduced from 3rem */
+    padding: 2rem 1.5rem; /* Reduced from 4rem */
+}
+
+@media (min-width: 768px) {
+    .policy-container {
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 3rem 1.5rem; /* Reduced from 5rem */
+    }
+}
+
+/* Compact Sidebar */
+.policy-sidebar {
+    width: 100%;
+    position: sticky;
+    top: 6rem; 
+    z-index: 40;
+}
+
+@media (min-width: 768px) {
+    .policy-sidebar {
+        width: 220px; /* Slimmer sidebar */
+        flex-shrink: 0;
+    }
+}
+
+.policy-sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem; /* Tighter links */
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem; /* Smaller radius */
+    padding: 1rem; /* Less padding */
+    backdrop-filter: blur(8px);
+}
+
+.policy-sidebar a {
+    color: var(--text-muted);
+    padding: 0.5rem 0.75rem; /* Tighter padding */
+    border-radius: 0.5rem;
+    font-size: 0.875rem; /* Smaller font */
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.policy-sidebar a:hover, 
+.policy-sidebar a.active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+/* Compact Content Area */
+.policy-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem; /* Reduced from 4rem */
+    max-width: 750px; /* Narrower reading width */
+}
+
+/* Minimized Typography */
+.policy-section h1 {
+    color: var(--text-main);
+    font-size: 1.75rem; /* Shrunk from 2.5rem */
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem; /* Reduced margin */
+}
+
+.policy-section h2 {
+    color: var(--text-main);
+    font-size: 1.125rem; /* Shrunk from 1.5rem */
+    font-weight: 700;
+    margin-top: 1.5rem; /* Tighter spacing */
+    margin-bottom: 0.5rem;
+}
+
+/* Standardized Legal Text Size */
+.policy-section p, 
+.policy-section ul {
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 0.75rem; /* Tighter paragraphs */
+    font-size: 0.875rem; /* 14px - standard legal size */
+}
+
+.policy-section ul {
+    padding-left: 1.25rem;
+}
+
+.policy-section ul li {
+    margin-bottom: 0.25rem;
+}
+
+.policy-section strong {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.policy-divider {
+    border: 0;
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 0; /* Let the section gaps handle spacing */
+}

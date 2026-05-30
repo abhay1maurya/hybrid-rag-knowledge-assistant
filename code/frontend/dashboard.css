@@ -15,13 +15,16 @@
 }
 
 body {
-    font-family: 'Space Grotesk', sans-serif;
-    background-color: var(--bg-dark);
-    color: #f5f5f5;
-    background-image: 
-        radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.14), transparent 35%),
-        radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.1), transparent 30%);
-    height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background-color: #151515; /* Exact dark background from other pages */
+    color: #f1f5f9; /* Exact text color from other pages */
+    
+    /* Exact background mesh from your Landing/Features pages */
+    background-image: radial-gradient(at 0% 0%, rgba(236, 124, 19, 0.305) 0px, transparent 50%),
+                      radial-gradient(at 100% 100%, rgba(236, 91, 19, 0.326) 0px, transparent 50%);
+                      
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
 }
 
 .app-shell {

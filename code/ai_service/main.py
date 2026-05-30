@@ -1,10 +1,14 @@
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from sse_starlette.sse import EventSourceResponse
 from config_router import router as config_router
 import shutil
-from llm_manager import clear_llm_cache, get_current_provider_info
 import os
+from llm_manager import clear_llm_cache, get_current_provider_info
+from stream_pipeline import ask_question_stream
 from rag_pipeline import ingest_document, ask_question, reset_user_session
+from document_router import router as document_router
 
 app = FastAPI(title="DocuMind AI Service", version="3.0")
 
@@ -15,6 +19,7 @@ app.add_middleware(
 
 # ✅ Mount config router — adds all /config/* endpoints
 app.include_router(config_router)
+app.include_router(document_router)  
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -23,7 +28,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 @app.get("/")
 def read_root():
     """Health check endpoint."""
-    return {"status": "DocuMind AI Service is running.", "version": "2.0"}
+    return {"status": "DocuMind AI Service is running.", "version": "3.0"}
 
 
 @app.post("/upload")
@@ -68,33 +73,42 @@ async def upload_file(
 
 
 @app.post("/ask")
-async def ask(
-    query: str = Form(...),
-    user_id: str = Form(...)
-):
+async def ask(query: str = Form(...), user_id: str = Form(...)):
+    """Standard blocking endpoint — waits for full answer."""
     result = ask_question(query, user_id)
-
-    # ✅ Guardrail blocked — return 200 with explanation, not 500
-    if result["status"] == "blocked":
-        return {
-            "status": "blocked",
-            "reason": result.get("reason"),
-            "answer": result["answer"],
-            "sources": []
-        }
-
     if result["status"] == "error":
         raise HTTPException(status_code=500, detail=result["answer"])
+    return result
 
-    return {
-        "status": "success",
-        "answer": result["answer"],
-        "sources": result.get("sources", []),
-        "original_query": result.get("original_query", query),
-        "processed_query": result.get("processed_query", query)
-    }
+@app.get("/ask/stream")
+async def ask_stream(request: Request, query: str, user_id: str):
+    """
+    Streaming endpoint — returns tokens as Server-Sent Events.
+    Client receives tokens in real-time as LLM generates them.
 
+    Usage:
+        GET /ask/stream?query=your+question&user_id=user_1
 
+    SSE Event Types:
+        start          → stream started
+        status         → progress update
+        query_processed→ shows original vs processed query
+        generating     → LLM started generating
+        token          → single LLM token (stream these to UI)
+        guardrail      → output guardrail triggered
+        sources        → page citations
+        done           → stream complete, includes sources + provider info
+        blocked        → guardrail blocked the query
+        error          → something went wrong
+    """
+    async def event_generator():
+        # Stop streaming if client disconnects
+        async for event in ask_question_stream(query, user_id):
+            if await request.is_disconnected():
+                break
+            yield event
+
+    return EventSourceResponse(event_generator())
 
 @app.get("/provider")
 def get_provider():

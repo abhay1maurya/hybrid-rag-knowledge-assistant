@@ -1,0 +1,17 @@
+{
+  "embedding_model": "bge-large",
+  "chunking_strategy": "recursive",
+  "chunking_params": {
+    "chunk_size": 600,
+    "chunk_overlap": 100
+  },
+  "llm_provider": "groq",
+  "llm_model": "llama-3.3-70b-versatile",
+  "retriever": {
+    "k_candidates": 10,
+    "top_n_rerank": 3,
+    "bm25_weight": 0.4,
+    "use_multi_query": true,
+    "use_reranker": true
+  }
+}

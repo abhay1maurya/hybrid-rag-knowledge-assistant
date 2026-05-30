@@ -12,17 +12,30 @@ from query_processor import preprocess_query
 from llm_manager import get_llm, get_current_provider_info
 from user_config_manager import get_user_config
 from guardrails import run_input_guardrails, run_output_guardrails, GuardrailException
+from document_manager import register_document
 
 
 def ingest_document(file_path: str, user_id: str) -> dict:
     try:
-        config = get_user_config(user_id)
+        config      = get_user_config(user_id)
         chunk_count = process_document(file_path, user_id, config)
+
+        # ✅ Register document in metadata after successful indexing
+        filename = os.path.basename(file_path).replace(f"{user_id}_", "")
+        doc_id   = register_document(
+            user_id       = user_id,
+            filename      = filename,
+            file_path     = file_path,
+            chunks_created= chunk_count,
+            config_used   = config
+        )
+
         return {
-            "status": "success",
-            "message": "Document processed successfully.",
+            "status":        "success",
+            "message":       "Document processed successfully.",
+            "doc_id":        doc_id,
             "chunks_created": chunk_count,
-            "user_id": user_id,
+            "user_id":       user_id,
             "config_used": {
                 "embedding_model":   config.get("embedding_model"),
                 "chunking_strategy": config.get("chunking_strategy"),
@@ -31,7 +44,6 @@ def ingest_document(file_path: str, user_id: str) -> dict:
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
-
 
 def ask_question(query: str, user_id: str) -> dict:
     user_index_path = os.path.join(VECTOR_STORE_PATH, f"user_{user_id}")

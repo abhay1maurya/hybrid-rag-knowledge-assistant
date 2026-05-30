@@ -115,11 +115,22 @@ button {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* Expanded Full-Width Header */
 .nav-container {
-    height: 5rem;
+    height: 4.5rem; /* Adjusted to match landing page */
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    max-width: 110%; 
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+@media (min-width: 1024px) {
+    .nav-container {
+        padding: 0 3rem; 
+    }
 }
 
 .brand {
@@ -131,8 +142,8 @@ button {
 }
 
 .logo-box {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.5rem;
+    height: 2.5rem;
     background-color: var(--primary);
     border-radius: 0.5rem;
     display: flex;
@@ -149,7 +160,7 @@ button {
 
 .brand h2 {
     color: #fff;
-    font-size: 1.25rem;
+    font-size: 1.125rem; /* Adjusted to match landing page */
     font-weight: 700;
     letter-spacing: -0.025em;
 }
@@ -172,6 +183,11 @@ button {
     color: var(--primary);
 }
 
+/* Active State for Dark Orange link */
+.nav-links a.active {
+    color: var(--primary-hover); 
+}
+
 .nav-actions {
     display: flex;
     align-items: center;
@@ -180,9 +196,9 @@ button {
 }
 
 .btn {
-    padding: 0.5rem 1.25rem; /* px-5 py-2 */
+    padding: 0.625rem 1.5rem; /* px-5 py-2 */
     border-radius: 0.5rem;
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     font-weight: 700;
 }
 

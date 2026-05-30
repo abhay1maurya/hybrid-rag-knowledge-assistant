@@ -211,9 +211,34 @@ function init() {
     drawTrendChart(Number(rangeSelect.value));
 }
 
+// --- Event Listeners ---
 rangeSelect.addEventListener("change", () => drawTrendChart(Number(rangeSelect.value)));
 analyticsExportBtn.addEventListener("click", exportAnalytics);
 quickExportBtn.addEventListener("click", exportAnalytics);
 window.addEventListener("resize", () => drawTrendChart(Number(rangeSelect.value)));
+
+// --- File Upload Trigger Logic ---
+// Updated to exactly match the IDs in dashboard.html
+const dashUploadBtn = document.getElementById('upload-btn'); 
+const dashFileInput = document.getElementById('document-upload');
+
+if (dashUploadBtn && dashFileInput) {
+    dashUploadBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default button behavior
+        dashFileInput.click(); // Click the hidden input
+    });
+
+    dashFileInput.addEventListener('change', (event) => {
+        const files = event.target.files;
+        if (files.length > 0) {
+            if (files.length === 1) {
+                toast(`Uploading: ${files[0].name}...`);
+            } else {
+                toast(`Uploading ${files.length} documents...`);
+            }
+            dashFileInput.value = ''; // Reset input so same file can be selected again
+        }
+    });
+}
 
 init();

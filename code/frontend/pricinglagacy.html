@@ -5,19 +5,41 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Pricing - Hybrid RAG Knowledge Assistant</title>
     
-    <!-- External Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     
-    <!-- Custom CSS & JS -->
+    <script>
+      (function() {
+        try {
+          const savedData = localStorage.getItem('hybrid-rag-settings-v1');
+          if (savedData) {
+            const settings = JSON.parse(savedData);
+            const htmlTag = document.documentElement;
+            if (settings.theme === 'light') {
+              htmlTag.classList.remove('dark');
+            } else if (settings.theme === 'dark') {
+              htmlTag.classList.add('dark');
+            } else {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                htmlTag.classList.add('dark');
+              } else {
+                htmlTag.classList.remove('dark');
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Could not load theme settings.");
+        }
+      })();
+    </script>
+    
     <link rel="stylesheet" href="pricinglagacy.css">
     <script src="pricinglagacy.js" defer></script>
 </head>
 <body class="theme-transition">
     
-    <!-- Navigation -->
     <header class="site-header">
-        <div class="container nav-container">
+        <div class="nav-container">
             <a href="landingpage.html" class="brand">
                 <div class="logo-box">
                     <span>HR</span>
@@ -28,7 +50,7 @@
             <nav class="nav-links">
                 <a href="landingpage.html">Home</a>
                 <a href="features.html">Features</a>
-                <a href="pricinglagacy.html">Pricing</a>
+                <a href="pricinglagacy.html" class="active">Pricing</a>
                 <a href="dashboard.html">Dashboard</a>
                 <a href="settinglagacy.html">Settings</a>
             </nav>
@@ -41,7 +63,6 @@
     </header>
 
     <main class="bg-mesh min-h-screen">
-        <!-- Pricing Header -->
         <section class="pricing-header container">
             <div class="badge">
                 <span class="material-symbols-outlined">auto_awesome</span>
@@ -55,7 +76,6 @@
                 Choose the plan that fits your knowledge management needs. Save 20% with annual billing.
             </p>
 
-            <!-- Pricing Toggle -->
             <div class="billing-toggle-wrapper">
                 <span class="period-label active" id="label-monthly">Monthly</span>
                 
@@ -70,10 +90,8 @@
             </div>
         </section>
 
-        <!-- Pricing Cards -->
         <section class="pricing-cards container">
             
-            <!-- Starter Plan -->
             <div class="pricing-card">
                 <div class="card-header">
                     <h3>Starter</h3>
@@ -95,7 +113,6 @@
                 </div>
             </div>
 
-            <!-- Pro Plan -->
             <div class="pricing-card card-pro">
                 <div class="popular-badge">Most Popular</div>
                 <div class="card-header">
@@ -118,7 +135,6 @@
                 </div>
             </div>
 
-            <!-- Enterprise Plan -->
             <div class="pricing-card">
                 <div class="card-header">
                     <h3>Enterprise</h3>
@@ -140,7 +156,6 @@
             </div>
         </section>
 
-        <!-- FAQ Section -->
         <section class="faq-section container">
             <h2>Frequently Asked Questions</h2>
             <div class="faq-list">
@@ -178,7 +193,6 @@
             </div>
         </section>
 
-        <!-- Compare Table Section -->
         <section class="compare-section container">
             <div class="compare-header">
                 <h2>Compare all features</h2>
@@ -195,7 +209,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Core Features -->
                         <tr class="table-section-header">
                             <td colspan="4">Core Features</td>
                         </tr>
@@ -218,7 +231,6 @@
                             <td><span class="material-symbols-outlined icon-check">check_circle</span></td>
                         </tr>
 
-                        <!-- AI Capabilities -->
                         <tr class="table-section-header">
                             <td colspan="4">AI Capabilities</td>
                         </tr>
@@ -241,7 +253,6 @@
                             <td><span class="material-symbols-outlined icon-check">check_circle</span></td>
                         </tr>
 
-                        <!-- Security & Support -->
                         <tr class="table-section-header">
                             <td colspan="4">Security & Support</td>
                         </tr>
@@ -264,7 +275,6 @@
                             <td><span class="material-symbols-outlined icon-check">check_circle</span></td>
                         </tr>
 
-                        <!-- Limits -->
                         <tr class="table-section-header">
                             <td colspan="4">Limits</td>
                         </tr>
@@ -291,7 +301,6 @@
             </div>
         </section>
 
-        <!-- CTA Section -->
         <section class="cta-section container">
             <div class="cta-box">
                 <div class="cta-overlay"></div>
@@ -307,7 +316,6 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="site-footer">
         <div class="container footer-grid">
             <div class="footer-brand-col">
@@ -327,9 +335,10 @@
             <div class="footer-links">
                 <h5>Product</h5>
                 <ul>
+                     <li><a href="landingpage.html" >Home</a></li>
                     <li><a href="features.html">Features</a></li>
                     <li><a href="pricing.html">Pricing</a></li>
-                    <li><a href="settinglagacy.html" >Security</a></li>
+                   
                     <li><a href="chat.html" >Chat</a></li>
                 </ul>
             </div>
@@ -339,25 +348,24 @@
                     <li><a href="dashboard.html" >About</a></li>
                     <li><a href="sitemap.html" >Careers</a></li>
                     <li><a href="support.html" >Contact</a></li>
-                    <li><a href="landingpage.html" >Blog</a></li>
+                    <li><a href="settinglagacy.html" >Settings</a></li>
                 </ul>
             </div>
             <div class="footer-links">
                 <h5>Support</h5>
                 <ul>
                     <li><a href="doclib.html" >Documentation</a></li>
-                    <li><a href="sitemap.html" >Help Center</a></li>
-                    <li><a href="dashboard.html" >API Status</a></li>
-                    <li><a href="#" onclick="alert('Loading Integrations...')">Integrations</a></li>
-                </ul>
+                    <li><a href="dashboard.html" >Dashboard</a></li>
+                    <li><a href="sitemap.html" >Sitemap</a></li>
+                 
             </div>
         </div>
         <div class="container footer-bottom">
-            <p>© 2024 Hybrid RAG Knowledge Assistant. All rights reserved.</p>
+            <p>© 2026 Hybrid RAG Knowledge Assistant. All rights reserved.</p>
             <div class="legal-links">
-                <a href="#" onclick="alert('Loading Privacy Policy...')">Privacy Policy</a>
-                <a href="#" onclick="alert('Loading Terms of Service...')">Terms of Service</a>
-                <a href="#" onclick="alert('Loading Cookie Policy...')">Cookie Policy</a>
+                <a href="policies.html" >Privacy Policy</a>
+                <a href="policies.html" >Terms of Service</a>
+                <a href="policies.html" >Cookie Policy</a>
             </div>
         </div>
     </footer>

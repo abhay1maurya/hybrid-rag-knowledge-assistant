@@ -186,11 +186,14 @@ button {
 .header-nav a {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--text-muted);
+    color: #ffffff;
     transition: color 0.2s;
 }
-.header-nav a:hover, .header-nav a.active {
+.header-nav a:hover {
     color: var(--primary);
+}
+.header-nav a.active {
+    color: #d55211;
 }
 
 .header-actions {

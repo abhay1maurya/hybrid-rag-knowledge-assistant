@@ -40,11 +40,12 @@ body.app-body {
     color: var(--text-main);
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
-    /* Custom Background Mesh from Pricing Page */
+}
+
+/* Custom Background Mesh from Pricing Page */
 .bg-mesh {
     background-image: radial-gradient(at 0% 0%, rgba(236, 91, 19, 0.15) 0px, transparent 50%),
                       radial-gradient(at 100% 100%, rgba(236, 91, 19, 0.1) 0px, transparent 50%);
-}
 }
 
 .text-primary { color: var(--primary); }
@@ -122,18 +123,30 @@ button a { text-decoration: none; color: inherit; }
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.header-inner { height: 5rem; display: flex; align-items: center; }
+/* UPDATED: Full width header-inner */
+.header-inner { 
+    height: 4.5rem; 
+    display: flex; 
+    align-items: center;
+    width: 100%;
+    padding: 0 1.5rem; 
+}
+@media (min-width: 1024px) {
+    .header-inner {
+        padding: 0 2.5rem;
+    }
+}
 
 .brand-logo { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; flex-shrink: 0; }
 .brand-icon {
-    width: 2.25rem; height: 2.25rem;
+    width: 2.5rem; height: 2.50rem;
     background-color: var(--primary);
-    border-radius: 0.25rem;
+    border-radius: 0.5rem;
     display: flex; align-items: center; justify-content: center;
 }
 .brand-icon span { color: #000; font-weight: 900; font-size: 0.875rem; letter-spacing: -0.05em; }
 .brand-icon.small { width: 2rem; height: 2rem; }
-.brand-text { color: #ffffff; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.025em; }
+.brand-text { color: #ffffff; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.025em; }
 
 .desktop-nav { display: none; flex: 1; justify-content: center; align-items: center; gap: 2.5rem; }
 @media (min-width: 768px) { .desktop-nav { display: flex; } }
@@ -142,6 +155,10 @@ button a { text-decoration: none; color: inherit; }
     text-decoration: none; transition: color 0.2s ease;
 }
 .desktop-nav a:hover { color: var(--primary); }
+.desktop-nav a[href="landingpage.html"],
+.desktop-nav a[href="#"] {
+    color: var(--primary-dark);
+}
 
 .header-actions { flex-shrink: 0; display: flex; gap: 0.75rem; margin-left: auto; }
 
@@ -169,23 +186,7 @@ button a { text-decoration: none; color: inherit; }
 
 .hero-visual { width: 100%; display: flex; align-items: center; justify-content: center; }
 .visual-wrapper { position: relative; width: 100%; max-width: 480px; }
-.visual-glow {
-    display: none;
-}
-
-.visual-card {
-    position: relative; background-color: var(--feature-bg);
-    border: 1px solid var(--border-color); border-radius: 1rem;
-    overflow: hidden; aspect-ratio: 24/9; box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.14);
-    width: 100%; height: auto;
-}
-.visual-card-inner {
-    width: 100%; height: 100%;
-    background: linear-gradient(to bottom right, var(--primary-light), rgba(249, 115, 22, 0.1));
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; border-radius: 12px;
-}
-.visual-icon { color: var(--primary); font-size: 4rem; opacity: 0.5; }
+.visual-glow { display: none; }
 
 /* Stats Section */
 .stats-section { margin-bottom: 3rem; }
@@ -270,9 +271,6 @@ button a { text-decoration: none; color: inherit; }
 .cta-btn-primary:hover { transform: scale(1.05); }
 
 /* Footer */
-/* =========================================
-   Footer (Matching Pricing Legacy)
-   ========================================= */
 .site-footer {
     border-top: 1px solid var(--border-color);
     padding: 5rem 1.5rem;
@@ -381,7 +379,6 @@ button a { text-decoration: none; color: inherit; }
     color: var(--primary);
 }
 
-/* Social Links Overrides to match Pricing */
 .social-links {
     display: flex;
     gap: 1rem;
@@ -402,7 +399,6 @@ button a { text-decoration: none; color: inherit; }
     transform: none;
 }
 
-/* Newsletter Subscription (Keeping functionality but matching legacy spacing) */
 .footer-subscribe {
     display: flex;
     gap: 0.5rem;
@@ -439,7 +435,6 @@ button a { text-decoration: none; color: inherit; }
     margin-bottom: 1.5rem;
 }
 
-/* Footer Bottom Actions */
 .footer-bottom-actions {
     display: flex;
     align-items: center;
@@ -472,19 +467,6 @@ button a { text-decoration: none; color: inherit; }
     }
 }
 
-
-.legal-links a:hover { color: var(--primary); }
-
-.hero-dashboard-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.hero-dashboard-img:hover {
-    transform: scale(1.02);
-}
 
 /* =========================================
    Chat Mockup Styles
@@ -527,7 +509,6 @@ button a { text-decoration: none; color: inherit; }
     scroll-behavior: smooth;
 }
 
-/* Scrollbar styling for chat */
 .chat-window::-webkit-scrollbar { width: 6px; }
 .chat-window::-webkit-scrollbar-track { background: transparent; }
 .chat-window::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 10px; }
@@ -612,7 +593,6 @@ button a { text-decoration: none; color: inherit; }
     cursor: not-allowed;
 }
 
-/* Animation for new messages */
 .fade-in-up {
     animation: fadeInUp 0.4s ease forwards;
 }
@@ -625,14 +605,5 @@ button a { text-decoration: none; color: inherit; }
     to {
         opacity: 1;
         transform: translateY(0);
-    }
-}
-
-
-
-@media (max-width: 767px) {
-    .footer-bottom-actions {
-        flex-direction: column;
-        gap: 1.5rem;
     }
 }
