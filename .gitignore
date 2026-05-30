@@ -6,3 +6,8 @@ node_modules/
 *.jar
 *.idea
 .vscode
+code/ai_service/__pycache__/main.cpython-313.pyc
+code/ai_service/doc_metadata/user_3.json
+/code/ai_service/__pycache__
+/code/ai_service/user_configs
+/code/ai_service/__pycache__
