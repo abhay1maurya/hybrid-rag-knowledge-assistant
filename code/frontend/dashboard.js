@@ -56,9 +56,9 @@ function formatNumber(value) {
 function renderKpis() {
     kpiGrid.innerHTML = analyticsData.kpis.map((kpi) => `
         <article class="stat-card">
-          <p class="subtitle">${kpi.label}</p>
+          <p class="stat-header">${kpi.label}</p>
           <p class="stat-value">${formatNumber(kpi.value)}</p>
-          <p class="badge" style="background:none; border:none; padding:0; color:var(--brand)">${kpi.delta}</p>
+          <p class="badge" style="background:none; border:none; padding:0; color:var(--primary); font-size:0.875rem; margin-top:0.25rem; font-weight: 500;">${kpi.delta}</p>
         </article>
     `).join("");
 }
@@ -79,12 +79,12 @@ function renderChannels() {
 
 function renderUsers() {
     userTableBody.innerHTML = analyticsData.users.map((user, index) => `
-        <tr data-index="${index}" class="cursor-pointer">
-          <td>${user.name}</td>
+        <tr data-index="${index}">
+          <td><strong>${user.name}</strong></td>
           <td>${user.sessions}</td>
           <td>${user.latency}</td>
           <td>${user.satisfaction}</td>
-          <td style="color:var(--stone-400)">${user.lastActive}</td>
+          <td style="color:var(--text-muted)">${user.lastActive}</td>
         </tr>
     `).join("");
 
@@ -92,8 +92,8 @@ function renderUsers() {
         row.addEventListener("click", () => {
             const selectedIndex = Number(row.dataset.index);
             renderUserDetails(analyticsData.users[selectedIndex]);
-            userTableBody.querySelectorAll("tr").forEach((r) => r.classList.remove("bg-brand/20"));
-            row.classList.add("bg-brand/20");
+            userTableBody.querySelectorAll("tr").forEach((r) => r.classList.remove("active-row"));
+            row.classList.add("active-row");
         });
     });
 }
@@ -122,7 +122,7 @@ function renderUserDetails(user) {
           <p class="detail-value">${user.escalations}</p>
         </div>
       </div>
-      <p class="detail-summary">Satisfaction score: ${user.satisfaction} | Last active: ${user.lastActive}</p>
+      <p class="detail-summary">Satisfaction score: ${user.satisfaction} &bull; Last active: ${user.lastActive}</p>
     `;
 }
 
@@ -136,7 +136,7 @@ function renderIntents() {
               <span>${intent.name}</span>
               <span>${intent.count.toLocaleString()}</span>
             </div>
-            <div class="progress-bar-bg" style="height:10px">
+            <div class="progress-bar-bg">
               <div class="progress-bar-fill" style="width: ${width}%"></div>
             </div>
           </div>
@@ -165,7 +165,8 @@ function drawTrendChart(days) {
     const offsetX = 16;
     const offsetY = 12;
 
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.15)";
+    // Use a generic subtle border color for the grid lines
+    ctx.strokeStyle = "rgba(128, 128, 128, 0.2)"; 
     ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i += 1) {
         const y = offsetY + (chartH / 4) * i;
@@ -180,13 +181,16 @@ function drawTrendChart(days) {
     });
 
     ctx.lineWidth = 3;
-    ctx.strokeStyle = "#f97316";
+    // Uses the primary brand color directly (#ec5b13 mapped to JS context)
+    ctx.strokeStyle = "#ec5b13"; 
     ctx.stroke();
 
     const last = data[data.length - 1];
     const prev = data[data.length - 2] || last;
     const diff = (((last - prev) / prev) * 100).toFixed(1);
     trendLabel.textContent = `${diff >= 0 ? "+" : ""}${diff}% vs prev day`;
+    trendLabel.style.color = "var(--primary)";
+    trendLabel.style.fontSize = "0.875rem";
 }
 
 function exportAnalytics() {
@@ -206,7 +210,7 @@ function init() {
     renderUsers();
     renderUserDetails(analyticsData.users[0]);
     const firstRow = userTableBody.querySelector("tr");
-    if (firstRow) firstRow.classList.add("bg-brand/20");
+    if (firstRow) firstRow.classList.add("active-row");
     renderIntents();
     drawTrendChart(Number(rangeSelect.value));
 }
@@ -218,14 +222,13 @@ quickExportBtn.addEventListener("click", exportAnalytics);
 window.addEventListener("resize", () => drawTrendChart(Number(rangeSelect.value)));
 
 // --- File Upload Trigger Logic ---
-// Updated to exactly match the IDs in dashboard.html
 const dashUploadBtn = document.getElementById('upload-btn'); 
 const dashFileInput = document.getElementById('document-upload');
 
 if (dashUploadBtn && dashFileInput) {
     dashUploadBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent default button behavior
-        dashFileInput.click(); // Click the hidden input
+        e.preventDefault(); 
+        dashFileInput.click(); 
     });
 
     dashFileInput.addEventListener('change', (event) => {
@@ -236,7 +239,7 @@ if (dashUploadBtn && dashFileInput) {
             } else {
                 toast(`Uploading ${files.length} documents...`);
             }
-            dashFileInput.value = ''; // Reset input so same file can be selected again
+            dashFileInput.value = ''; 
         }
     });
 }

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="landingpage.css" />
+    <script src="landingpage.js" defer></script>
+    <title>FAQ - Hybrid RAG Knowledge Assistant</title>
+</head>
+
+<body class="app-body bg-mesh">
+    <div class="app-wrapper">
+        <div class="layout-container">
+            
+            <header class="site-header">
+                <div class="header-inner">
+                    <div class="brand-logo" data-href="landingpage.html">
+                        <div class="brand-icon">
+                            <span>HR</span>
+                        </div>
+                        <h2 class="brand-text">Hybrid RAG</h2>
+                    </div>
+
+                    <nav class="desktop-nav">
+                        <a href="landingpage.html">Home</a>
+                        <a href="features.html">Features</a>
+                        <a href="pricinglagacy.html">Pricing</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="about.html">About us</a>
+                        <a href="settinglagacy.html">Settings</a>
+                    </nav>
+
+                    <div class="header-actions">
+                        <button class="btn-outline-white" data-href="loginpage.html">Login</button>
+                        <button class="btn-primary" data-href="signup.html">Sign Up</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <section class="container" style="padding-top: 4rem; padding-bottom: 2rem; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <div class="hero-badge">
+                        <span>Support & Help Center</span>
+                    </div>
+                    <h1 class="features-title" style="margin-bottom: 1rem;">Frequently Asked Questions</h1>
+                    <p class="features-description">
+                        Everything you need to know about the Hybrid RAG Knowledge Assistant, offline modes, and data privacy.
+                    </p>
+                </section>
+
+                <section class="container faq-section" style="padding-top: 0;">
+                    
+                    <div class="faq-container">
+                        <h3 style="color: var(--primary); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;">General Information</h3>
+                        
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>What makes "Hybrid" RAG different?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Unlike standard RAG systems, our platform allows you to seamlessly toggle between powerful cloud-based LLMs for deep, complex reasoning and completely local, offline models for maximum privacy and zero-latency document retrieval.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Which file formats are supported?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Currently, Hybrid RAG supports PDF, DOCX, TXT, and Markdown files. We automatically parse text, tables, and basic formatting to ensure the AI understands the full context of your uploads.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Is there a limit to the size of the files I can upload?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Yes, to ensure optimal processing speed and vectorization, the maximum file size is currently capped at 50MB per document for standard tier users. Enterprise plans support larger file ingestion.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Can the AI remember my previous questions?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Yes! Within a specific chat session, the AI retains conversational memory. You can ask follow-up questions without needing to constantly repeat the context of your original query.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>How many documents can I chat with at once?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>You can create dedicated "Workspaces" and upload up to 50 documents per workspace on the standard plan. When you query a workspace, the AI searches across all contained documents simultaneously to synthesize an answer.</p>
+                            </div>
+                        </div>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 0.5rem; font-size: 1.25rem;">Technical & Offline Mode</h3>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>How does the Offline AI mode actually work?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Offline mode downloads quantized versions of open-source language models directly to your machine. Once downloaded, all document embedding, vector searching, and answer generation happen entirely on your local hardware without sending a single byte over the internet.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Do I need a high-end GPU for Offline Mode?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>No! While a dedicated GPU (like an NVIDIA RTX series) significantly speeds up response times, our assistant is highly optimized. Thanks to advanced model quantization, you can run the offline inference efficiently on modern multi-core CPUs.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Which open-source models are available offline?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>We continually update our model registry. Currently, we support optimized, locally-runnable versions of Meta's Llama 3, Mistral, and Google's Gemma models, available in varying parameter sizes depending on your hardware limits.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>How much local disk space does the Offline Mode require?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>The base application requires minimal space (under 500MB). However, downloading the local AI models will require additional storage. A standard 7B parameter quantized model typically requires between 4GB to 6GB of free disk space.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Does the system use OCR for scanned documents?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Yes. If you upload a PDF consisting only of scanned images, our pipeline utilizes an integrated Optical Character Recognition (OCR) step to extract the raw text before passing it to the vector database for RAG processing.</p>
+                            </div>
+                        </div>
+
+                        <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 0.5rem; font-size: 1.25rem;">Privacy & Security</h3>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Is my data used to train the AI models?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Absolutely not. We prioritize enterprise-grade security. In Offline AI mode, your documents literally never leave your computer. In online mode, we utilize isolated data containers via enterprise APIs, explicitly opting out of any data sharing for LLM training purposes.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>How do you handle user authentication and security?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>We use industry-standard JWT (JSON Web Tokens) for secure, stateless user sessions. All connections to our online services are protected by strict TLS encryption, ensuring your queries and document uploads are completely secure in transit.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Where are my documents stored when using the online mode?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>When utilizing the cloud processing features, your files are securely stored in encrypted AWS cloud storage buckets. Data is localized to specific geographic regions to comply with local data residency laws.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Who has access to my uploaded documents?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Only you and your authorized workspace members. Our platform employs strict Role-Based Access Control (RBAC). Our engineering and support teams cannot view, access, or query your uploaded proprietary data.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Can I delete my data permanently?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Yes. You retain full ownership and control over your data. If you delete a document, a workspace, or your entire account, all associated raw files and vector embeddings are permanently wiped from our servers immediately.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="container features-wrapper" style="max-width: 800px; margin: 0 auto 4rem auto; text-align: center; padding: 2rem;">
+                    <div class="feature-icon" style="margin: 0 auto 1rem auto; width: 4rem; height: 4rem;">
+                        <span class="material-symbols-outlined" style="font-size: 2rem;">support_agent</span>
+                    </div>
+                    <h3 style="color: var(--text-main); font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Still have questions?</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Our support team is ready to help you get the most out of your documents.</p>
+                    <button class="btn-primary" data-href="support.html">Contact Support</button>
+                </section>
+            </main>
+
+            <footer class="site-footer">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <div class="brand-icon small">
+                                <span>HR</span>
+                            </div>
+                            <h2>Hybrid RAG</h2>
+                        </div>
+                        <p class="footer-desc">The future of private knowledge management.</p>
+                        <div class="social-links">
+                            <a href="#" data-alert="Going to Social Link..."><span class="material-symbols-outlined">public</span></a>
+                            <a href="#" data-alert="Going to Social Link..."><span class="material-symbols-outlined">share</span></a>
+                            <a href="#" data-alert="Going to Social Link..."><span class="material-symbols-outlined">alternate_email</span></a>
+                        </div>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Product</h5>
+                        <ul>
+                            <li><a href="landingpage.html">Home</a></li>
+                            <li><a href="features.html">Features</a></li>
+                            <li><a href="pricinglagacy.html">Pricing</a></li>
+                            <li><a href="dashboard.html">Dashboard</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Company</h5>
+                        <ul>
+                            <li><a href="about.html">About us</a></li>
+                            <li><a href="support.html">Careers</a></li>
+                            <li><a href="support.html">Support</a></li>
+                            <li><a href="settinglagacy.html">Settings</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Resources</h5>
+                        <ul>
+                            <li><a href="faq.html">FAQ</a></li>
+                            <li><a href="dashboard.html">Dashboard</a></li>
+                            <li><a href="sitemap.html">Sitemap</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2024 Hybrid RAG Knowledge Assistant. All rights reserved.</p>
+                    <div class="footer-bottom-actions">
+                        <div class="legal-links">
+                            <a href="policies.html">Privacy Policy</a>
+                            <a href="policies.html">Terms of Service</a>
+                            <a href="policies.html">Cookie Policy</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

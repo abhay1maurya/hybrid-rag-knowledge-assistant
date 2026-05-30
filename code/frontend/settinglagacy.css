@@ -186,9 +186,10 @@ button {
 .header-nav a {
     font-size: 0.875rem;
     font-weight: 500;
-    color: #ffffff;
+    color: var(--text-main); /* This adapts to your active theme */
     transition: color 0.2s;
 }
+
 .header-nav a:hover {
     color: var(--primary);
 }
