@@ -1,6 +1,6 @@
 import os
 import re
-from langchain_community.document_loaders import PyPDFLoader
+from file_handlers import HandlerFactory
 from langchain_experimental.text_splitter import SemanticChunker
 from langchain_text_splitters import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain_community.vectorstores import FAISS
@@ -47,9 +47,6 @@ def _build_splitter(chunking_strategy: str, chunking_params: dict, embeddings=No
 
 
 def process_document(file_path: str, user_id: str, user_config: dict = None) -> int:
-    """
-    Loads a PDF, cleans, chunks with user config, embeds and saves to FAISS.
-    """
     from user_config_manager import get_user_config
     config = user_config or get_user_config(user_id)
 
@@ -57,37 +54,48 @@ def process_document(file_path: str, user_id: str, user_config: dict = None) -> 
     chunking_strategy = config.get("chunking_strategy", "recursive")
     chunking_params   = config.get("chunking_params", {})
 
-    print(f"[DocProcessor] embedding={embedding_model}, chunking={chunking_strategy}")
+    # 1. Validate file is supported
+    if not HandlerFactory.is_supported(file_path):
+        raise ValueError(
+            f"Unsupported file type. Supported: {HandlerFactory.supported_extensions()}"
+        )
 
-    # 1. Load PDF
-    print(f"[1/5] Loading PDF...")
-    loader = PyPDFLoader(file_path)
-    documents = loader.load()
-    print(f"      {len(documents)} pages loaded.")
+    # 2. Load using correct handler
+    print(f"[1/5] Loading file: {file_path}")
+    handler   = HandlerFactory.get_handler(file_path)
+    is_valid, err = handler.validate(file_path)
+    if not is_valid:
+        raise ValueError(err)
 
-    # 2. Clean text
+    documents = handler.load(file_path)
+    if not documents:
+        raise ValueError("No content extracted from file.")
+    print(f"      Loaded {len(documents)} document sections.")
+
+    # 3. Clean text
     print(f"[2/5] Cleaning text...")
     for doc in documents:
         doc.page_content = clean_text(doc.page_content)
 
-    # 3. Get embeddings
+    # 4. Get embeddings
     print(f"[3/5] Loading embedding model '{embedding_model}'...")
     embeddings = get_embeddings(embedding_model)
 
-    # 4. Chunk
+    # 5. Chunk
     print(f"[4/5] Chunking with strategy '{chunking_strategy}'...")
-    splitter = _build_splitter(chunking_strategy, chunking_params, embeddings)
-
-    # Fallback for oversized chunks
     fallback_splitter = RecursiveCharacterTextSplitter(
         chunk_size=800, chunk_overlap=100
     )
 
     docs = []
     if chunking_strategy == "semantic":
-        # Semantic chunker uses create_documents
+        splitter = SemanticChunker(
+            embeddings,
+            breakpoint_threshold_type=chunking_params.get("breakpoint_threshold_type", "standard_deviation"),
+            breakpoint_threshold_amount=chunking_params.get("breakpoint_threshold_amount", 1.0)
+        )
         for i, document in enumerate(documents):
-            print(f"      Page {i+1}/{len(documents)}...", end="\r")
+            print(f"      Section {i+1}/{len(documents)}...", end="\r")
             if not document.page_content.strip() or len(document.page_content.strip()) < 100:
                 docs.append(document)
                 continue
@@ -101,7 +109,19 @@ def process_document(file_path: str, user_id: str, user_config: dict = None) -> 
                 else:
                     docs.append(chunk)
     else:
-        # Recursive and fixed use split_documents
+        chunk_size    = chunking_params.get("chunk_size", 600)
+        chunk_overlap = chunking_params.get("chunk_overlap", 100)
+
+        if chunking_strategy == "fixed":
+            splitter = CharacterTextSplitter(
+                chunk_size=chunk_size, chunk_overlap=chunk_overlap, separator=" "
+            )
+        else:  # recursive (default)
+            splitter = RecursiveCharacterTextSplitter(
+                chunk_size=chunk_size, chunk_overlap=chunk_overlap,
+                separators=["\n\n", "\n", ". ", "! ", "? ", " ", ""]
+            )
+
         raw_chunks = splitter.split_documents(documents)
         for chunk in raw_chunks:
             if len(chunk.page_content) > 1200:
@@ -111,16 +131,16 @@ def process_document(file_path: str, user_id: str, user_config: dict = None) -> 
 
     print(f"\n      {len(docs)} chunks created.")
 
-    # 5. Add metadata and save
+    # 6. Add metadata
     for doc in docs:
         doc.metadata["user_id"]           = user_id
         doc.metadata["chunk_size"]        = len(doc.page_content)
         doc.metadata["embedding_model"]   = embedding_model
         doc.metadata["chunking_strategy"] = chunking_strategy
 
-    print(f"[5/5] Saving to FAISS vector store...")
+    # 7. Save to FAISS
+    print(f"[5/5] Saving to FAISS...")
     user_index_path = os.path.join(VECTOR_STORE_PATH, f"user_{user_id}")
-
     if os.path.exists(user_index_path):
         vectorstore = FAISS.load_local(
             user_index_path, embeddings,

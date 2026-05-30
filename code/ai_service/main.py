@@ -9,9 +9,11 @@ from llm_manager import clear_llm_cache, get_current_provider_info
 from stream_pipeline import ask_question_stream
 from rag_pipeline import ingest_document, ask_question, reset_user_session
 from document_router import router as document_router
+from file_handlers import HandlerFactory 
+from evaluator.eval_router import router as eval_router
 
 app = FastAPI(title="DocuMind AI Service", version="3.0")
-
+ALLOWED_EXTENSIONS = HandlerFactory.supported_extensions()
 app.add_middleware(
     CORSMiddleware, allow_origins=["*"],
     allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
@@ -20,6 +22,7 @@ app.add_middleware(
 # ✅ Mount config router — adds all /config/* endpoints
 app.include_router(config_router)
 app.include_router(document_router)  
+app.include_router(eval_router)  
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -32,44 +35,47 @@ def read_root():
 
 
 @app.post("/upload")
-async def upload_file(
-    user_id: str = Form(...),
-    file: UploadFile = File(...)
-):
-    """
-    Upload a PDF and process it into the FAISS vector database.
-    """
-    if not file.filename.endswith('.pdf'):
-        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+async def upload_file(user_id: str = Form(...), file: UploadFile = File(...)):
+    """Supports PDF, TXT, MD, DOCX, CSV, XLSX."""
+
+    # ✅ Dynamic extension check — works for all supported types
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file type '{ext}'. Supported: {ALLOWED_EXTENSIONS}"
+        )
 
     file_path = os.path.join(UPLOAD_DIR, f"{user_id}_{file.filename}")
-
     try:
-        # Save file temporarily
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # ✅ Use ingest_document from rag_pipeline (returns a dict now)
         result = ingest_document(file_path, user_id)
-
         if result["status"] == "error":
             raise HTTPException(status_code=500, detail=result["message"])
-
-        return {
-            "status": "success",
-            "message": f"Processed '{file.filename}' successfully.",
-            "chunks_created": result["chunks_created"],
-            "user_id": user_id
-        }
+        return result
 
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
-        # Clean up temp file after processing
         if os.path.exists(file_path):
             os.remove(file_path)
+
+@app.get("/supported-formats")
+def supported_formats():
+    """Returns all supported file formats."""
+    return {
+        "supported_extensions": ALLOWED_EXTENSIONS,
+        "formats": {
+            "pdf":  {"extensions": [".pdf"],              "description": "PDF documents"},
+            "text": {"extensions": [".txt", ".md", ".rst", ".log"], "description": "Plain text and markdown"},
+            "word": {"extensions": [".docx", ".doc"],     "description": "Microsoft Word documents"},
+            "data": {"extensions": [".csv", ".xlsx", ".xls"], "description": "Spreadsheets and CSV data"},
+        }
+    }
 
 
 @app.post("/ask")
