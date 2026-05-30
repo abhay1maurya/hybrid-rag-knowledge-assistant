@@ -155,10 +155,30 @@ button a { text-decoration: none; color: inherit; }
     text-decoration: none; transition: color 0.2s ease;
 }
 .desktop-nav a:hover { color: var(--primary); }
-.desktop-nav a[href="landingpage.html"],
+.desktop-nav a[href="landingpage.html"] {
+    color: #ffffff;
+}
 .desktop-nav a[href="#"] {
     color: var(--primary-dark);
 }
+
+/* Hover for Home link: show dark orange on hover */
+.desktop-nav a[href="landingpage.html"]:hover {
+    color: var(--primary-dark);
+    transition: color 0.15s ease;
+}
+
+/* Active nav link styling (FAQ): no box, dark-orange text */
+.desktop-nav a.active {
+    color: var(--primary-dark);
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-weight: 700;
+    transition: color 0.15s ease;
+}
+.desktop-nav a.active:hover { color: var(--primary-dark); transform: none; }
 
 .header-actions { flex-shrink: 0; display: flex; gap: 0.75rem; margin-left: auto; }
 

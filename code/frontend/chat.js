@@ -265,7 +265,7 @@ function renderHistoryList() {
   });
 
   if (!filtered.length) {
-    list.innerHTML = '<p class="history-bubble history-text text-center">No chat history yet.</p>';
+    list.innerHTML = '<p class="history-bubble history-text text-center" style="text-align:center;">No chat history yet.</p>';
     return;
   }
 

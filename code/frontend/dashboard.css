@@ -317,6 +317,22 @@ button a { text-decoration: none; color: inherit; }
 }
 .select-input:focus { border-color: var(--primary); }
 
+/* Analytics range selector: stronger orange emphasis */
+.analytics-controls .select-input {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: #ffffff;
+    font-weight: 600;
+}
+.analytics-controls .select-input:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+.analytics-controls .select-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(236, 91, 19, 0.2);
+}
+
 .charts-row, .users-row {
     display: grid;
     grid-template-columns: 2fr 1fr;
