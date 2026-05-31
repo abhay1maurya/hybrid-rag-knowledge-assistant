@@ -1,46 +1,25 @@
-const analyticsData = {
-    kpis: [
-      { label: "Active Users", value: 4286, delta: "+8.4%" },
-      { label: "Total Questions", value: 39122, delta: "+14.2%" },
-      { label: "Avg Response Time", value: "1.18s", delta: "-9.1%" },
-      { label: "Positive Feedback", value: "92.6%", delta: "+2.3%" }
-    ],
-    dailyUsage: [
-      710, 690, 740, 760, 810, 835, 790, 820, 870, 920,
-      905, 930, 940, 890, 910, 960, 980, 1020, 1060, 1040,
-      1090, 1140, 1120, 1165, 1190, 1240, 1210, 1280, 1320, 1360
-    ],
-    channels: [
-      { name: "Web App", share: 56 },
-      { name: "Microsoft Teams", share: 22 },
-      { name: "Mobile", share: 14 },
-      { name: "API", share: 8 }
-    ],
-    intents: [
-      { name: "Product Docs", count: 12730 },
-      { name: "Troubleshooting", count: 10220 },
-      { name: "Policy Search", count: 7210 },
-      { name: "Feature Requests", count: 5230 },
-      { name: "Onboarding", count: 3732 }
-    ],
-    users: [
-      { id: "U-104", name: "Aarav Shah", sessions: 81, latency: "0.92s", satisfaction: "96%", lastActive: "2m ago", topIntent: "Troubleshooting", docsViewed: 38, avgTokens: 970, escalations: 1 },
-      { id: "U-221", name: "Nina Patel", sessions: 69, latency: "1.05s", satisfaction: "94%", lastActive: "8m ago", topIntent: "Product Docs", docsViewed: 41, avgTokens: 1150, escalations: 0 },
-      { id: "U-317", name: "Leo Kim", sessions: 63, latency: "1.24s", satisfaction: "89%", lastActive: "16m ago", topIntent: "Policy Search", docsViewed: 27, avgTokens: 1022, escalations: 2 },
-      { id: "U-502", name: "Maya Chen", sessions: 55, latency: "1.13s", satisfaction: "91%", lastActive: "20m ago", topIntent: "Feature Requests", docsViewed: 21, avgTokens: 866, escalations: 1 },
-      { id: "U-590", name: "Omar Reyes", sessions: 49, latency: "1.30s", satisfaction: "87%", lastActive: "33m ago", topIntent: "Onboarding", docsViewed: 19, avgTokens: 799, escalations: 3 }
-    ]
-};
+const API = "http://localhost:8000";
+const USER_ID_KEY = "documind_user_id";
 
-const kpiGrid = document.getElementById("kpiGrid");
-const channelList = document.getElementById("channelList");
-const userTableBody = document.getElementById("userTableBody");
-const userDetails = document.getElementById("userDetails");
-const intentBars = document.getElementById("intentBars");
-const trendLabel = document.getElementById("trendLabel");
-const rangeSelect = document.getElementById("rangeSelect");
-const analyticsExportBtn = document.getElementById("analyticsExportBtn");
-const quickExportBtn = document.getElementById("quickExportBtn");
+const statTotalDocs = document.getElementById("stat-total-docs");
+const statTotalChunks = document.getElementById("stat-total-chunks");
+const statDocSize = document.getElementById("stat-doc-size");
+const statIndexSize = document.getElementById("stat-index-size");
+const statDocsMeta = document.getElementById("stat-docs-meta");
+const statChunksMeta = document.getElementById("stat-chunks-meta");
+const statDocSizeMeta = document.getElementById("stat-doc-size-meta");
+const statIndexMeta = document.getElementById("stat-index-meta");
+
+const recentDocs = document.getElementById("recent-docs");
+const statusList = document.getElementById("statusList");
+const docTableBody = document.getElementById("docTableBody");
+const evalSummary = document.getElementById("evalSummary");
+
+const userIdInput = document.getElementById("user-id-input");
+const refreshBtn = document.getElementById("refresh-btn");
+const reloadBtn = document.getElementById("reload-btn");
+const uploadBtn = document.getElementById("upload-btn");
+const fileInput = document.getElementById("document-upload");
 
 function toast(msg) {
     const n = document.getElementById('note');
@@ -48,200 +27,217 @@ function toast(msg) {
     n.classList.remove('hidden');
     setTimeout(() => n.classList.add('hidden'), 1800);
 }
-
 function formatNumber(value) {
-    return typeof value === "number" ? value.toLocaleString() : value;
+  return typeof value === "number" ? value.toLocaleString() : String(value || "--");
 }
 
-function renderKpis() {
-    kpiGrid.innerHTML = analyticsData.kpis.map((kpi) => `
-        <article class="stat-card">
-          <p class="stat-header">${kpi.label}</p>
-          <p class="stat-value">${formatNumber(kpi.value)}</p>
-          <p class="badge" style="background:none; border:none; padding:0; color:var(--primary); font-size:0.875rem; margin-top:0.25rem; font-weight: 500;">${kpi.delta}</p>
-        </article>
-    `).join("");
+function formatBytesKb(kb) {
+  if (kb === undefined || kb === null) return "--";
+  if (kb < 1024) return `${kb.toFixed(2)} KB`;
+  if (kb < 1024 * 1024) return `${(kb / 1024).toFixed(2)} MB`;
+  return `${(kb / 1024 / 1024).toFixed(2)} GB`;
 }
 
-function renderChannels() {
-    channelList.innerHTML = analyticsData.channels.map((channel) => `
-        <li>
-          <div class="stat-header">
-            <span>${channel.name}</span>
-            <span>${channel.share}%</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width: ${channel.share}%"></div>
-          </div>
-        </li>
-    `).join("");
+function formatDate(value) {
+  if (!value) return "--";
+  const dt = new Date(value);
+  if (Number.isNaN(dt.getTime())) return value;
+  return dt.toLocaleString();
 }
 
-function renderUsers() {
-    userTableBody.innerHTML = analyticsData.users.map((user, index) => `
-        <tr data-index="${index}">
-          <td><strong>${user.name}</strong></td>
-          <td>${user.sessions}</td>
-          <td>${user.latency}</td>
-          <td>${user.satisfaction}</td>
-          <td style="color:var(--text-muted)">${user.lastActive}</td>
-        </tr>
-    `).join("");
-
-    userTableBody.querySelectorAll("tr").forEach((row) => {
-        row.addEventListener("click", () => {
-            const selectedIndex = Number(row.dataset.index);
-            renderUserDetails(analyticsData.users[selectedIndex]);
-            userTableBody.querySelectorAll("tr").forEach((r) => r.classList.remove("active-row"));
-            row.classList.add("active-row");
-        });
-    });
+function getUserId() {
+  const fromInput = userIdInput?.value.trim();
+  const stored = localStorage.getItem(USER_ID_KEY);
+  const userId = fromInput || stored || "user_1";
+  if (userIdInput) userIdInput.value = userId;
+  localStorage.setItem(USER_ID_KEY, userId);
+  return userId;
 }
 
-function renderUserDetails(user) {
-    userDetails.innerHTML = `
-      <div class="detail-grid">
-        <div class="detail-card detail-id">
-          <p class="detail-label">USER ID</p>
-          <p class="detail-value">${user.id}</p>
+async function fetchJson(url, options) {
+  const res = await fetch(url, options);
+  const data = await res.json();
+  if (!res.ok) {
+    const detail = data?.detail || data?.message || "Request failed";
+    throw new Error(detail);
+  }
+  return data;
+}
+
+function renderRecentDocuments(documents) {
+  if (!recentDocs) return;
+  if (!documents.length) {
+    recentDocs.innerHTML = '<li class="empty-hint">No documents uploaded yet.</li>';
+    return;
+  }
+  recentDocs.innerHTML = documents.slice(0, 5).map((doc) => `
+    <li>✓ ${doc.filename} • ${formatDate(doc.uploaded_at)} • ${formatBytesKb(doc.file_size_kb)}</li>
+  `).join("");
+}
+
+function renderDocumentTable(documents) {
+  if (!docTableBody) return;
+  if (!documents.length) {
+    docTableBody.innerHTML = '<tr><td colspan="5" class="empty-hint">No documents available.</td></tr>';
+    return;
+  }
+
+  docTableBody.innerHTML = documents.map((doc) => `
+    <tr>
+      <td><strong>${doc.filename}</strong></td>
+      <td>${formatDate(doc.uploaded_at)}</td>
+      <td>${formatNumber(doc.chunks_created)}</td>
+      <td>${formatBytesKb(doc.file_size_kb)}</td>
+      <td>${doc.status || "indexed"}</td>
+    </tr>
+  `).join("");
+}
+
+function renderStatusBreakdown(documents) {
+  if (!statusList) return;
+  if (!documents.length) {
+    statusList.innerHTML = '<li class="empty-hint">No document status data yet.</li>';
+    return;
+  }
+
+  const counts = documents.reduce((acc, doc) => {
+    const key = (doc.status || "indexed").toLowerCase();
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const total = documents.length;
+  const items = Object.entries(counts).map(([status, count]) => {
+    const share = Math.round((count / total) * 100);
+    return `
+      <li>
+        <div class="stat-header">
+        <span>${status}</span>
+        <span>${count}</span>
         </div>
-        <div class="detail-card">
-          <p class="detail-label">Top Intent</p>
-          <p class="detail-value">${user.topIntent}</p>
+        <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: ${share}%"></div>
         </div>
-        <div class="detail-card">
-          <p class="detail-label">Docs Viewed</p>
-          <p class="detail-value">${user.docsViewed}</p>
-        </div>
-        <div class="detail-card">
-          <p class="detail-label">Avg Tokens</p>
-          <p class="detail-value">${user.avgTokens}</p>
-        </div>
-        <div class="detail-card">
-          <p class="detail-label">Escalations</p>
-          <p class="detail-value">${user.escalations}</p>
-        </div>
-      </div>
-      <p class="detail-summary">Satisfaction score: ${user.satisfaction} &bull; Last active: ${user.lastActive}</p>
+      </li>
     `;
+  });
+  statusList.innerHTML = items.join("");
 }
 
-function renderIntents() {
-    const max = Math.max(...analyticsData.intents.map((item) => item.count));
-    intentBars.innerHTML = analyticsData.intents.map((intent) => {
-        const width = Math.round((intent.count / max) * 100);
-        return `
-          <div style="margin-bottom:12px">
-            <div class="stat-header">
-              <span>${intent.name}</span>
-              <span>${intent.count.toLocaleString()}</span>
-            </div>
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" style="width: ${width}%"></div>
-            </div>
-          </div>
-        `;
-    }).join("");
+function renderEvaluationSummary(summary) {
+  if (!evalSummary) return;
+  if (!summary) {
+    evalSummary.innerHTML = '<p class="empty-hint">No evaluation history yet.</p>';
+    return;
+  }
+
+  const latest = summary.latest_scores || {};
+  const items = Object.entries(latest).map(([metric, value]) => `
+    <div class="eval-item">
+      <span>${metric.replace(/_/g, " ")}</span>
+      <strong>${typeof value === "number" ? value.toFixed(4) : value}</strong>
+    </div>
+  `).join("");
+
+  evalSummary.innerHTML = `
+    <div class="eval-meta">
+    <p><strong>Total runs:</strong> ${summary.total_runs}</p>
+    <p><strong>Pass threshold:</strong> ${summary.pass_threshold}</p>
+    </div>
+    <div class="eval-grid">${items || "<p class=\"empty-hint\">No scores available.</p>"}</div>
+  `;
 }
 
-function drawTrendChart(days) {
-    const canvas = document.getElementById("trendChart");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return;
-    const data = analyticsData.dailyUsage.slice(-days);
+async function loadStats(userId) {
+  try {
+    const stats = await fetchJson(`${API}/documents/${encodeURIComponent(userId)}/stats`);
+    statTotalDocs.textContent = formatNumber(stats.total_documents);
+    statTotalChunks.textContent = formatNumber(stats.total_chunks);
+    statDocSize.textContent = formatBytesKb(stats.total_pdf_size_kb || 0);
+    statIndexSize.textContent = formatBytesKb(stats.index_size_kb || 0);
+    statDocsMeta.textContent = `User: ${stats.user_id}`;
+    statChunksMeta.textContent = `Index exists: ${stats.index_exists ? "yes" : "no"}`;
+    statDocSizeMeta.textContent = "Total uploaded size";
+    statIndexMeta.textContent = stats.index_exists ? "Index ready" : "No index yet";
+  } catch (err) {
+    statTotalDocs.textContent = "--";
+    statTotalChunks.textContent = "--";
+    statDocSize.textContent = "--";
+    statIndexSize.textContent = "--";
+    statDocsMeta.textContent = "";
+    statChunksMeta.textContent = "";
+    statDocSizeMeta.textContent = "";
+    statIndexMeta.textContent = "";
+    toast(`Failed to load stats: ${err.message}`);
+  }
+}
 
-    canvas.width = Math.floor(rect.width * dpr);
-    canvas.height = Math.floor(rect.height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, rect.width, rect.height);
+async function loadDocuments(userId) {
+  try {
+    const data = await fetchJson(`${API}/documents/${encodeURIComponent(userId)}`);
+    const documents = data.documents || [];
+    renderRecentDocuments(documents);
+    renderDocumentTable(documents);
+    renderStatusBreakdown(documents);
+  } catch (err) {
+    if (recentDocs) recentDocs.innerHTML = '<li class="empty-hint">Unable to load documents.</li>';
+    if (docTableBody) docTableBody.innerHTML = '<tr><td colspan="5" class="empty-hint">Unable to load documents.</td></tr>';
+    if (statusList) statusList.innerHTML = '<li class="empty-hint">Unable to load document status.</li>';
+    toast(`Failed to load documents: ${err.message}`);
+  }
+}
 
-    const maxY = Math.max(...data) + 60;
-    const minY = Math.min(...data) - 60;
-    const chartW = rect.width - 32;
-    const chartH = rect.height - 28;
-    const offsetX = 16;
-    const offsetY = 12;
+async function loadEvaluation(userId) {
+  try {
+    const summary = await fetchJson(`${API}/eval/${encodeURIComponent(userId)}/summary`);
+    renderEvaluationSummary(summary);
+  } catch (err) {
+    renderEvaluationSummary(null);
+  }
+}
 
-    // Use a generic subtle border color for the grid lines
-    ctx.strokeStyle = "rgba(128, 128, 128, 0.2)"; 
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 4; i += 1) {
-        const y = offsetY + (chartH / 4) * i;
-        ctx.beginPath(); ctx.moveTo(offsetX, y); ctx.lineTo(offsetX + chartW, y); ctx.stroke();
+async function uploadFiles(files) {
+  if (!files.length) return;
+  const userId = getUserId();
+
+  for (const file of files) {
+    const form = new FormData();
+    form.append("user_id", userId);
+    form.append("file", file);
+    try {
+      toast(`Uploading: ${file.name}...`);
+      const data = await fetchJson(`${API}/upload`, { method: "POST", body: form });
+      toast(data.message || "Upload complete.");
+    } catch (err) {
+      toast(`Upload failed: ${err.message}`);
     }
+  }
 
-    ctx.beginPath();
-    data.forEach((value, index) => {
-        const x = offsetX + (chartW / (data.length - 1)) * index;
-        const y = offsetY + ((maxY - value) / (maxY - minY)) * chartH;
-        index === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-
-    ctx.lineWidth = 3;
-    // Uses the primary brand color directly (#ec5b13 mapped to JS context)
-    ctx.strokeStyle = "#ec5b13"; 
-    ctx.stroke();
-
-    const last = data[data.length - 1];
-    const prev = data[data.length - 2] || last;
-    const diff = (((last - prev) / prev) * 100).toFixed(1);
-    trendLabel.textContent = `${diff >= 0 ? "+" : ""}${diff}% vs prev day`;
-    trendLabel.style.color = "var(--primary)";
-    trendLabel.style.fontSize = "0.875rem";
+  await refreshData();
 }
 
-function exportAnalytics() {
-    const payload = { generatedAt: new Date().toISOString(), rangeDays: Number(rangeSelect.value), analyticsData };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "dashboard-analytics-export.json";
-    link.click();
-    toast("Analytics export downloaded.");
+async function refreshData() {
+  const userId = getUserId();
+  await Promise.all([
+    loadStats(userId),
+    loadDocuments(userId),
+    loadEvaluation(userId)
+  ]);
 }
 
-function init() {
-    renderKpis();
-    renderChannels();
-    renderUsers();
-    renderUserDetails(analyticsData.users[0]);
-    const firstRow = userTableBody.querySelector("tr");
-    if (firstRow) firstRow.classList.add("active-row");
-    renderIntents();
-    drawTrendChart(Number(rangeSelect.value));
+if (uploadBtn && fileInput) {
+  uploadBtn.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", (event) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length) uploadFiles(files);
+    fileInput.value = "";
+  });
 }
 
-// --- Event Listeners ---
-rangeSelect.addEventListener("change", () => drawTrendChart(Number(rangeSelect.value)));
-analyticsExportBtn.addEventListener("click", exportAnalytics);
-quickExportBtn.addEventListener("click", exportAnalytics);
-window.addEventListener("resize", () => drawTrendChart(Number(rangeSelect.value)));
-
-// --- File Upload Trigger Logic ---
-const dashUploadBtn = document.getElementById('upload-btn'); 
-const dashFileInput = document.getElementById('document-upload');
-
-if (dashUploadBtn && dashFileInput) {
-    dashUploadBtn.addEventListener('click', (e) => {
-        e.preventDefault(); 
-        dashFileInput.click(); 
-    });
-
-    dashFileInput.addEventListener('change', (event) => {
-        const files = event.target.files;
-        if (files.length > 0) {
-            if (files.length === 1) {
-                toast(`Uploading: ${files[0].name}...`);
-            } else {
-                toast(`Uploading ${files.length} documents...`);
-            }
-            dashFileInput.value = ''; 
-        }
-    });
+if (refreshBtn) refreshBtn.addEventListener("click", refreshData);
+if (reloadBtn) reloadBtn.addEventListener("click", refreshData);
+if (userIdInput) {
+  userIdInput.addEventListener("change", refreshData);
+  userIdInput.addEventListener("blur", refreshData);
 }
 
-init();
+refreshData();

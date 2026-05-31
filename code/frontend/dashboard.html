@@ -41,11 +41,16 @@
       <header class="dashboard-page-header">
         <div>
           <h1 class="page-title">Workspace Dashboard</h1>
-          <p class="subtitle">Manage workspace operations and monitor analytics insights in one place</p>
+          <p class="subtitle">Real-time document storage, indexing, and evaluation signals.</p>
         </div>
         <div class="page-header-actions">
-          <input type="file" id="document-upload" class="hidden" accept=".pdf,.docx,.txt" multiple />
-          <a href="doclib.html" class="btn-primary">Upload Document</a>
+          <div class="user-id-control">
+            <label for="user-id-input">User ID</label>
+            <input id="user-id-input" class="text-input" type="text" value="user_1" />
+          </div>
+          <input type="file" id="document-upload" class="hidden" accept=".pdf,.docx,.txt,.md,.csv,.xlsx" multiple />
+          <button id="upload-btn" class="btn-primary" type="button">Upload Document</button>
+          <button id="refresh-btn" class="btn-primary" type="button">Refresh</button>
           <a href="chat.html" class="btn-primary">New Chat</a>
         </div>
       </header>
@@ -56,49 +61,45 @@
             <p>Documents</p>
             <span>📄</span>
           </div>
-          <p class="stat-value">12,842</p>
-          <p class="stat-delta-pos">+234 this week</p>
+          <p class="stat-value" id="stat-total-docs">--</p>
+          <p class="stat-meta" id="stat-docs-meta"></p>
         </article>
         <article class="stat-card">
           <div class="stat-header">
-            <p>Queries today</p>
-            <span>💬</span>
+            <p>Total Chunks</p>
+            <span>🧩</span>
           </div>
-          <p class="stat-value">1,263</p>
-          <p class="stat-delta-pos">+12% vs yesterday</p>
+          <p class="stat-value" id="stat-total-chunks">--</p>
+          <p class="stat-meta" id="stat-chunks-meta"></p>
         </article>
         <article class="stat-card">
           <div class="stat-header">
-            <p>Avg response</p>
-            <span>⚡</span>
-          </div>
-          <p class="stat-value">1.2s</p>
-          <p class="stat-delta-pos">-120ms optimized</p>
-        </article>
-        <article class="stat-card">
-          <div class="stat-header">
-            <p>Storage</p>
+            <p>Document Size</p>
             <span>💾</span>
           </div>
-          <p class="stat-value">42.8 GB</p>
-          <p class="stat-delta-neg">78% utilized</p>
+          <p class="stat-value" id="stat-doc-size">--</p>
+          <p class="stat-meta" id="stat-doc-size-meta"></p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-header">
+            <p>Index Size</p>
+            <span>🗂️</span>
+          </div>
+          <p class="stat-value" id="stat-index-size">--</p>
+          <p class="stat-meta" id="stat-index-meta"></p>
         </article>
       </section>
 
       <section class="activity-section">
         <article class="activity-card">
-          <h2 class="section-title"><span>📊</span> Recent activity</h2>
-          <ul class="activity-list">
-            <li>✓ Q3_Financial_Report.pdf indexed successfully</li>
-            <li>🔄 Policy handbook re-processed with latest embeddings</li>
-            <li>✨ 8 new user prompts matched confidence threshold > 90%</li>
-          </ul>
+          <h2 class="section-title"><span>📊</span> Recent documents</h2>
+          <ul id="recent-docs" class="activity-list"></ul>
         </article>
         <article class="quick-actions-card">
           <h2 class="section-title"><span>⚙️</span> Quick actions</h2>
           <div class="action-buttons">
-            <button onclick="toast('Index refresh queued.')" class="btn-action">🔄 Refresh index</button>
-            <button id="quickExportBtn" class="btn-action">📥 Export analytics</button>
+            <button id="reload-btn" class="btn-action">🔄 Reload data</button>
+            <a href="doclib.html" class="btn-action">📚 Open document library</a>
             <a href="settinglagacy.html" class="btn-action">⚙️ Manage preferences</a>
           </div>
         </article>
@@ -107,69 +108,42 @@
       <section class="analytics-container">
         <div class="analytics-header">
           <div>
-            <h2 class="text-xl">Analytics Overview</h2>
-            <p class="subtitle">Track user behavior, channel adoption, response quality, and intent trends.</p>
-          </div>
-          <div class="analytics-controls">
-            <select id="rangeSelect" class="select-input">
-              <option value="7">Last 7 days</option>
-              <option value="14">Last 14 days</option>
-              <option value="30" selected>Last 30 days</option>
-            </select>
-            <button id="analyticsExportBtn" class="btn-primary">Export</button>
+            <h2 class="text-xl">Document analytics</h2>
+            <p class="subtitle">Live stats from indexed documents and evaluation history.</p>
           </div>
         </div>
 
-        <section id="kpiGrid" class="stat-grid"></section>
-
         <section class="charts-row">
-          <article class="glass-card usage-trend">
-            <div class="card-header">
-              <h3>Usage Trend</h3>
-              <span id="trendLabel" class="badge"></span>
-            </div>
-            <div class="chart-wrapper">
-              <canvas id="trendChart"></canvas>
-            </div>
+          <article class="glass-card">
+            <h3>Document status</h3>
+            <ul id="statusList" class="progress-list"></ul>
           </article>
 
-          <article class="glass-card channel-breakdown">
-            <h3>Channel Breakdown</h3>
-            <ul id="channelList" class="progress-list"></ul>
-          </article>
-        </section>
-
-        <section class="users-row">
-          <article class="glass-card user-table-container">
-            <div class="card-header">
-              <h3>Top User Sessions</h3>
-              <p class="hint">Select a row for full details</p>
-            </div>
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Sessions</th>
-                    <th>Avg Latency</th>
-                    <th>Satisfaction</th>
-                    <th>Last Active</th>
-                  </tr>
-                </thead>
-                <tbody id="userTableBody"></tbody>
-              </table>
-            </div>
-          </article>
-
-          <article class="glass-card user-details-container">
-            <h3>User Details</h3>
-            <div id="userDetails"></div>
+          <article class="glass-card">
+            <h3>Evaluation summary</h3>
+            <div id="evalSummary"></div>
           </article>
         </section>
 
         <section class="glass-card" style="margin-bottom: 40px;">
-          <h3>Intent Distribution</h3>
-          <div id="intentBars" class="progress-list"></div>
+          <div class="card-header">
+            <h3>Document details</h3>
+            <p class="hint">Latest indexed documents for the selected user.</p>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Document</th>
+                  <th>Uploaded</th>
+                  <th>Chunks</th>
+                  <th>Size</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="docTableBody"></tbody>
+            </table>
+          </div>
         </section>
       </section>
 
