@@ -335,7 +335,7 @@ button a { text-decoration: none; color: inherit; }
     border-radius: 50%;
     background-color: var(--primary-light);
     color: var(--primary);
-    margin: 0 auto 1.5rem auto;
+    margin: 0 auto 1rem auto;
     display: flex;
     align-items: center;
     justify-content: center;
