@@ -2,6 +2,18 @@ import re
 from langchain_ollama import OllamaLLM
 from config import OLLAMA_MODEL
 
+
+def _extract_text_from_response(response) -> str:
+    """
+    Handles both string and AIMessage responses from LLM.
+    AIMessage has .content attribute, plain strings don't.
+    """
+    if hasattr(response, 'content'):
+        return response.content.strip()
+    else:
+        return str(response).strip()
+
+
 def clean_query(query: str) -> str:
     """
     Basic text cleaning:
@@ -56,10 +68,11 @@ Original Question: {query}
 Rewritten Question:"""
 
     try:
-        expanded = llm.invoke(expansion_prompt)
-        expanded = expanded.strip()
+        # ✅ FIX: Extract text from AIMessage response
+        response = llm.invoke(expansion_prompt)
+        expanded = _extract_text_from_response(response)
 
-        # ✅ Safety check — if LLM returns something too long or weird, use original
+        # Safety check — if LLM returns something too long or weird, use original
         if len(expanded) > 300 or len(expanded) < 5:
             print(f"  Query expansion returned unexpected result, using original.")
             return query

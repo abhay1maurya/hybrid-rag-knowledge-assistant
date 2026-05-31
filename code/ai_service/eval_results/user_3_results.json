@@ -1,0 +1,129 @@
+{
+  "evaluations": [
+    {
+      "eval_id": "eval_1",
+      "evaluated_at": "2026-05-31T11:16:16.628545",
+      "status": "success",
+      "user_id": "user_3",
+      "total_questions": 6,
+      "passed": 6,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "pass_threshold": 0.7,
+      "overall_scores": {
+        "faithfulness": 0.8833,
+        "answer_relevancy": 0.95,
+        "context_precision": 0.7,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      "per_question": [
+        {
+          "q_id": "q_1",
+          "question": "name the well known reference architectures(RAs).",
+          "answer": "AUTOSAR and the NIST Big Data Framework.",
+          "ground_truth": "AUTOSAR and  NIST Big Data Framework",
+          "contexts_used": 5,
+          "scores": {
+            "faithfulness": 0.5,
+            "answer_relevancy": 0.8,
+            "context_precision": 0.2,
+            "context_recall": 1.0,
+            "answer_correctness": 1.0
+          },
+          "average_score": 0.7,
+          "passed": true
+        },
+        {
+          "q_id": "q_2",
+          "question": "What are the primary strengths of neural networks in the context of artificial intelligence, and how do they fall short in risk-sensitive domains?",
+          "answer": "The primary strengths of neural networks are their high accuracy on unstructured data and their ability to scale to large inputs. However, they fall short in risk-sensitive domains due to their limitations, which include being opaque, having limited interpretability, and raising fairness concerns.",
+          "ground_truth": null,
+          "contexts_used": 5,
+          "scores": {
+            "faithfulness": 1.0,
+            "answer_relevancy": 1.0,
+            "context_precision": 0.8,
+            "context_recall": null,
+            "answer_correctness": null
+          },
+          "average_score": 0.9333,
+          "passed": true
+        },
+        {
+          "q_id": "q_3",
+          "question": "How do hybrid neuro-symbolic models aim to balance the trade-off between predictive accuracy and ethical alignment in AI systems deployed in risk-sensitive domains?",
+          "answer": "Hybrid neuro-symbolic models aim to balance the trade-off between predictive accuracy and ethical alignment by merging the pattern-recognition capacity of neural networks with the logical rigor of symbolic reasoning, thereby combining scalable perception with structured reasoning to provide ethical, interpretable, and robust artificial intelligence.",
+          "ground_truth": null,
+          "contexts_used": 5,
+          "scores": {
+            "faithfulness": 0.9,
+            "answer_relevancy": 1.0,
+            "context_precision": 0.8,
+            "context_recall": null,
+            "answer_correctness": null
+          },
+          "average_score": 0.9,
+          "passed": true
+        },
+        {
+          "q_id": "q_4",
+          "question": "In what ways can hybrid neuro-symbolic systems be applied in healthcare decision support, and what benefits do they offer over conventional deep neural networks?",
+          "answer": "In healthcare decision support, hybrid neuro-symbolic systems can process unstructured data such as imaging scans while applying symbolic medical protocols. The benefits include: \n1. Detecting anomalies in imaging scans using neural networks, \n2. Enforcing dosage constraints and contraindications using symbolic logic, \n3. Providing explanations that include both probabilistic confidence and rule-based justification, \nwhich builds trust and satisfies regulatory requirements for transparency.",
+          "ground_truth": null,
+          "contexts_used": 5,
+          "scores": {
+            "faithfulness": 1.0,
+            "answer_relevancy": 1.0,
+            "context_precision": 0.8,
+            "context_recall": null,
+            "answer_correctness": null
+          },
+          "average_score": 0.9333,
+          "passed": true
+        },
+        {
+          "q_id": "q_5",
+          "question": "What role do knowledge graphs and ethical guardrails play in the hybrid neuro-symbolic pipeline, as illustrated in Fig. 1, and how do they contribute to the overall decision-making process?",
+          "answer": "In the hybrid neuro-symbolic pipeline, as illustrated in Fig. 1, the symbolic component (which includes knowledge graphs) applies structured rules and logic to the features extracted by the neural component. Ethical guardrails ensure fairness, compliance, and safety. Together, they contribute to the decision-making process by applying logical rigor and ensuring that the decision is fair, compliant, and safe, before it is reviewed and overseen by human-in-the-loop oversight.",
+          "ground_truth": null,
+          "contexts_used": 5,
+          "scores": {
+            "faithfulness": 1.0,
+            "answer_relevancy": 1.0,
+            "context_precision": 0.8,
+            "context_recall": null,
+            "answer_correctness": null
+          },
+          "average_score": 0.9333,
+          "passed": true
+        },
+        {
+          "q_id": "q_6",
+          "question": "What are some of the key challenges or limitations of symbolic reasoning systems, and how do hybrid neuro-symbolic models propose to address these limitations in complex, high-stakes environments?",
+          "answer": "Symbolic reasoning systems struggle with noisy or unstructured inputs. Hybrid neuro-symbolic models propose to address this limitation by combining the strengths of symbolic reasoning with the pattern-recognition capabilities of neural networks, thereby providing scalable perception with structured reasoning. This allows them to deliver reliable and auditable AI in complex, high-stakes environments such as healthcare decision support, financial risk management, and autonomous infrastructure.",
+          "ground_truth": null,
+          "contexts_used": 5,
+          "scores": {
+            "faithfulness": 0.9,
+            "answer_relevancy": 0.9,
+            "context_precision": 0.8,
+            "context_recall": null,
+            "answer_correctness": null
+          },
+          "average_score": 0.8667,
+          "passed": true
+        }
+      ],
+      "recommendations": [
+        {
+          "metric": "overall",
+          "issue": "All metrics passing!",
+          "fixes": [
+            "Keep monitoring with live queries to maintain quality."
+          ]
+        }
+      ]
+    }
+  ]
+}

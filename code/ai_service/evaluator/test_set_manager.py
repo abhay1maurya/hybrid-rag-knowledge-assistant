@@ -97,6 +97,17 @@ def clear_test_set(user_id: str) -> dict:
     return {"status": "success", "message": "Test set cleared."}
 
 
+def _extract_text_from_response(response) -> str:
+    """
+    Handles both string and AIMessage responses from LLM.
+    AIMessage has .content attribute, plain strings don't.
+    """
+    if hasattr(response, 'content'):
+        return response.content.strip()
+    else:
+        return str(response).strip()
+
+
 def auto_generate_questions(user_id: str, llm, n: int = 5) -> dict:
     """
     Uses the LLM to auto-generate test questions from the user's indexed docs.
@@ -147,10 +158,12 @@ Content:
 
 Questions:"""
 
+        # ✅ FIX: Extract text from AIMessage response
         response = llm.invoke(prompt)
+        response_text = _extract_text_from_response(response)
 
         # Parse numbered questions
-        lines     = response.strip().split("\n")
+        lines     = response_text.split("\n")
         questions = []
         for line in lines:
             line = line.strip()

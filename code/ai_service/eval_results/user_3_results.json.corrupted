@@ -1,0 +1,59 @@
+{
+  "evaluations": [
+    {
+      "eval_id": "eval_1",
+      "evaluated_at": "2026-05-31T10:17:38.501125",
+      "status": "success",
+      "user_id": "user_3",
+      "total_questions": 1,
+      "passed": 0,
+      "failed": 1,
+      "pass_rate": 0.0,
+      "pass_threshold": 0.7,
+      "overall_scores": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null,
+        "answer_correctness": null
+      },
+      "per_question": [
+        {
+          "q_id": "q_1",
+          "question": "name the well known reference architectures(RAs).",
+          "error": "'AIMessage' object has no attribute 'strip'",
+          "passed": false
+        }
+      ],
+      "recommendations": [
+        {
+          "metric": "overall",
+          "issue": "All metrics passing!",
+          "fixes": [
+            "Keep monitoring with live queries to maintain quality."
+          ]
+        }
+      ]
+    },
+    {
+      "eval_id": "eval_2",
+      "evaluated_at": "2026-05-31T10:23:31.521380",
+      "status": "success",
+      "user_id": "user_3",
+      "total_questions": 1,
+      "passed": 0,
+      "failed": 1,
+      "pass_rate": 0.0,
+      "pass_threshold": 0.7,
+      "overall_scores": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null,
+        "answer_correctness": null
+      },
+      "per_question": [
+        {
+          "q_id": "q_1",
+          "question": "name the well known reference architectures(RAs).",
+          "answer": 

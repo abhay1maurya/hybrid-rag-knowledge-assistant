@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime
+import shutil
 
 EVAL_DIR = "eval_results"
 os.makedirs(EVAL_DIR, exist_ok=True)
@@ -13,10 +14,26 @@ def _results_path(user_id: str) -> str:
 
 
 def _load_results(user_id: str) -> dict:
+    """
+    Loads results defensively. If the JSON file is corrupted (e.g., from an
+    interrupted write), it catches the error, backs up the bad file, and 
+    returns a clean state so the system doesn't crash.
+    """
     path = _results_path(user_id)
     if os.path.exists(path):
-        with open(path, "r") as f:
-            return json.load(f)
+        try:
+            with open(path, "r") as f:
+                return json.load(f)
+        except json.JSONDecodeError as e:
+            print(f"[EvalStore] ERROR: Corrupted JSON for user {user_id}: {e}")
+            
+            # Back up the corrupted file instead of crashing or overwriting it blindly
+            corrupt_path = f"{path}.corrupted"
+            shutil.copy(path, corrupt_path)
+            print(f"[EvalStore] Backed up corrupted file to {corrupt_path}. Starting fresh.")
+            
+            return {"evaluations": []}
+            
     return {"evaluations": []}
 
 

@@ -15,6 +15,17 @@ def _safe_score(value) -> float:
         return None
 
 
+def _extract_text_from_response(response) -> str:
+    """
+    Handles both string and AIMessage responses from LLM.
+    AIMessage has .content attribute, plain strings don't.
+    """
+    if hasattr(response, 'content'):
+        return response.content.strip()
+    else:
+        return str(response).strip()
+
+
 def _score_with_llm(
     question: str,
     answer: str,
@@ -45,10 +56,12 @@ Answer: {answer}
 
 Return ONLY a decimal number between 0.0 and 1.0. Nothing else."""
 
-        response = llm.invoke(faithfulness_prompt).strip()
+        response = llm.invoke(faithfulness_prompt)
+        response_text = _extract_text_from_response(response)
+        
         # Extract first number found
         import re
-        nums = re.findall(r'\d+\.?\d*', response)
+        nums = re.findall(r'\d+\.?\d*', response_text)
         scores["faithfulness"] = _safe_score(float(nums[0])) if nums else 0.5
         scores["faithfulness"] = min(1.0, max(0.0, scores["faithfulness"]))
     except Exception as e:
@@ -69,9 +82,11 @@ Answer: {answer}
 
 Return ONLY a decimal number between 0.0 and 1.0. Nothing else."""
 
-        response = llm.invoke(relevancy_prompt).strip()
+        response = llm.invoke(relevancy_prompt)
+        response_text = _extract_text_from_response(response)
+        
         import re
-        nums = re.findall(r'\d+\.?\d*', response)
+        nums = re.findall(r'\d+\.?\d*', response_text)
         scores["answer_relevancy"] = _safe_score(float(nums[0])) if nums else 0.5
         scores["answer_relevancy"] = min(1.0, max(0.0, scores["answer_relevancy"]))
     except Exception as e:
@@ -93,9 +108,11 @@ Context chunks:
 
 Return ONLY a decimal number between 0.0 and 1.0. Nothing else."""
 
-        response = llm.invoke(precision_prompt).strip()
+        response = llm.invoke(precision_prompt)
+        response_text = _extract_text_from_response(response)
+        
         import re
-        nums = re.findall(r'\d+\.?\d*', response)
+        nums = re.findall(r'\d+\.?\d*', response_text)
         scores["context_precision"] = _safe_score(float(nums[0])) if nums else 0.5
         scores["context_precision"] = min(1.0, max(0.0, scores["context_precision"]))
     except Exception as e:
@@ -118,9 +135,11 @@ Context:
 
 Return ONLY a decimal number between 0.0 and 1.0. Nothing else."""
 
-            response = llm.invoke(recall_prompt).strip()
+            response = llm.invoke(recall_prompt)
+            response_text = _extract_text_from_response(response)
+            
             import re
-            nums = re.findall(r'\d+\.?\d*', response)
+            nums = re.findall(r'\d+\.?\d*', response_text)
             scores["context_recall"] = _safe_score(float(nums[0])) if nums else 0.5
             scores["context_recall"] = min(1.0, max(0.0, scores["context_recall"]))
         except Exception as e:
@@ -144,9 +163,11 @@ Generated answer: {answer}
 
 Return ONLY a decimal number between 0.0 and 1.0. Nothing else."""
 
-            response = llm.invoke(correctness_prompt).strip()
+            response = llm.invoke(correctness_prompt)
+            response_text = _extract_text_from_response(response)
+            
             import re
-            nums = re.findall(r'\d+\.?\d*', response)
+            nums = re.findall(r'\d+\.?\d*', response_text)
             scores["answer_correctness"] = _safe_score(float(nums[0])) if nums else 0.5
             scores["answer_correctness"] = min(1.0, max(0.0, scores["answer_correctness"]))
         except Exception as e:
@@ -222,7 +243,9 @@ Context:
 Question: {question}
 
 Answer:"""
-            answer = llm.invoke(answer_prompt).strip()
+            
+            answer_response = llm.invoke(answer_prompt)
+            answer = _extract_text_from_response(answer_response)
 
             # Score
             scores = _score_with_llm(
