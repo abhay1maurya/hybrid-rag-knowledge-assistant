@@ -19,18 +19,16 @@
 
             <nav class="desktop-nav">
                 <a href="landingpage.html">Home</a>
-                <a href="features.html">Features</a>
                 <a href="faq.html">FAQ</a>
-                <a href="pricinglagacy.html">Pricing</a>
                 <a href="dashboard.html">Dashboard</a>
-                <a href="about.html">About</a>
                 <a href="settinglagacy.html" class="active">Settings</a>
+                <a href="models.html">Models</a>
             </nav>
 
             <div class="header-actions">
-                <button class="btn-outline-white" onclick="window.location.href='loginpage.html'">Logout</button>
-                <button class="btn-primary" onclick="window.location.href='dashboard.html'">Dashboard</button>
-            </div>
+              <a href="profile.html" class="profile-link">👤 My Profile</a>
+              <button class="btn-outline-white" onclick="window.location.href='loginpage.html'">Sign Out</button>
+          </div>
         </div>
     </header>
 
@@ -77,10 +75,6 @@
                         <label>Language Model</label>
                         <select id="llm-model" class="form-select"></select>
                     </div>
-                </div>
-                <div id="key-container" class="form-group hidden mt-2">
-                    <label>Provider API Key</label>
-                    <input id="api-key" type="password" class="form-input" placeholder="sk-...">
                 </div>
             </div>
 

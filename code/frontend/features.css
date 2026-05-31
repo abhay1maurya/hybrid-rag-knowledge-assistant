@@ -5,6 +5,7 @@
   --brand: #f97316; 
   --brand-light: rgba(249, 115, 22, 0.1);
   --brand-border: rgba(249, 115, 22, 0.3);
+  --bg-header: #0B0B0B;
   --text-main: #f5f5f4; 
   --text-subtle: rgba(255, 255, 255, 0.6);
   --border-color: rgba(255, 255, 255, 0.1);
@@ -91,19 +92,18 @@ a {
 .site-header {
   position: sticky;
   top: 0;
-  z-index: 20;
-  border-bottom: 1px solid var(--border-color);
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(12px);
-  /* Full screen width expansion */
+  z-index: 50;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: var(--bg-header);
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem; 
+  height: 4.5rem;
+  padding: 0 1.5rem; 
 }
 @media (min-width: 1024px) {
-  .site-header { padding: 1rem 2.5rem; }
+  .site-header { padding: 0 2.5rem; }
 }
 
 .header-brand {

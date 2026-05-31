@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "semantic": {
                 "params": {
                     "breakpoint_threshold_type": { "default": "standard_deviation", "options": ["percentile", "standard_deviation", "interquartile"] },
-                    "breakpoint_threshold_amount": { "default": 1, "min": 0.5, "max": 2 }
+                    "breakpoint_threshold_amount": { "default": 1, "min": 0.5, "max": 2, "step": 0.1 }
                 }
             },
             "fixed": {
@@ -50,8 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
         chunkParams: document.getElementById("chunk-params-container"),
         llmProvider: document.getElementById("llm-provider"),
         llmModel: document.getElementById("llm-model"),
-        apiKey: document.getElementById("api-key"),
-        keyContainer: document.getElementById("key-container"),
         multiQuery: document.getElementById("use-multi-query"),
         reranker: document.getElementById("use-reranker"),
         kCand: document.getElementById("k-candidates"),
@@ -119,11 +117,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 slider.type = "range";
                 slider.className = "range-slider";
                 slider.min = data.min; slider.max = data.max;
-                slider.step = data.step || 1;
+                const defaultStep = Number.isInteger(data.min) && Number.isInteger(data.max) ? 1 : 0.1;
+                slider.step = data.step || defaultStep;
                 slider.value = data.default;
                 
                 slider.addEventListener("input", (e) => {
-                    valDisplay.textContent = e.target.value;
+                    const rawValue = parseFloat(e.target.value);
+                    valDisplay.textContent = Number.isInteger(rawValue) ? rawValue : rawValue.toFixed(2);
                     updateLivePreview();
                 });
                 wrapper.append(header, slider);
@@ -141,8 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
         els.llmModel.innerHTML = "";
         config.models.forEach(m => els.llmModel.add(new Option(m, m)));
         
-        els.keyContainer.classList.toggle("hidden", !config.requires_key);
-        if(!config.requires_key) els.apiKey.value = "";
         updateLivePreview();
     }
 
@@ -165,7 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
             chunking_params: chunkingParams,
             llm_provider: els.llmProvider.value,
             llm_model: els.llmModel.value,
-            api_key: els.apiKey.value || null,
             retriever: {
                 use_multi_query: els.multiQuery.checked,
                 use_reranker: els.reranker.checked,
@@ -180,7 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const payload = generatePayload();
         // Hide API key in preview for security
         const displayPayload = { ...payload };
-        if (displayPayload.api_key) displayPayload.api_key = "********";
         els.jsonPreview.textContent = JSON.stringify(displayPayload, null, 2);
     }
 
@@ -206,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
     els.chunkStrategy.addEventListener("change", buildChunkingParams);
     els.llmProvider.addEventListener("change", updateProvider);
     els.llmModel.addEventListener("change", updateLivePreview);
-    els.apiKey.addEventListener("input", updateLivePreview);
     els.multiQuery.addEventListener("change", updateLivePreview);
     els.reranker.addEventListener("change", updateLivePreview);
     els.kCand.addEventListener("input", updateSliders);

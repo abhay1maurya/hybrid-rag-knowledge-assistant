@@ -1,7 +1,9 @@
 :root {
     --primary: #ec5b13;
+    --primary-dark: #d55211;
     --primary-hover: #d14f0e;
     --bg-main: #09090b;
+    --bg-header: #0B0B0B;
     --bg-panel: #18181b;
     --bg-input: #27272a;
     --text-main: #f4f4f5;
@@ -75,45 +77,7 @@ code { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #a6e
 
 .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.75rem 1.25rem; border-radius: 6px; color: white; font-size: 0.85rem; font-weight: 500; z-index: 1000; }
 
-/* Header: landing-like styles */
-.header-inner {
-    height: 4.25rem;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 1rem;
-}
-
-.brand-logo { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; flex-shrink: 0; }
-.brand-icon {
-    width: 2.25rem; height: 2.25rem;
-    background-color: var(--primary);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-}
-.brand-icon span { color: #000; font-weight: 900; font-size: 0.875rem; }
-.brand-icon.small { width: 2rem; height: 2rem; }
-.brand-text { color: var(--text-main); font-size: 1.05rem; font-weight: 700; }
-
-/* Inline brand logo used across pages */
-.brand-inline-logo { width: 40px; height: auto; margin-right: 0.5rem; display: block; }
-@media (max-width: 480px) {
-    .brand-inline-logo { width: 30px; margin-right: 0.4rem; }
-}
-
-.desktop-nav { display: none; flex: 1; justify-content: center; align-items: center; gap: 1.5rem; }
-@media (min-width: 768px) { .desktop-nav { display: flex; } }
-.desktop-nav a { color: var(--text-main); font-size: 0.9rem; font-weight: 500; text-decoration: none; transition: color 0.15s ease; }
-.desktop-nav a:hover, .desktop-nav a.active { color: var(--primary); }
-
-.header-actions { flex-shrink: 0; display: flex; gap: 0.6rem; align-items: center; }
-.btn-outline-white { background: transparent; border: 1px solid rgba(255,255,255,0.06); color: var(--text-main); padding: 0.45rem 0.9rem; border-radius: 8px; font-weight: 700; }
-.btn-outline-white:hover { background: rgba(255,255,255,0.03); }
-
-.status-text { font-size: 0.85rem; color: var(--success); font-weight: 700; }
-
-
-/* Header */
+/* Header: match dashboard */
 .site-header {
     position: sticky;
     top: 0;
@@ -123,16 +87,66 @@ code { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #a6e
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* UPDATED: Full width header-inner */
-.header-inner { 
-    height: 4.5rem; 
-    display: flex; 
+.header-inner {
+    height: 4.5rem;
+    display: flex;
     align-items: center;
     width: 100%;
-    padding: 0 1.5rem; 
+    padding: 0 1.5rem;
 }
 @media (min-width: 1024px) {
-    .header-inner {
-        padding: 0 2.5rem;
-    }
+    .header-inner { padding: 0 2.5rem; }
 }
+
+.brand-logo { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; flex-shrink: 0; }
+.brand-icon {
+    width: 2.5rem; height: 2.5rem;
+    background-color: var(--primary);
+    border-radius: 0.5rem;
+    display: flex; align-items: center; justify-content: center;
+}
+.brand-icon span { color: #000; font-weight: 900; font-size: 0.875rem; letter-spacing: -0.05em; }
+.brand-icon.small { width: 2rem; height: 2rem; }
+.brand-text { color: #ffffff; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.025em; }
+
+/* Inline brand logo used across pages */
+.brand-inline-logo { width: 48px; height: auto; margin-right: 0.5rem; display: block; }
+@media (max-width: 480px) {
+    .brand-inline-logo { width: 36px; margin-right: 0.4rem; }
+}
+
+.desktop-nav { display: none; flex: 1; justify-content: center; align-items: center; gap: 2.5rem; }
+@media (min-width: 768px) { .desktop-nav { display: flex; } }
+.desktop-nav a {
+    color: #ffffff; font-size: 0.875rem; font-weight: 500;
+    text-decoration: none; transition: color 0.2s ease;
+}
+.desktop-nav a:hover { color: var(--primary); }
+.desktop-nav a.active { color: var(--primary-dark); }
+
+.header-actions { flex-shrink: 0; display: flex; align-items: center; gap: 0.75rem; margin-left: auto; }
+
+.profile-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.profile-link:hover { color: var(--primary); }
+
+.btn-outline-white {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    transition: background-color 0.2s ease;
+}
+.btn-outline-white:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+.status-text { font-size: 0.85rem; color: var(--success); font-weight: 700; }

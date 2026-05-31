@@ -12,6 +12,7 @@
     /* Light Theme Defaults */
     --bg-main: #f8f6f6;
     --bg-nav: #0B0B0B;
+    --bg-header: #0B0B0B;
     --bg-card: rgba(255, 255, 255, 0.5);
     --bg-card-solid: #ffffff;
     --bg-cta: #0f172a;
@@ -127,25 +128,23 @@ button {
     top: 0;
     z-index: 50;
     width: 100%;
-    background-color: var(--bg-nav);
+    background-color: var(--bg-header);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Expanded Full-Width Header */
 .nav-container {
-    height: 4.5rem; /* Adjusted to match landing page */
+    height: 4.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 110%; 
-    margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 1.5rem;
 }
 
 @media (min-width: 1024px) {
     .nav-container {
-        padding: 0 3rem; 
+        padding: 0 2.5rem; 
     }
 }
 

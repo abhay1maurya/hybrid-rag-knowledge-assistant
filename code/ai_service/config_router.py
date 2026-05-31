@@ -45,8 +45,10 @@ def get_all_options():
     return {
         "embedding_models": {
             key: {
+                "model_name": val.get("model_name"),
                 "description": val["description"],
                 "dimensions": val["dimensions"],
+                "normalize": val.get("normalize"),
                 "speed": val["speed"],
                 "accuracy": val["accuracy"],
                 "size": val["size"]
