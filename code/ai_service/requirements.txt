@@ -19,3 +19,5 @@ requests
 openai
 anthropic
 sse-starlette
+langchain_experimental
+rank_bm25

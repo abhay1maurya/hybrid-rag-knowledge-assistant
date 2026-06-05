@@ -1,25 +1,34 @@
+import os
+os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+import shutil
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
 from sse_starlette.sse import EventSourceResponse
+
 from config_router import router as config_router
-import shutil
-import os
+from document_router import router as document_router
+from evaluator.eval_router import router as eval_router
 from llm_manager import clear_llm_cache, get_current_provider_info
 from stream_pipeline import ask_question_stream
 from rag_pipeline import ingest_document, ask_question, reset_user_session
-from document_router import router as document_router
 from file_handlers import HandlerFactory 
-from evaluator.eval_router import router as eval_router
+from model_registry import LLM_PROVIDERS
+from user_config_manager import get_user_config, update_user_config, validate_config
 
+# FIX: Initialize the app EXACTLY ONCE
 app = FastAPI(title="DocuMind AI Service", version="3.0")
 ALLOWED_EXTENSIONS = HandlerFactory.supported_extensions()
+
+# FIX: Apply CORS exactly once
 app.add_middleware(
-    CORSMiddleware, allow_origins=["*"],
-    allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
+    CORSMiddleware, 
+    allow_origins=["*"],
+    allow_credentials=True, 
+    allow_methods=["*"], 
+    allow_headers=["*"]
 )
 
-# ✅ Mount config router — adds all /config/* endpoints
+# Mount routers
 app.include_router(config_router)
 app.include_router(document_router)  
 app.include_router(eval_router)  
@@ -27,18 +36,12 @@ app.include_router(eval_router)
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-
 @app.get("/")
 def read_root():
-    """Health check endpoint."""
     return {"status": "DocuMind AI Service is running.", "version": "3.0"}
-
 
 @app.post("/upload")
 async def upload_file(user_id: str = Form(...), file: UploadFile = File(...)):
-    """Supports PDF, TXT, MD, DOCX, CSV, XLSX."""
-
-    # ✅ Dynamic extension check — works for all supported types
     ext = os.path.splitext(file.filename)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
@@ -66,7 +69,6 @@ async def upload_file(user_id: str = Form(...), file: UploadFile = File(...)):
 
 @app.get("/supported-formats")
 def supported_formats():
-    """Returns all supported file formats."""
     return {
         "supported_extensions": ALLOWED_EXTENSIONS,
         "formats": {
@@ -77,10 +79,8 @@ def supported_formats():
         }
     }
 
-
 @app.post("/ask")
 async def ask(query: str = Form(...), user_id: str = Form(...)):
-    """Standard blocking endpoint — waits for full answer."""
     result = ask_question(query, user_id)
     if result["status"] == "error":
         raise HTTPException(status_code=500, detail=result["answer"])
@@ -88,27 +88,7 @@ async def ask(query: str = Form(...), user_id: str = Form(...)):
 
 @app.get("/ask/stream")
 async def ask_stream(request: Request, query: str, user_id: str):
-    """
-    Streaming endpoint — returns tokens as Server-Sent Events.
-    Client receives tokens in real-time as LLM generates them.
-
-    Usage:
-        GET /ask/stream?query=your+question&user_id=user_1
-
-    SSE Event Types:
-        start          → stream started
-        status         → progress update
-        query_processed→ shows original vs processed query
-        generating     → LLM started generating
-        token          → single LLM token (stream these to UI)
-        guardrail      → output guardrail triggered
-        sources        → page citations
-        done           → stream complete, includes sources + provider info
-        blocked        → guardrail blocked the query
-        error          → something went wrong
-    """
     async def event_generator():
-        # Stop streaming if client disconnects
         async for event in ask_question_stream(query, user_id):
             if await request.is_disconnected():
                 break
@@ -117,43 +97,58 @@ async def ask_stream(request: Request, query: str, user_id: str):
     return EventSourceResponse(event_generator())
 
 @app.get("/provider")
-def get_provider():
-    """Returns the currently active LLM provider."""
-    return get_current_provider_info()
-
+def get_provider(user_id: str = None):
+    return get_current_provider_info(user_id=user_id)
 
 @app.post("/provider/switch")
 async def switch_provider(
-    provider: str = Form(...),         # "offline" | "online"
-    online_provider: str = Form(None)  # "groq" | "openai" | "anthropic"
+    provider: str = Form(...),         
+    online_provider: str = Form(None),  
+    user_id: str = Form(None)
 ):
-    """
-    Switches LLM provider at runtime without restarting the server.
-    """
     valid_providers = ["offline", "online"]
     valid_online    = ["groq", "openai", "anthropic"]
 
     if provider not in valid_providers:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid provider. Choose from: {valid_providers}"
-        )
+        raise HTTPException(status_code=400, detail=f"Invalid provider. Choose from: {valid_providers}")
     if provider == "online" and online_provider not in valid_online:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid online provider. Choose from: {valid_online}"
-        )
+        raise HTTPException(status_code=400, detail=f"Invalid online provider. Choose from: {valid_online}")
 
-    # ✅ Update environment variables at runtime
+    resolved_provider = "offline" if provider == "offline" else (online_provider or "groq")
+    resolved_model = next(iter(LLM_PROVIDERS[resolved_provider]["models"]))
+
+    if user_id:
+        update_payload = {
+            "llm_provider": resolved_provider,
+            "llm_model": resolved_model,
+        }
+        # FIX: Pass the current configuration into validate_config to prevent a TypeError crash
+        current_config = get_user_config(user_id)
+        is_valid, error_msg = validate_config(update_payload, current_config)
+        
+        if not is_valid:
+            raise HTTPException(status_code=400, detail=error_msg)
+
+        update_user_config(user_id, update_payload)
+        clear_llm_cache()
+
+        return {
+            "status": "success",
+            "message": f"Switched user {user_id} to {resolved_provider} ({resolved_model})",
+            "user_id": user_id,
+            "provider": resolved_provider,
+            "online_provider": online_provider,
+            "model": resolved_model,
+            "config": get_user_config(user_id),
+        }
+
     os.environ["LLM_PROVIDER"]    = provider
     os.environ["ONLINE_PROVIDER"] = online_provider or "groq"
 
-    # ✅ Reload config values
     import config
     config.LLM_PROVIDER    = provider
     config.ONLINE_PROVIDER = online_provider or "groq"
 
-    # ✅ Clear cache so next request uses new provider
     clear_llm_cache()
 
     return {
@@ -163,30 +158,28 @@ async def switch_provider(
         "online_provider": online_provider
     }
 
-
 @app.post("/reset")
-async def reset_session(
-    user_id: str = Form(...)
-):
-    """
-    Clears conversation memory for a user.
-    Call this when starting a new session or topic.
-    """
+async def reset_session(user_id: str = Form(...)):
     try:
         result = reset_user_session(user_id)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @app.get("/health")
-def health_check():
+def health_check(user_id: str = None):
     from ollama_manager import is_ollama_running, is_model_available
-    from config import OLLAMA_MODEL, LLM_PROVIDER
+    from config import OLLAMA_MODEL
+    
+    # FIX: Fetch the provider info specific to the user, not just the global state
+    provider_info = get_current_provider_info(user_id=user_id)
+    
+    # Extract the actual resolved provider string ("offline" or "online")
+    active_tier = provider_info.get("provider", "offline")
 
-    provider_info = get_current_provider_info()
-    ollama_ok     = is_ollama_running() if LLM_PROVIDER == "offline" else None
-    model_ok      = is_model_available(OLLAMA_MODEL) if ollama_ok else None
+    # FIX: Check Ollama status based on the user's active tier, not the global config
+    ollama_ok = is_ollama_running() if active_tier == "offline" else None
+    model_ok = is_model_available(OLLAMA_MODEL) if ollama_ok else None
 
     return {
         "status": "ok",

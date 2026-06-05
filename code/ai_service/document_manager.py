@@ -215,8 +215,8 @@ def delete_document(user_id: str, doc_id: str) -> dict:
 
 def _remove_doc_from_index(user_id: str, filename: str) -> int:
     """
-    Removes all chunks belonging to a document from the FAISS index.
-    Rebuilds the index without the deleted document's chunks.
+    Removes chunks from the FAISS index by ID. 
+    Prevents catastrophic re-embedding of remaining documents.
     """
     try:
         config     = get_user_config(user_id)
@@ -231,26 +231,26 @@ def _remove_doc_from_index(user_id: str, filename: str) -> int:
             allow_dangerous_deserialization=True
         )
 
-        # Collect all docs that do NOT belong to the deleted file
-        kept_docs    = []
-        removed_count = 0
+        ids_to_delete = []
 
-        for doc_id in vectorstore.index_to_docstore_id.values():
-            doc = vectorstore.docstore.search(doc_id)
-            if doc:
-                if filename in doc.metadata.get("source", ""):
-                    removed_count += 1
-                else:
-                    kept_docs.append(doc)
+        # Find the specific docstore IDs that match the deleted file
+        for docstore_id in vectorstore.index_to_docstore_id.values():
+            doc = vectorstore.docstore.search(docstore_id)
+            if doc and filename in doc.metadata.get("source", ""):
+                ids_to_delete.append(docstore_id)
 
-        # Rebuild FAISS index with remaining docs
-        if kept_docs:
-            new_vectorstore = FAISS.from_documents(kept_docs, embeddings)
-            new_vectorstore.save_local(index_path)
-        else:
-            # No docs left — delete the entire index directory
-            shutil.rmtree(index_path)
-            print(f"[DocManager] No docs remaining — index deleted for user '{user_id}'.")
+        removed_count = len(ids_to_delete)
+
+        if removed_count > 0:
+            # Native deletion (No re-embedding triggered)
+            vectorstore.delete(ids_to_delete)
+            
+            # Check if index is completely empty now
+            if len(vectorstore.index_to_docstore_id) == 0:
+                shutil.rmtree(index_path)
+                print(f"[DocManager] No docs remaining — index deleted for user '{user_id}'.")
+            else:
+                vectorstore.save_local(index_path)
 
         return removed_count
 
@@ -258,31 +258,34 @@ def _remove_doc_from_index(user_id: str, filename: str) -> int:
         print(f"[DocManager] Error removing from index: {e}")
         return 0
 
-
 # ─────────────────────────────────────────
 # DELETE ALL DOCUMENTS
 # ─────────────────────────────────────────
 
 def delete_all_documents(user_id: str) -> dict:
-    """Deletes all documents and the entire FAISS index for a user."""
-    metadata  = _load_metadata(user_id)
+    """Deletes all documents, the FAISS index, and the physical metadata file for a user."""
+    metadata = _load_metadata(user_id)
     doc_count = len(metadata.get("documents", {}))
 
-    # Delete FAISS index
+    # 1. Delete the FAISS index directory
     index_path = os.path.join(VECTOR_STORE_PATH, f"user_{user_id}")
     if os.path.exists(index_path):
         shutil.rmtree(index_path)
 
-    # Clear metadata
-    _save_metadata(user_id, {"documents": {}})
+    # 2. Delete the physical metadata file using the correct helper path
+    metadata_file_path = _meta_path(user_id)
+    
+    if os.path.exists(metadata_file_path):
+        os.remove(metadata_file_path)
+        print(f"[DocManager] Metadata file deleted for user '{user_id}'.")
+    else:
+        print(f"[DocManager] Metadata file not found for user '{user_id}'.")
 
-    print(f"[DocManager] All documents deleted for user '{user_id}'.")
     return {
         "status":   "success",
-        "message":  f"All {doc_count} document(s) deleted.",
+        "message":  f"All {doc_count} document(s) deleted and metadata purged.",
         "user_id":  user_id
     }
-
 
 # ─────────────────────────────────────────
 # USER STORAGE STATS

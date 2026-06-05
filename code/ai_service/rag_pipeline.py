@@ -4,7 +4,7 @@ from langchain_classic.chains import ConversationalRetrievalChain
 
 from config import VECTOR_STORE_PATH
 from embeddings import get_embeddings
-from memory_manager import get_memory, clear_memory
+from memory_manager import get_chat_history, add_exchange, clear_memory
 from retriever import build_retriever
 from prompts import get_condense_question_prompt, get_answer_prompt
 from document_processor import process_document
@@ -13,7 +13,7 @@ from llm_manager import get_llm, get_current_provider_info
 from user_config_manager import get_user_config
 from guardrails import run_input_guardrails, run_output_guardrails, GuardrailException
 from document_manager import register_document
-
+from langchain_core.prompts import PromptTemplate
 
 def ingest_document(file_path: str, user_id: str) -> dict:
     try:
@@ -74,40 +74,69 @@ def ask_question(query: str, user_id: str) -> dict:
         )
 
         # 5. Preprocess query
-        processed_query = preprocess_query(query=query, llm=llm, expand=True)
+        processed_query = preprocess_query(query=query, expand=True)
 
         # 6. Build retriever using user's retriever config
         retriever_config = config.get("retriever", {})
         retriever = build_retriever(vectorstore, llm, retriever_config)
 
-        # 7. Prompts + memory
+        # 7. Prompts + memory 
         condense_prompt = get_condense_question_prompt()
         answer_prompt   = get_answer_prompt()
-        memory          = get_memory(user_id)
+        chat_history = get_chat_history(user_id)
+
+        # THE FIX: Inject the actual filename into the LLM context, not just the page number
+        document_prompt = PromptTemplate(
+            input_variables=["page_content", "source"],
+            template="--- SOURCE: {source} ---\n{page_content}"
+        )
 
         # 8. Chain
         qa_chain = ConversationalRetrievalChain.from_llm(
             llm=llm,
             retriever=retriever,
-            memory=memory,
             return_source_documents=True,
             condense_question_prompt=condense_prompt,
-            combine_docs_chain_kwargs={"prompt": answer_prompt}
+            combine_docs_chain_kwargs={
+                "prompt": answer_prompt,
+                "document_prompt": document_prompt  
+            }
         )
 
-        # 9. Run
-        result           = qa_chain.invoke({"question": processed_query})
+        # 9. Run 
+        result           = qa_chain.invoke({
+            "question": processed_query,
+            "chat_history": chat_history 
+        })
+        
         raw_answer       = result["answer"]
         source_documents = result["source_documents"]
 
         # 10. Output guardrails
         safe_answer = run_output_guardrails(raw_answer, source_documents, llm)
 
-        # 11. Sources
-        sources = list(set([
-            f"Page {doc.metadata.get('page', 'N/A')}"
-            for doc in source_documents
-        ]))
+        # 11. THE FIX: Extract real filenames for the frontend pills
+        sources = []
+        for doc in source_documents:
+            # Langchain stores the file path in 'source' by default
+            raw_path = doc.metadata.get("source", "Unknown Document")
+            filename = os.path.basename(raw_path)
+            
+            # Clean up the prefix added during your upload process (e.g., 'user_3_policy.pdf' -> 'policy.pdf')
+            prefix = f"{user_id}_"
+            if filename.startswith(prefix):
+                filename = filename[len(prefix):]
+                
+            if filename not in sources:
+                sources.append(filename)
+
+        # 12. Update Memory
+        add_exchange(
+            user_id=user_id, 
+            human_query=query, 
+            ai_response=safe_answer, 
+            window_size=5
+        )
 
         return {
             "status":           "success",
@@ -131,7 +160,6 @@ def ask_question(query: str, user_id: str) -> dict:
         return {"status": "error", "answer": f"Service error: {str(e)}"}
     except Exception as e:
         return {"status": "error", "answer": f"An error occurred: {str(e)}"}
-
 
 def reset_user_session(user_id: str) -> dict:
     clear_memory(user_id)

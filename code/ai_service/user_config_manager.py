@@ -28,23 +28,28 @@ def save_user_config(user_id: str, config: dict):
         json.dump(config, f, indent=2)
 
 def update_user_config(user_id: str, updates: dict) -> dict:
-    """
-    Merges updates into existing config.
-    Returns the updated config.
-    """
     config = get_user_config(user_id)
 
-    # Deep merge for nested keys like retriever and chunking_params
+    # 1. VALIDATE AGAINST CURRENT STATE BEFORE MERGING
+    is_valid, error_msg = validate_config(updates, config)
+    if not is_valid:
+        # Hard stop. Do not save. 
+        # In a real app, you should raise a specific exception here 
+        # so your API layer can catch it and return a 400 Bad Request.
+        raise ValueError(f"Configuration update failed: {error_msg}")
+
+    # 2. Merge updates
     for key, value in updates.items():
         if isinstance(value, dict) and key in config and isinstance(config[key], dict):
             config[key].update(value)
         else:
             config[key] = value
 
+    # 3. Save
     save_user_config(user_id, config)
     return config
 
-def validate_config(updates: dict) -> tuple[bool, str]:
+def validate_config(updates: dict, current_config: dict) -> tuple[bool, str]:
     """
     Validates a config update dict.
     Returns (is_valid, error_message).
@@ -65,13 +70,21 @@ def validate_config(updates: dict) -> tuple[bool, str]:
             return False, f"Invalid llm_provider. Choose from: {list(LLM_PROVIDERS.keys())}"
 
     # Validate LLM model matches provider
-    if "llm_model" in updates and "llm_provider" in updates:
-        provider = updates["llm_provider"]
+    if "llm_model" in updates:
+        # Resolve the effective provider: use the incoming update, or fallback to current state
+        provider = updates.get("llm_provider", current_config.get("llm_provider"))
         model = updates["llm_model"]
-        available_models = list(LLM_PROVIDERS[provider]["models"].keys())
+
+        if not provider:
+            return False, "Cannot set llm_model: No llm_provider found in updates or current config."
+
+        # Safety check in case the fallback provider is somehow invalid
+        if provider not in LLM_PROVIDERS:
+            return False, f"Invalid provider '{provider}'."
+
+        available_models = list(LLM_PROVIDERS[provider].get("models", {}).keys())
         if model not in available_models:
             return False, f"Model '{model}' not available for provider '{provider}'. Choose from: {available_models}"
-
     # Validate retriever params
     if "retriever" in updates:
         r = updates["retriever"]

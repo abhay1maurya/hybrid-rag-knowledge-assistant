@@ -133,10 +133,25 @@ def get_summary(user_id: str) -> dict:
 
 
 def clear_results(user_id: str) -> dict:
-    """Clears all evaluation history for a user."""
-    _save_results(user_id, {"evaluations": []})
-    return {"status": "success", "message": "Evaluation history cleared."}
+    """Clears all evaluation history and deletes the physical file for a user."""
+    # Use EVAL_DIR to build the correct path where the file actually lives
+    results_file_path = os.path.join(EVAL_DIR, f"results_{user_id}.json")
+    
+    if os.path.exists(results_file_path):
+        os.remove(results_file_path)
+        print(f"[DocManager] Evaluation results file deleted for user '{user_id}'.")
+        message = "Evaluation history cleared and file removed."
+    else:
+        # Fallback: If the file was already deleted or doesn't exist, ensure safe state
+        _save_results(user_id, {"evaluations": []})
+        print(f"[DocManager] Evaluation history cleared for user '{user_id}' (file path not found).")
+        message = "Evaluation history cleared."
 
+    return {
+        "status": "success", 
+        "message": message,
+        "user_id": user_id
+    }
 
 def _compute_trend(scores: list) -> str:
     """Returns improving / declining / stable based on last 3 scores."""

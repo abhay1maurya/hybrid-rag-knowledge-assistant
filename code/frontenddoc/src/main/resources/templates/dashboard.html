@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocuMindAI | Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <script src="js/dashboard.js" defer></script>
+</head>
+<body class="app-body bg-mesh">
+<div class="app-wrapper">
+  <div class="layout-container">
+    
+    <header class="site-header">
+      <div class="header-inner">
+            <div class="brand-logo" onclick="window.location.href='/'" style="cursor: pointer;">
+              <img src="imag/logo.png" alt="DocuMindAI logo" class="brand-inline-logo" />
+              <h2 class="brand-text">DocuMindAI</h2>
+            </div>
+
+          <nav class="desktop-nav">
+              <a href="/">Home</a>
+              <a href="/faq">FAQ</a>
+              <a href="/dashboard" class="active">Dashboard</a>
+              <a href="/settinglagacy">Settings</a>
+              <a href="/models">Models</a>
+          </nav>
+
+          <div class="header-actions">
+              <a href="/profile" class="profile-link">👤 My Profile</a>
+              <button class="btn-outline-white" onclick="window.location.href='/logout'">Sign Out</button>
+          </div>
+      </div>
+    </header>
+
+    <main class="main-content container">
+      <header class="dashboard-page-header">
+        <div>
+          <h1 class="page-title">Workspace Dashboard</h1>
+          <p class="subtitle">Real-time document storage, indexing, and evaluation signals.</p>
+        </div>
+        <div class="page-header-actions">
+          <div class="user-id-control">
+            <label for="user-id-input">User ID</label>
+            <input id="user-id-input" class="text-input" type="text"  th:value="${u.userId}"  />
+          </div>
+          <input type="file" id="document-upload" class="hidden" accept=".pdf,.docx,.txt,.md,.csv,.xlsx" multiple />
+          <button id="upload-btn" class="btn-primary" type="button">Upload Document</button>
+          <a href="/chat" class="btn-primary">New Chat</a>
+        </div>
+      </header>
+
+      <section class="stat-grid">
+        <article class="stat-card">
+          <div class="stat-header">
+            <p>Documents</p>
+            <span>📄</span>
+          </div>
+          <p class="stat-value" id="stat-total-docs">--</p>
+          <p class="stat-meta" id="stat-docs-meta"></p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-header">
+            <p>Total Chunks</p>
+            <span>🧩</span>
+          </div>
+          <p class="stat-value" id="stat-total-chunks">--</p>
+          <p class="stat-meta" id="stat-chunks-meta"></p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-header">
+            <p>Document Size</p>
+            <span>💾</span>
+          </div>
+          <p class="stat-value" id="stat-doc-size">--</p>
+          <p class="stat-meta" id="stat-doc-size-meta"></p>
+        </article>
+        <article class="stat-card">
+          <div class="stat-header">
+            <p>Index Size</p>
+            <span>🗂️</span>
+          </div>
+          <p class="stat-value" id="stat-index-size">--</p>
+          <p class="stat-meta" id="stat-index-meta"></p>
+        </article>
+      </section>
+
+      <section class="activity-section">
+        <article class="activity-card">
+          <h2 class="section-title"><span>📊</span> Recent documents</h2>
+          <ul id="recent-docs" class="activity-list"></ul>
+        </article>
+        <article class="quick-actions-card">
+          <h2 class="section-title"><span>⚙️</span> Quick actions</h2>
+          <div class="action-buttons">
+            <a href="/doclib" class="btn-action">📚 Open document library</a>
+            <a href="/settinglagacy" class="btn-action">⚙️ Manage preferences</a>
+          </div>
+        </article>
+      </section>
+
+      <section class="analytics-container">
+        <div class="analytics-header">
+          <div>
+            <h2 class="text-xl">Document analytics</h2>
+            <p class="subtitle">Live stats from indexed documents and evaluation history.</p>
+          </div>
+        </div>
+
+        <section class="charts-row">
+          <article class="glass-card">
+            <h3>Document status</h3>
+            <ul id="statusList" class="progress-list"></ul>
+          </article>
+
+          <article class="glass-card">
+            <h3>Evaluation summary</h3>
+            <div id="evalSummary"></div>
+          </article>
+        </section>
+
+        <section class="glass-card" style="margin-bottom: 40px;">
+          <div class="card-header">
+            <h3>Document details</h3>
+            <p class="hint">Latest indexed documents for the selected user.</p>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Document</th>
+                  <th>Uploaded</th>
+                  <th>Chunks</th>
+                  <th>Size</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="docTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <p id="note" class="toast hidden"></p>
+    </main>
+
+    <footer class="site-footer">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <img src="imag/logo.png" alt="DocuMindAI logo" class="brand-inline-logo small" />
+                            <h2>DocuMindAI</h2>
+                        </div>
+                        <p class="footer-desc">The future of private knowledge management.</p>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Product</h5>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/features">Features</a></li>
+                            <li><a href="/pricinglagacy">Pricing</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Company</h5>
+                        <ul>
+                            <li><a href="/about">About us</a></li>
+                            <li><a href="/support">Careers</a></li>
+                            <li><a href="/support">Support</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Resources</h5>
+                        <ul>
+                            <li><a href="/faq">FAQ</a></li>
+                            <li><a href="/policies">Policies</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2026 Hybrid RAG Knowledge Assistant. All rights reserved.</p>
+                    <div class="footer-bottom-actions">
+                        <div class="legal-links">
+                            <a href="/policies">Privacy Policy</a>
+                            <a href="/policies">Terms of Service</a>
+                            <a href="/policies">Cookie Policy</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+  </div>
+</div>
+</body>
+</html>

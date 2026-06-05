@@ -1,258 +1,273 @@
-# AI Service — Endpoints Reference
+# DocuMind AI Service — API Endpoints Reference Guide
 
-This document lists all HTTP endpoints provided by the `ai_service`, with request/response examples, parameter descriptions, and common error cases.
-
-Base URL (local dev): http://localhost:8000
-
-Contents
-- Health & root
-- Document ingestion
-- Question answering (RAG)
-- Provider management
-- Session management
-- Configuration API (under `/config`)
+This document lists all the REST endpoints exposed by the Python FastAPI AI Service running on `http://localhost:8000`.
 
 ---
 
-## 1. Root / Health
+## 1. Health & Formats
 
-- GET `/` — Health / root
-  - Description: basic service status.
-  - Response (200):
+### GET `/` — Root Verification
+- **Description**: Returns the active state and service version.
+- **Response (200)**:
+  ```json
+  {
+    "status": "DocuMind AI Service is running.",
+    "version": "3.0"
+  }
+  ```
 
-```json
-{
-  "status": "DocuMind AI Service is running.",
-  "version": "2.0"
-}
-```
+### GET `/health` — System Health Audit
+- **Description**: Evaluates active LLM providers, checks if the local Ollama server is running, and verifies if default models are loaded.
+- **Response (200)**:
+  ```json
+  {
+    "status": "ok",
+    "active_provider": {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "speed": "very fast",
+      "accuracy": "very high",
+      "requires_key": true
+    },
+    "ollama_running": true,
+    "ollama_model_ready": true
+  }
+  ```
 
-- GET `/health` — Detailed health
-  - Description: checks active provider, Ollama status (if used), and model readiness.
-  - Response (200):
-
-```json
-{
-  "status": "ok",
-  "active_provider": {"provider": "offline", "model": "llama-3.3-70b-versatile", "speed": "fast", "accuracy": "high", "requires_key": false},
-  "ollama_running": true,
-  "ollama_model_ready": true
-}
-```
-
----
-
-## 2. Document ingestion
-
-- POST `/upload` — Upload and index a PDF
-  - Description: Accepts a PDF file and a `user_id`, processes the PDF into chunks, computes embeddings, and stores them in the user's FAISS index.
-  - Content-Type: `multipart/form-data`
-  - Form fields:
-    - `user_id` (string, required) — user identifier used to store per-user index
-    - `file` (file, required) — PDF file to upload (only `.pdf` accepted)
-  - Success (200):
-
-```json
-{
-  "status": "success",
-  "message": "Processed 'doc.pdf' successfully.",
-  "chunks_created": 42,
-  "user_id": "user_1"
-}
-```
-
-  - Common errors:
-    - 400: when uploaded file is not a PDF (the endpoint validates `file.filename.endswith('.pdf')`)
-    - 500: processing error (loader/embedding/indexing failure). If `ingest_document` returns `status: "error"`, `main.py` raises HTTP 500 with the error message.
-
-  - Temporary file behavior: uploaded file is saved under `uploads/{user_id}_{original_filename}` and removed after processing (cleanup happens in a `finally` block).
-
-  - Vector store location: embeddings are persisted under `{VECTOR_STORE_PATH}/user_{user_id}` (see `config.py` for `VECTOR_STORE_PATH`); absence of that folder will prevent queries until documents are uploaded.
-
-  - Example curl:
-
-```bash
-curl -X POST "http://localhost:8000/upload" \
-  -F "user_id=user_1" \
-  -F "file=@/path/to/doc.pdf"
-```
-
-Notes: changing the embedding model in user config will not automatically migrate existing indexes — re-uploading is required to rebuild the index with the new embeddings.
+### GET `/supported-formats` — Supported File Formats
+- **Description**: Returns all supported file extensions and categories for document ingestion.
+- **Response (200)**:
+  ```json
+  {
+    "supported_extensions": [".pdf", ".txt", ".md", ".rst", ".log", ".docx", ".doc", ".csv", ".xlsx", ".xls"],
+    "formats": {
+      "pdf":  { "extensions": [".pdf"], "description": "PDF documents" },
+      "text": { "extensions": [".txt", ".md", ".rst", ".log"], "description": "Plain text and markdown" },
+      "word": { "extensions": [".docx", ".doc"], "description": "Microsoft Word documents" },
+      "data": { "extensions": [".csv", ".xlsx", ".xls"], "description": "Spreadsheets and CSV data" }
+    }
+  }
+  ```
 
 ---
 
-## 3. Question answering (RAG)
+## 2. Document Ingestion
 
-- POST `/ask` — Ask a question
-  - Description: Runs the RAG pipeline using the user's vector store and the configured LLM provider.
-  - Content-Type: `application/x-www-form-urlencoded` (or `multipart/form-data`)
-  - Form fields:
-    - `query` (string, required)
-    - `user_id` (string, required)
-  - Behavior notes:
-    - If the user's vector store path `{VECTOR_STORE_PATH}/user_{user_id}` does not exist, the pipeline returns `status: "error"` with `answer: "No documents found. Please upload a document first."`. `main.py` converts this into an HTTP 500.
-    - The service applies input guardrails (may raise `GuardrailException`) before running retrieval; blocked queries return a 200 with `status: "blocked"`.
-  - Success (200):
-
-```json
-{
-  "status": "success",
-  "answer": "The document explains that...",
-  "sources": ["Page 1", "Page 3"],
-  "original_query": "What does the document say about X?",
-  "processed_query": "what is X"
-}
-```
-
-  - Blocked (200):
-
-```json
-{
-  "status": "blocked",
-  "reason": "safety:disallowed_topic",
-  "answer": "The request was blocked by guardrails.",
-  "sources": []
-}
-```
-
-  - Error (500):
-
-```json
-{
-  "detail": "No documents found. Please upload a document first."
-}
-```
-
-  - Example curl:
-
-```bash
-curl -X POST "http://localhost:8000/ask" \
-  -F "query=What is the summary?" \
-  -F "user_id=user_1"
-```
+### POST `/upload` — Ingest and Index a Document
+- **Description**: Accepts a supported document file, parses it, chunks it, generates embeddings, and indexes them in the user's FAISS index.
+- **Content-Type**: `multipart/form-data`
+- **Form Fields**:
+  - `user_id` (string, required) — User identifier for index isolation.
+  - `file` (file, required) — Document file (PDF, TXT, MD, DOCX, CSV, Excel).
+- **Response (200)**:
+  ```json
+  {
+    "status": "success",
+    "message": "Document processed successfully.",
+    "doc_id": "document_name_pdf",
+    "chunks_created": 12,
+    "user_id": "user_1",
+    "config_used": {
+      "embedding_model": "bge-base",
+      "chunking_strategy": "recursive",
+      "chunking_params": { "chunk_size": 600, "chunk_overlap": 100 }
+    }
+  }
+  ```
 
 ---
 
-## 4. Provider management
+## 3. Question Answering (RAG)
 
-- GET `/provider` — Current provider info
-  - Returns the currently active provider, selected model, and metadata. The implementation calls `llm_manager.get_current_provider_info()` which returns:
+### POST `/ask` — Blocking Question Answering
+- **Description**: Runs the RAG pipeline using the user's vector store and returns the full answer.
+- **Content-Type**: `application/x-www-form-urlencoded`
+- **Form Fields**:
+  - `query` (string, required)
+  - `user_id` (string, required)
+- **Response (200 - Success)**:
+  ```json
+  {
+    "status": "success",
+    "answer": "Grounded answer text here.",
+    "sources": ["Page 1", "Page 3"],
+    "original_query": "User question",
+    "processed_query": "Cleaned search question",
+    "llm_provider": {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile"
+    }
+  }
+  ```
+- **Response (200 - Blocked)**:
+  ```json
+  {
+    "status": "blocked",
+    "reason": "harmful_content",
+    "answer": "I'm sorry, I cannot process this type of request.",
+    "sources": [],
+    "original_query": "Disallowed query",
+    "processed_query": "Disallowed query"
+  }
+  ```
 
-```json
-{
-  "provider": "groq",
-  "model": "groq-chat-medium",
-  "speed": "fast",
-  "accuracy": "medium",
-  "requires_key": true
-}
-```
-
-- POST `/provider/switch` — Switch provider at runtime
-  - Description: Change the LLM provider without restarting the server.
-  - Content-Type: `application/x-www-form-urlencoded`
-  - Form fields:
-    - `provider` (string, required) — allowed: `offline`, `online`
-    - `online_provider` (string, optional) — when `provider=online`; allowed: `groq`, `openai`, `anthropic`
-  - Success (200): returns status and new provider settings.
-  - Errors:
-    - 400: invalid provider or invalid online_provider
-
-Example curl:
-
-```bash
-curl -X POST "http://localhost:8000/provider/switch" \
-  -F "provider=online" \
-  -F "online_provider=openai"
-```
-
-Notes: this endpoint sets environment variables and updates `config` module globals (`LLM_PROVIDER`, `ONLINE_PROVIDER`), then clears the LLM cache so changes take effect immediately. Response example:
-
-```json
-{
-  "status": "success",
-  "message": "Switched to online (openai)",
-  "provider": "online",
-  "online_provider": "openai"
-}
-```
-
----
-
-## 5. Session / memory management
-
-- POST `/reset` — Reset conversation memory for a user
-  - Content-Type: `application/x-www-form-urlencoded`
-  - Form fields: `user_id` (string, required)
-  - Success: returns result from `reset_user_session` (usually a confirmation JSON)
-
-Example curl:
-
-```bash
-curl -X POST "http://localhost:8000/reset" -F "user_id=user_1"
-```
+### GET `/ask/stream` — Streaming SSE Question Answering
+- **Description**: Streams generated answer tokens in real-time as Server-Sent Events (SSE).
+- **Parameters**:
+  - `query` (string, required)
+  - `user_id` (string, required)
+- **SSE Event Types**:
+  - `start`: Stream execution initialized.
+  - `status`: Progress status updates (e.g. *Retrieving relevant context...*).
+  - `query_processed`: Returns the original query vs processed query.
+  - `generating`: LLM output has started.
+  - `token`: Single token string generated.
+  - `guardrail`: Triggered if the output guardrail modifies the answer.
+  - `sources`: Lists page citations.
+  - `done`: Stream complete (includes source list and provider metadata).
+  - `blocked`: Triggered if input guardrails block the query.
+  - `error`: Internal execution errors.
 
 ---
 
-## 6. Configuration API (`/config/*`)
+## 4. Provider & Session Management
 
-All configuration routes are mounted under the `/config` prefix by `config_router.py`.
+### GET `/provider` — Current Provider Details
+- **Description**: Returns active provider, model, speed, accuracy, and key requirements.
+- **Response (200)**:
+  ```json
+  {
+    "provider": "offline",
+    "model": "mistral",
+    "speed": "medium",
+    "accuracy": "good",
+    "requires_key": false
+  }
+  ```
 
-1) GET `/config/options`
-   - Description: retrieves available embedding models, chunking strategies, LLM providers and defaults.
+### POST `/provider/switch` — Switch LLM Provider
+- **Description**: Changes the active LLM provider. Can be applied process-wide or to a specific user.
+- **Form Fields**:
+  - `provider` (string, required) — `offline` or `online`.
+  - `online_provider` (string, optional) — `groq`, `openai`, or `anthropic`.
+  - `user_id` (string, optional) — If provided, updates config settings for that specific user.
+- **Response (200)**:
+  ```json
+  {
+    "status": "success",
+    "message": "Switched to online (groq)",
+    "provider": "online",
+    "online_provider": "groq"
+  }
+  ```
 
-   - Example response (truncated):
-
-```json
-{
-  "embedding_models": {"hf-bge": {"description":"...","dimensions":768}},
-  "chunking_strategies": {...},
-  "llm_providers": {...},
-  "retriever_options": {...},
-  "default_config": {...}
-}
-```
-
-2) GET `/config/{user_id}`
-   - Returns user-specific configuration.
-
-3) PATCH `/config/{user_id}`
-   - Body: JSON patch-like partial update following the `UserConfigUpdate` model.
-   - Example body:
-
-```json
-{
-  "embedding_model": "hf-bge",
-  "chunking_strategy": "recursive",
-  "retriever": {"k_candidates": 10, "use_reranker": true}
-}
-```
-
-   - Warnings: changing `embedding_model` may invalidate existing vector indexes; the API will return a `warnings` array if applicable.
-
-4) POST `/config/{user_id}/reset`
-   - Resets the user's config to defaults.
-
-5) GET `/config/{user_id}/llm-models`
-   - Returns available models for the user's configured provider, plus `requires_key` and `get_key_url` hints.
-
----
-
-## Error handling summary
-
-- 200: successful responses (including `status: "blocked"` for guardrail blocks).
-- 400: client errors (invalid parameters, invalid provider selection).
-- 500: server errors (processing failures, embedding/LLM errors).
-
-When reporting issues, include server logs from `uvicorn` output and a reproducible curl request.
+### POST `/reset` — Reset Session Memory
+- **Description**: Clears the sliding-window conversational memory for a specific user.
+- **Form Fields**:
+  - `user_id` (string, required)
+- **Response (200)**:
+  ```json
+  {
+    "status": "success",
+    "message": "Session cleared for user user_1"
+  }
+  ```
 
 ---
 
-## Tips for automation / tests
+## 5. Configuration APIs (prefix: `/config`)
 
-- To test ingestion in CI, run `curl` to `/upload` with a known small PDF and assert the presence of `vector_store/<user>/index.faiss`.
-- For RAG pipeline integration tests, pre-seed a small index and call `/ask` verifying the returned `answer` and `sources`.
+Mounted in `config_router.py` to manage user-specific processing configurations.
+
+### GET `/config/options`
+- **Description**: Returns all supported embedding models, chunking strategies, and default parameters.
+
+### GET `/config/{user_id}`
+- **Description**: Retrieves config settings for a specific user.
+
+### PATCH `/config/{user_id}`
+- **Description**: Partially updates a user's configuration parameters.
+- **Body (JSON)**:
+  ```json
+  {
+    "embedding_model": "bge-base",
+    "chunking_strategy": "recursive",
+    "retriever": {
+      "k_candidates": 12,
+      "bm25_weight": 0.4
+    }
+  }
+  ```
+- **Response (200)**: Includes updated settings and warnings if model changes invalidate the current FAISS index.
+
+### POST `/config/{user_id}/reset`
+- **Description**: Resets a user's configuration to the system defaults.
+
+### GET `/config/{user_id}/llm-models`
+- **Description**: Lists available models for the user's active provider.
 
 ---
 
-File generated from endpoint code in `main.py` and `config_router.py`.
+## 6. Document Management APIs (prefix: `/documents`)
+
+CRUD operations for user documents and vector stores.
+
+### GET `/documents/{user_id}`
+- **Description**: Lists all indexed documents for a user, including sizes, upload times, and chunk counts.
+
+### GET `/documents/{user_id}/stats`
+- **Description**: Returns overall storage stats, total chunks, index sizes, and file size sums.
+
+### GET `/documents/{user_id}/{doc_id}`
+- **Description**: Returns detailed processing stats for a single document.
+
+### DELETE `/documents/{user_id}/{doc_id}`
+- **Description**: Deletes chunks associated with a specific document from the user's FAISS index.
+
+### DELETE `/documents/{user_id}`
+- **Description**: Deletes all documents, FAISS indices, and metadata associated with a user.
+
+---
+
+## 7. RAG Evaluation APIs (prefix: `/eval`)
+
+Manages test sets and runs evaluations.
+
+### GET `/eval/{user_id}/test-set`
+- **Description**: Retrieves all saved evaluation questions for a user.
+
+### POST `/eval/{user_id}/test-set/add`
+- **Description**: Adds a question and an optional ground-truth answer to the user's test set.
+- **Body (JSON)**:
+  ```json
+  {
+    "question": "What is the primary conclusion?",
+    "ground_truth": "The project is successful."
+  }
+  ```
+
+### DELETE `/eval/{user_id}/test-set/{q_id}`
+- **Description**: Removes a question from the test set.
+
+### DELETE `/eval/{user_id}/test-set`
+- **Description**: Clears the test set.
+
+### POST `/eval/{user_id}/test-set/auto-generate`
+- **Description**: Automatically generates test questions based on the user's indexed document chunks.
+- **Parameters**: `n` (integer, default: 5).
+
+### POST `/eval/{user_id}/run`
+- **Description**: Runs evaluation on the test set. Computes *Faithfulness*, *Relevancy*, *Precision*, *Recall*, and *Correctness*, and saves results to disk.
+- **Response (200)**: Returns per-question results, averages, and tuning recommendations.
+
+### GET `/eval/{user_id}/results`
+- **Description**: Returns historical evaluation runs.
+
+### GET `/eval/{user_id}/results/latest`
+- **Description**: Returns results for the most recent evaluation run.
+
+### GET `/eval/{user_id}/summary`
+- **Description**: Aggregates average, best, and worst scores across runs, and shows performance trends.
+
+### DELETE `/eval/{user_id}/results`
+- **Description**: Deletes all evaluation histories.

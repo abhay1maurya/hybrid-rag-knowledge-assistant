@@ -6,11 +6,11 @@ from langchain_classic.chains import ConversationalRetrievalChain
 
 from config import VECTOR_STORE_PATH
 from embeddings import get_embeddings
-from memory_manager import get_memory
+from memory_manager import get_chat_history, add_exchange, clear_memory
 from retriever import build_retriever
 from prompts import get_condense_question_prompt, get_answer_prompt
 from query_processor import preprocess_query
-from llm_manager import get_llm, get_current_provider_info
+from llm_manager import get_llm, get_current_provider_info, _build_ollama_llm
 from user_config_manager import get_user_config
 from guardrails import run_input_guardrails, run_output_guardrails, GuardrailException
 from streaming import StreamingCallbackHandler, format_sse_event
@@ -22,10 +22,7 @@ def _get_streaming_llm(provider: str, model: str):
     Streaming LLMs cannot be cached — each request needs its own handler.
     """
     if provider == "offline":
-        from langchain_ollama import OllamaLLM
-        from ollama_manager import ensure_ollama_ready
-        ensure_ollama_ready(model)
-        return OllamaLLM(model=model, streaming=True)
+        return _build_ollama_llm(model, streaming=True)
 
     elif provider == "groq":
         from langchain_groq import ChatGroq

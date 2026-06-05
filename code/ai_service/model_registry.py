@@ -236,7 +236,7 @@ RETRIEVER_OPTIONS = {
 
 # Default config applied to every new user
 DEFAULT_USER_CONFIG = {
-    "embedding_model": "bge-large",
+    "embedding_model": "bge-base",
     "chunking_strategy": "recursive",
     "chunking_params": {
         "chunk_size": 600,
@@ -247,8 +247,8 @@ DEFAULT_USER_CONFIG = {
     "retriever": {
         "k_candidates": 10,
         "top_n_rerank": 3,
-        "bm25_weight": 0.4,
-        "use_multi_query": True,
+        "bm25_weight": 0.3,
+        "use_multi_query": False,
         "use_reranker": True
     }
 }

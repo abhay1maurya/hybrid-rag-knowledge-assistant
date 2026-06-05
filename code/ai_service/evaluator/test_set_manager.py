@@ -92,10 +92,25 @@ def delete_question(user_id: str, q_id: str) -> dict:
 
 
 def clear_test_set(user_id: str) -> dict:
-    """Clears all test questions for a user."""
-    _save_test_set(user_id, {"questions": []})
-    return {"status": "success", "message": "Test set cleared."}
+    """Clears all test questions and deletes the physical file for a user."""
+    # Call your existing helper function to get the exact path
+    test_set_file_path = _test_set_path(user_id)
+    
+    if os.path.exists(test_set_file_path):
+        os.remove(test_set_file_path)
+        print(f"[DocManager] Test set file deleted for user '{user_id}'.")
+        message = "Test set cleared and file removed."
+    else:
+        # Fallback: If the file is already gone, ensure the empty state via the helper
+        _save_test_set(user_id, {"questions": []})
+        print(f"[DocManager] Test set cleared for user '{user_id}' (file path not found).")
+        message = "Test set cleared."
 
+    return {
+        "status": "success", 
+        "message": message,
+        "user_id": user_id
+    }
 
 def _extract_text_from_response(response) -> str:
     """

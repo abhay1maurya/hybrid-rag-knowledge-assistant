@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocuMindAI | Support</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/support.css" />
+  <script src="js/support.js" defer></script>
+</head>
+<body class="app-body bg-mesh">
+  <main class="main-container">
+    <div class="header-section">
+      <a href="/" class="back-link">Back to Home</a>
+      <h1 class="page-title">Support Center</h1>
+      <p class="page-description">Find help articles or submit a support request. Our team is here to help you succeed.</p>
+    </div>
+
+    <section class="support-grid">
+      <a href="/doclib" class="support-card">
+        <p class="card-title">
+          <span>📄</span> Document ingestion troubleshooting
+        </p>
+        <p class="card-desc">Learn how to upload, process, and index documents</p>
+      </a>
+      <a href="/chat" class="support-card">
+        <p class="card-title">
+          <span>💬</span> Assistant response quality tips
+        </p>
+        <p class="card-desc">Improve the quality of AI responses with better prompts</p>
+      </a>
+      <a href="/settinglagacy" class="support-card">
+        <p class="card-title">
+          <span>⚙️</span> Workspace and access settings
+        </p>
+        <p class="card-desc">Configure teams, permissions, and workspace options</p>
+      </a>
+      <a href="/pricinglagacy" class="support-card">
+        <p class="card-title">
+          <span>💳</span> Billing and subscription plans
+        </p>
+        <p class="card-desc">Manage subscriptions, invoices, and payment methods</p>
+      </a>
+    </section>
+
+    <form onsubmit="submitTicket(event)" class="support-form">
+      <h2 class="form-title">Submit a support request</h2>
+      <p class="form-subtitle">We typically respond within 2-4 hours during business hours</p>
+      
+      <input type="text" class="form-input" placeholder="Subject" />
+      <textarea class="form-textarea" rows="4" placeholder="Describe your issue in detail"></textarea>
+      
+      <button type="submit" class="btn-primary">Send Request</button>
+      <p id="ticket" class="success-message hidden">✔ Support ticket submitted. We'll be in touch soon!</p>
+    </form>
+  </main>
+</body>
+</html>

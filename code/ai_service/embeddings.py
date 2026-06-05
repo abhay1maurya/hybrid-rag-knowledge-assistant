@@ -22,7 +22,7 @@ def get_embeddings(model_key: str = "bge-large") -> HuggingFaceEmbeddings:
 
     instance = HuggingFaceEmbeddings(
         model_name=model_info["model_name"],
-        model_kwargs={"device": "cpu"},
+        model_kwargs={"device": "cuda"},
         encode_kwargs={"normalize_embeddings": model_info["normalize"]},
         cache_folder="./model_cache"
     )

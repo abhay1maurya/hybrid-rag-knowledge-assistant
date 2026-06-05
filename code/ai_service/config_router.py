@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Form, HTTPException
+
+from ollama_manager import is_model_available, pull_model
+from fastapi import APIRouter, Form, HTTPException, Depends, BackgroundTasks
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Dict, Any
 
 from model_registry import (
     EMBEDDING_MODELS, CHUNKING_STRATEGIES,
@@ -15,7 +17,7 @@ from user_config_manager import (
 router = APIRouter(prefix="/config", tags=["Configuration"])
 
 
-# ── Pydantic Models ───────────────────────────────────────────────────────────
+# ── Pydantic Input Schemas ───────────────────────────────────────────────────
 class RetrieverConfig(BaseModel):
     k_candidates: Optional[int] = None
     top_n_rerank: Optional[int] = None
@@ -38,10 +40,22 @@ class UserConfigUpdate(BaseModel):
     retriever: Optional[RetrieverConfig] = None
 
 
-# ── GET /config/options — show all available options ─────────────────────────
+# ── Helper Utilities ──────────────────────────────────────────────────────────
+def deep_merge(base: Dict[str, Any], update: Dict[str, Any]) -> Dict[str, Any]:
+    """Recursively merges update values into a base dictionary to preserve sub-configs."""
+    merged = base.copy()
+    for key, value in update.items():
+        if key in merged and isinstance(merged[key], dict) and isinstance(value, dict):
+            merged[key] = deep_merge(merged[key], value)
+        else:
+            merged[key] = value
+    return merged
+
+
+# ── GET /config/options ──────────────────────────────────────────────────────
 @router.get("/options")
 def get_all_options():
-    """Returns all available models and configuration options."""
+    """Returns all dynamically available models, providers, and default fallback schemas."""
     return {
         "embedding_models": {
             key: {
@@ -85,10 +99,10 @@ def get_all_options():
     }
 
 
-# ── GET /config/{user_id} — get user's current config ────────────────────────
+# ── GET /config/{user_id} ────────────────────────────────────────────────────
 @router.get("/{user_id}")
 def get_config(user_id: str):
-    """Returns the current configuration for a user."""
+    """Returns the current state configuration for a specified user context."""
     config = get_user_config(user_id)
     return {
         "status": "success",
@@ -97,65 +111,80 @@ def get_config(user_id: str):
     }
 
 
-# ── PATCH /config/{user_id} — update specific fields ─────────────────────────
+# ── PATCH /config/{user_id} ──────────────────────────────────────────────────
 @router.patch("/{user_id}")
-def update_config(user_id: str, updates: UserConfigUpdate):
+def update_config(user_id: str, updates: UserConfigUpdate, background_tasks: BackgroundTasks):
     """
-    Update one or more config fields for a user.
-    Only provided fields are updated — others stay unchanged.
+    Partially update user configuration variables. 
+    Handles deep object mutation safety for nested parameters and auto-downloads missing offline models.
     """
-    # Convert to dict, remove None values
-    update_dict = {
-        k: v.model_dump(exclude_none=True) if hasattr(v, 'model_dump') else v
-        for k, v in updates.model_dump(exclude_none=True).items()
-    }
+    # 1. Extract structural patch inputs discarding explicitly unassigned parameters
+    patch_dict = updates.model_dump(exclude_none=True)
 
-    if not update_dict:
+    if not patch_dict:
         raise HTTPException(status_code=400, detail="No valid fields provided to update.")
 
-    # Validate
-    is_valid, error_msg = validate_config(update_dict)
+    # 2. Retrieve current active user layout state (Do this EXACTLY ONCE)
+    current_config = get_user_config(user_id)
+
+    # 3. Compile the complete target state structure
+    target_config = deep_merge(current_config, patch_dict)
+
+    # 4. Validate the entire combined matrix state contextually
+    is_valid, error_msg = validate_config(target_config, current_config)
     if not is_valid:
         raise HTTPException(status_code=400, detail=error_msg)
-
-    # ⚠️ Warn if embedding model changed — old index is incompatible
-    config = get_user_config(user_id)
+    
+    # 5. Background Task: Auto-download missing offline models
+    provider = target_config.get("llm_provider")
+    model_name = target_config.get("llm_model")
+    
+    if provider == "offline" and model_name:
+        if not is_model_available(model_name):
+            print(f"[Config] User {user_id} requested missing model '{model_name}'. Queuing download...")
+            background_tasks.add_task(pull_model, model_name)
+    # 6. Structural checks: Warn if changes to embeddings alter structural index compatibility
     warnings = []
-    if "embedding_model" in update_dict and update_dict["embedding_model"] != config.get("embedding_model"):
+    if "embedding_model" in patch_dict and patch_dict["embedding_model"] != current_config.get("embedding_model"):
         warnings.append(
-            "Embedding model changed — your existing vector store is incompatible. "
-            "Please re-upload your documents to rebuild the index."
+            "Embedding engine changed. Your existing local vector store collections are now incompatible. "
+            "Please drop your collection indices and re-upload source documents to preserve query routing stability."
         )
 
-    updated = update_user_config(user_id, update_dict)
+    # 7. Commit the fully updated merge tree state configuration
+    # Ensure this function name does not conflict with your router function name
+    updated = update_user_config(user_id, target_config) 
+    
     return {
         "status": "success",
         "user_id": user_id,
         "config": updated,
-        "warnings": warnings
+        "warnings": warnings,
+        "message": f"Configuration saved. If '{model_name}' is new, it is downloading in the background." if (provider == "offline" and model_name and not is_model_available(model_name)) else "Configuration saved."
     }
-
-
-# ── POST /config/{user_id}/reset — reset to defaults ─────────────────────────
+# ── POST /config/{user_id}/reset ─────────────────────────────────────────────
 @router.post("/{user_id}/reset")
 def reset_config(user_id: str):
-    """Resets user configuration to system defaults."""
+    """Resets user configuration tracking back to default factory profiles."""
     config = reset_user_config(user_id)
     return {
         "status": "success",
         "user_id": user_id,
-        "message": "Configuration reset to defaults.",
+        "message": "Configuration state successfully reset to system defaults.",
         "config": config
     }
 
 
-# ── GET /config/{user_id}/llm-models — models for selected provider ───────────
+# ── GET /config/{user_id}/llm-models ─────────────────────────────────────────
 @router.get("/{user_id}/llm-models")
 def get_available_models_for_provider(user_id: str):
-    """Returns available LLM models for the user's currently selected provider."""
+    """Extracts available generation options specifically relevant to the user's active engine."""
     config = get_user_config(user_id)
-    provider = config.get("llm_provider", "groq")
+    
+    # Fallback checks looking at regional defaults if user records aren't set
+    provider = config.get("llm_provider", DEFAULT_USER_CONFIG.get("llm_provider", "offline"))
     provider_info = LLM_PROVIDERS.get(provider, {})
+    
     return {
         "provider": provider,
         "requires_key": provider_info.get("requires_key", False),

@@ -1,5 +1,5 @@
 {
-  "embedding_model": "bge-large",
+  "embedding_model": "bge-base",
   "chunking_strategy": "recursive",
   "chunking_params": {
     "chunk_size": 600,
@@ -10,8 +10,8 @@
   "retriever": {
     "k_candidates": 10,
     "top_n_rerank": 3,
-    "bm25_weight": 0.4,
-    "use_multi_query": true,
+    "bm25_weight": 0.3,
+    "use_multi_query": false,
     "use_reranker": true
   }
 }

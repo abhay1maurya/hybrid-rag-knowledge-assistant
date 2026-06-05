@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/landingpage.css" /> 
+    <script src="js/landingpage.js" defer></script>
+    <title>DocuMindAI Knowledge Assistant</title>
+</head>
+
+<body class="app-body bg-mesh">
+    <div class="app-wrapper">
+        <div class="layout-container">
+            
+            <header class="site-header">
+                <div class="header-inner">
+                    <div class="brand-logo" data-alert="Navigating to Home...">
+                        <img src="imag/logo.png" alt="DocuMindAI logo" class="brand-inline-logo" />
+                        <h2 class="brand-text">DocuMindAI</h2>
+                    </div>
+
+                    <nav class="desktop-nav">
+                        <a href="/" class="active">Home</a>
+                        <a href="/features">Features</a>
+                        <a href="/faq">FAQ</a>
+                        <a href="/pricinglagacy">Pricing</a>
+                        <a href="/dashboard">Dashboard</a>
+                        <a href="/about">About us</a>
+                        <a href="/settinglagacy">Settings</a>
+                    </nav>
+
+                    <div class="header-actions">
+                        <button class="btn-outline-white" data-href="/loginpage">Login</button>
+                        <button class="btn-primary" data-href="signup">Sign Up</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <section class="container hero-section">
+                    <div class="hero-grid">
+                        <div class="hero-text-content">
+                            <div class="hero-badge">
+                                <span>New: Offline Mode Available</span>
+                            </div>
+                            <h1 class="hero-title">
+                                Ask Questions From Your <span class="text-primary">Documents</span> with AI
+                            </h1>
+                            <p class="hero-description">
+                                Upload PDF, DOCX, or TXT and get instant answers powered by online and offline AI models. Your knowledge, amplified.
+                            </p>
+                            <div class="hero-buttons">
+                                <button class="btn-primary btn-large" data-href="/loginpage">Start Using Now</button>
+                               
+                            </div>
+                        </div>
+                        
+                        <div class="hero-visual">
+                            <div class="visual-wrapper">
+                                <div class="visual-glow"></div>
+                                <div class="chat-mockup-card">
+                                    <div class="chat-header">
+                                        
+                                        <div class="chat-header-text">
+                                            <h3>Hybrid RAG Assistant</h3>
+                                            <p>Online & Ready</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="chat-window" id="chat-window">
+                                        <div class="message ai-message">
+                                            <div class="avatar"><span class="material-symbols-outlined">smart_toy</span></div>
+                                            <div class="bubble">Hello! I've analyzed your document. What would you like to know?</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="chat-actions">
+                                        <button class="demo-prompt-btn" onclick="triggerDemoChat('What is the methodology?')">Ask about methodology</button>
+                                        <button class="demo-prompt-btn" onclick="triggerDemoChat('What are the key findings?')">Ask about findings</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="container stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <p class="stat-label">Formats</p>
+                            <p class="stat-value">5+</p>
+                            <p class="stat-desc">PDF, Word, TXT & More</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-label">AI Models</p>
+                            <p class="stat-value">5+</p>
+                            <p class="stat-desc">Online & Local Processing</p>
+                        </div>
+                        <div class="stat-card">
+                            <p class="stat-label">Privacy</p>
+                            <p class="stat-value">JWT</p>
+                            <p class="stat-desc">Enterprise Grade Security</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="container features-wrapper" id="features">
+                    <div class="features-content">
+                        <div class="features-header">
+                            <h2 class="features-title">Powerful Features for Intelligent Retrieval</h2>
+                            <p class="features-description">
+                                Our Hybrid RAG system combines the massive knowledge of cloud LLMs with the absolute privacy of local models.
+                            </p>
+                        </div>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <span class="material-symbols-outlined">database</span>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Advanced RAG</h3>
+                                    <p>Sophisticated retrieval augmented generation ensures your AI assistant has perfect context for every query.</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <span class="material-symbols-outlined">wifi_off</span>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Offline AI</h3>
+                                    <p>Run state-of-the-art models locally. Perfect for sensitive documents and zero-latency performance without internet.</p>
+                                </div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <span class="material-symbols-outlined">verified_user</span>
+                                </div>
+                                <div class="feature-text">
+                                    <h3>Enterprise Security</h3>
+                                    <p>Bank-grade encryption and isolated data containers keep your proprietary information confidential.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="container cta-section">
+                    <div class="cta-card">
+                        <div class="cta-glow top-right"></div>
+                        <div class="cta-glow bottom-left"></div>
+                        <div class="cta-content">
+                            <h2 class="cta-title">Ready to unlock your knowledge?</h2>
+                            <p class="cta-description">Join thousands of researchers, lawyers, and students using Hybrid RAG to find answers in seconds.</p>
+                            <div class="cta-buttons">
+                                <button class="btn-primary btn-large cta-btn-primary" data-href="/pricinglagacy">Start Your Free Trial</button>
+                                <button class="btn-glass btn-large" data-href="/support">Talk to Sales</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="container faq-section" id="faq">
+                    <div class="features-header">
+                        <h2 class="features-title">Frequently Asked Questions</h2>
+                    </div>
+                    
+                    <div class="faq-container">
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>What makes "Hybrid" RAG different?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Unlike standard RAG, our system allows you to toggle between cloud-based LLMs for deep reasoning and local, offline models for maximum privacy and zero-latency retrieval.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Is my data used to train the AI models?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>No. We prioritize enterprise-grade security. If you use the Offline AI mode, your documents never leave your local environment. In online mode, we utilize isolated containers that do not contribute to model training.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Which file formats are supported?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Currently, we support PDF, DOCX, TXT, and Markdown files. We are actively working on adding support for spreadsheets and slide decks.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                <span>Do I need a high-end GPU for Offline Mode?</span>
+                                <span class="material-symbols-outlined">expand_more</span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Our assistant is optimized for performance. While a dedicated GPU helps, it can run efficiently on modern CPUs thanks to quantized model inference.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="site-footer">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <img src="imag/logo.png" alt="DocuMindAI logo" class="brand-inline-logo small" />
+                            <h2>DocuMindAI</h2>
+                        </div>
+                        <p class="footer-desc">The future of private knowledge management.</p>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Product</h5>
+                        <ul>
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/features">Features</a></li>
+                            <li><a href="/pricinglagacy">Pricing</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Company</h5>
+                        <ul>
+                            <li><a href="/about">About us</a></li>
+                            <li><a href="/support">Careers</a></li>
+                            <li><a href="/support">Support</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h5>Resources</h5>
+                        <ul>
+                            <li><a href="/faq">FAQ</a></li>
+                            <li><a href="/policies">Policies</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>© 2026 Hybrid RAG Knowledge Assistant. All rights reserved.</p>
+                    <div class="footer-bottom-actions">
+                        <div class="legal-links">
+                            <a href="/policies">Privacy Policy</a>
+                            <a href="/policies">Terms of Service</a>
+                            <a href="/policies">Cookie Policy</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+</body>
+</html>
