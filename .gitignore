@@ -58,7 +58,7 @@ vector_store/
 
 # Uploaded files
 uploads/
-*.pdf
+
 
 # IDE
 .vscode/
