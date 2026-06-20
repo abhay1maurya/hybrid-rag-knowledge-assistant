@@ -31,6 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-code/frontenddoc/src/main/resources/application.properties
-code/Documind_At/src/main/resources/application.properties

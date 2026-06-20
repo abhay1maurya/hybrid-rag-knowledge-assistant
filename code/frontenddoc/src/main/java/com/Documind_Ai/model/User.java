@@ -19,6 +19,7 @@ public class User {
 
     private String role;
 
+    private int otp;
     private LocalDateTime createdAt = LocalDateTime.now();
 
 	public Long getUserId() {
@@ -68,14 +69,29 @@ public class User {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+	
+	
 
-	public User(Long userId, String name, String email, String password, String role, LocalDateTime createdAt) {
+	
+	public int getOtp() {
+		return otp;
+	}
+
+	public void setOtp(int otp) {
+		this.otp = otp;
+	}
+	
+	
+
+	public User(Long userId, String name, String email, String password, String role, int otp,
+			LocalDateTime createdAt) {
 		super();
 		this.userId = userId;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.role = role;
+		this.otp = otp;
 		this.createdAt = createdAt;
 	}
 

@@ -33,8 +33,13 @@ public class websecrity {
                     "/imag/**",
                     "/landingpage",
                     "/",
+                    "/about",
                     "/faq",
                     "/submiting",
+                    "/generatedOtp",
+                    "/verifyOtp",
+                    "/sussregister",
+                    "/subdata",
                     "/pricinglagacy",
                     "/features"
                 ).permitAll()

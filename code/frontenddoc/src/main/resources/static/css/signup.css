@@ -256,10 +256,69 @@ body {
   background: rgba(249, 115, 22, 0.05);
 }
 
+
+.hidden{
+    display:none;
+}
+
+.step-content.active{
+    display:block;
+}
+
+.step-content{
+    display:none;
+}
+
+.steps{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.step-indicator{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    background:#333;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.step-indicator.active{
+    background:var(--brand);
+    color:#000;
+}
+
 .note-text {
   margin-top: 1rem;
   font-size: 0.875rem;
   color: var(--white-70);
+}
+
+
+.otp-inputs{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:20px 0;
+}
+
+.otp-box{
+    width:55px;
+    height:55px;
+    text-align:center;
+    font-size:24px;
+    border-radius:10px;
+    border:1px solid var(--white-20);
+    background:rgba(0,0,0,.4);
+    color:white;
+}
+
+.otp-buttons{
+    display:flex;
+    gap:10px;
 }
 
 /* JavaScript Dynamic Classes */

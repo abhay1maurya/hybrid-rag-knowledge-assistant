@@ -20,6 +20,8 @@ public class User {
     private String password;
 
     private String role;
+    
+    private int otp;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -81,8 +83,22 @@ public class User {
 	public void setDocuments(List<Document> documents) {
 		this.documents = documents;
 	}
+	
+	
+		
 
-	public User(Long userId, String name, String email, String password, String role, LocalDateTime createdAt,
+	public int getOtp() {
+		return otp;
+	}
+
+	public void setOtp(int otp) {
+		this.otp = otp;
+	}
+
+	
+	
+	
+	public User(Long userId, String name, String email, String password, String role, int otp, LocalDateTime createdAt,
 			List<Document> documents) {
 		super();
 		this.userId = userId;
@@ -90,6 +106,7 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.role = role;
+		this.otp = otp;
 		this.createdAt = createdAt;
 		this.documents = documents;
 	}

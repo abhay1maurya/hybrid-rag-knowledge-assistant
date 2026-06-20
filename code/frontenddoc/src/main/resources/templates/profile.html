@@ -34,7 +34,6 @@
               <p class="profile-status">Pro Plan &bull; Active</p>
               <div class="badges-container">
                 <span class="badge badge-success">✓ Email Verified</span>
-                <span class="badge badge-info">🔒 2FA Enabled</span>
               </div>
             </div>
             <div class="divider-top mt-6 pt-6">
@@ -52,12 +51,8 @@
               <fieldset class="form-grid">
                 <legend class="fieldset-legend">Personal Information</legend>
                 <label class="form-label">
-                  First name
+                  Name
                   <input required class="form-input" th:value="${u.name}" />
-                </label>
-                <label class="form-label">
-                  Last name
-                  <input required class="form-input" value="Wright" />
                 </label>
                 <label class="form-label full-width">
                   Email address
@@ -90,59 +85,7 @@
               </div>
             </form>
 
-            <div class="card">
-              <h3 class="fieldset-legend">Security & Privacy</h3>
-              <div class="list-container mt-4">
-                <div class="list-item">
-                  <div>
-                    <p class="item-title">Change password</p>
-                    <p class="item-desc">Last changed 3 months ago</p>
-                  </div>
-                  <button id="btn-password" type="button" class="btn-action">Update</button>
-                </div>
-                <div class="list-item">
-                  <div>
-                    <p class="item-title">Two-factor authentication</p>
-                    <p class="item-desc text-success">✓ Enabled</p>
-                  </div>
-                  <button id="btn-2fa" type="button" class="btn-action">Manage</button>
-                </div>
-                <div class="list-item">
-                  <div>
-                    <p class="item-title">Active sessions</p>
-                    <p class="item-desc">1 session active</p>
-                  </div>
-                  <button id="btn-sessions" type="button" class="btn-action">View All</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <h3 class="fieldset-legend">Notification Preferences</h3>
-              <div class="list-container mt-4">
-                <label class="checkbox-row">
-                  <input type="checkbox" checked class="checkbox-input" />
-                  <div>
-                    <p class="item-title">Email notifications</p>
-                    <p class="item-desc">Receive updates about your workspace</p>
-                  </div>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" checked class="checkbox-input" />
-                  <div>
-                    <p class="item-title">Weekly reports</p>
-                    <p class="item-desc">Summary of queries and indexed documents</p>
-                  </div>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" class="checkbox-input" />
-                  <div>
-                    <p class="item-title">Product updates</p>
-                    <p class="item-desc">New features and improvements</p>
-                  </div>
-                </label>
-              </div>
-            </div>
+            
 
             <div class="card danger-card">
               <h3 class="danger-title">Danger Zone</h3>

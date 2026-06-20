@@ -39,12 +39,7 @@ function setProviderLabel(info) {
   if (activeModel) activeModel.textContent = label;
 }
 
-function setEndpointLabel() {
-  const el = document.getElementById('val-api');
-  if (el) el.textContent = API;
-  const sub = document.getElementById('chat-sub');
-  if (sub) sub.textContent = `Grounded answers from your documents · ${API}`;
-}
+
 
 function toggleSidebar(side) {
   const shell = document.querySelector('.shell');
@@ -124,28 +119,80 @@ async function loadServiceInfo() {
     setEndpointLabel();
   }
 }
+// 1. Stop hijacking the API status box with the base URL
+function setEndpointLabel() {
+  const sub = document.getElementById('chat-sub');
+  if (sub) sub.textContent = `Grounded answers from your documents · ${API}`;
+}
 
+// 2. Centralize the logic: drive the UI based on the active configuration
+function updateSystemStatus(info) {
+  if (!info) return;
+  const provider = info.provider || 'offline';
+  const model = info.model || 'Unknown';
+
+  const valOllama = document.getElementById('val-ollama');
+  const valModel = document.getElementById('val-model');
+  const valApi = document.getElementById('val-provider-name');
+
+  if (provider === 'offline') {
+    // Offline mode selected (Ollama active)
+    setDot('dot-ollama', 'green');
+    valOllama.textContent = 'Yes';
+
+    setDot('dot-model', 'green');
+    valModel.textContent = model;
+
+    setDot('dot-api', 'amber');
+    valApi.textContent = 'N/A';
+  } else {
+    // Online API selected (Groq, OpenAI, etc.)
+    setDot('dot-ollama', 'amber');
+    valOllama.textContent = 'N/A';
+
+    setDot('dot-model', 'green');
+    valModel.textContent = model;
+
+    setDot('dot-api', 'green');
+    // Capitalize the provider name
+    valApi.textContent = provider.charAt(0).toUpperCase() + provider.slice(1);
+  }
+}
+
+// 3. Inject the status updater into your provider load
+async function loadProvider() {
+  try {
+    const d = await fetchJson(`/provider?user_id=${encodeURIComponent(userId)}`);
+    const sel = document.getElementById('provider-select');
+    if (sel) sel.value = d.provider || 'offline';
+    setProviderLabel(d);
+    updateSystemStatus(d); // Force UI to reflect config on load
+  } catch {}
+}
+
+// 4. Clean up checkHealth to use the unified state
 async function checkHealth() {
   try {
-	// FIX: Pass the active user ID so the backend checks the correct configuration
-	const d = await fetchJson(`/health?user_id=${encodeURIComponent(userId)}`);
-    const ollOk = d.ollama_running;
-    setDot('dot-ollama', ollOk === null ? 'amber' : ollOk ? 'green' : 'red');
-    document.getElementById('val-ollama').textContent = ollOk === null ? 'N/A' : ollOk ? 'Running' : 'Down';
-
-    const modOk = d.ollama_model_ready;
-    setDot('dot-model', modOk === null ? 'amber' : modOk ? 'green' : 'red');
-    document.getElementById('val-model').textContent = modOk === null ? 'N/A' : modOk ? 'Ready' : 'Missing';
-
-    setProviderLabel(d.active_provider || {});
+    const d = await fetchJson(`/health?user_id=${encodeURIComponent(userId)}`);
+    const providerInfo = d.active_provider || {};
+    
+    setProviderLabel(providerInfo);
+    updateSystemStatus(providerInfo); // Map the health payload to our UI logic
     setEndpointLabel();
+    
     toast('Status refreshed');
   } catch {
+    // Handle true backend failure
     setDot('dot-ollama', 'red');
     setDot('dot-model', 'red');
+    setDot('dot-api', 'red');
+    document.getElementById('val-ollama').textContent = 'Error';
+    document.getElementById('val-model').textContent = 'Error';
+    document.getElementById('val-provider-name').textContent = 'Error';
     toast('Cannot reach API — is the server running?');
   }
 }
+
 
 function setDot(id, color) {
   const el = document.getElementById(id);
@@ -156,14 +203,7 @@ function setDot(id, color) {
   else el.classList.add('dot-red');
 }
 
-async function loadProvider() {
-  try {
-    const d = await fetchJson(`/provider?user_id=${encodeURIComponent(userId)}`);
-    const sel = document.getElementById('provider-select');
-    if (sel) sel.value = d.provider || 'offline';
-    setProviderLabel(d);
-  } catch {}
-}
+
 
 function onProviderChange() {
   const v = document.getElementById('provider-select').value;
@@ -805,7 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   document.getElementById('display-uid').textContent = userId;
-  document.getElementById('val-api').textContent = API;
+
 
   setEndpointLabel();
   loadServiceInfo();
